@@ -5,3 +5,7 @@
   "semantics": "you have to apply semantic tags in the app",
   "postCropPreview": "there is an error while preview the cropped post please check it first."
 }
+
+{
+  "box-sizing": "box sizing property applied on the feed component"
+}

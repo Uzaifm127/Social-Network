@@ -6,8 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import UploadPhoto from "../components/UploadPhoto";
 import placeholder from "../assets/Image Placeholder.png";
 import Loader from "../components/Loader";
+import CropImage from "../components/CropImage";
 
 const seperatorClass = "bg-slate-600 h-px w-72 my-[15px]";
+
+let avatarRegister;
 
 const Register = () => {
   // Hook for fetching
@@ -16,20 +19,29 @@ const Register = () => {
 
   // All local states
   const [next, setNext] = useState(false);
-  const [user, setUser] = useState({
+  const [currentUser, setCurrentUser] = useState({
     name: "",
     username: "",
     email: "",
     password: "",
     avatarPreview: placeholder,
-    avatar: "",
   });
 
   // Selector and Dispatcher
-  const { isAuthenticated } = useSelector((state) => state.user);
+  const { cropAlert } = useSelector((state) => state.toggle);
+  const { isAuthenticated, userCroppedImage } = useSelector(
+    (state) => state.user
+  );
   const dispatch = useDispatch();
 
   // useEffects
+
+  useEffect(() => {
+    if (currentUser.avatarPreview !== placeholder) {
+      dispatch({ type: "cropAlertToggle", payload: true });
+    }
+  }, [currentUser.avatarPreview, dispatch]);
+
   useEffect(() => {
     if (isSuccess) {
       dispatch({ type: "changeAuth", payload: true });
@@ -42,13 +54,12 @@ const Register = () => {
       toast.error(error.data?.message || "Something went wrong", {
         duration: 2500,
       });
-      setUser({
+      setCurrentUser({
         name: "",
         username: "",
         email: "",
         password: "",
         avatarPreview: placeholder,
-        avatar: "",
       });
       setNext(false);
     }
@@ -64,21 +75,20 @@ const Register = () => {
       const reader = new FileReader();
 
       reader.onload = () =>
-        setUser((preUser) => ({
+        setCurrentUser((preUser) => ({
           ...preUser,
           avatarPreview: reader.result,
-          avatar: file,
         }));
 
       reader.readAsDataURL(file);
     } else {
-      setUser((preUser) => ({ ...preUser, [name]: value }));
+      setCurrentUser((preUser) => ({ ...preUser, [name]: value }));
     }
   };
 
   const totalSubmitHandler = async (event) => {
     event.preventDefault();
-    const { name, username, email, password, avatar } = user;
+    const { name, username, email, password } = currentUser;
 
     const data = new FormData();
     data.append("name", name);
@@ -87,13 +97,25 @@ const Register = () => {
     data.append("password", password);
 
     if (event.target.name === "withImage") {
-      data.append("avatar", avatar);
+      data.append("avatar", userCroppedImage.file);
     } else {
       data.append("avatar", "");
     }
 
     userRegister(data);
   };
+
+  if (cropAlert) {
+    avatarRegister = <CropImage Image={currentUser.avatarPreview} />;
+  } else {
+    avatarRegister = (
+      <UploadPhoto
+        onTotalSubmit={totalSubmitHandler}
+        onImageChange={inputChange}
+        avatarPreview={userCroppedImage.filePreview || placeholder}
+      />
+    );
+  }
 
   if (isAuthenticated) return <Navigate to="/" />;
 
@@ -109,11 +131,7 @@ const Register = () => {
       }}
     />
   ) : next ? (
-    <UploadPhoto
-      onTotalSubmit={totalSubmitHandler}
-      onImageChange={inputChange}
-      avatarPreview={user.avatarPreview}
-    />
+    avatarRegister
   ) : (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -143,7 +161,7 @@ const Register = () => {
                   id="name"
                   name="name"
                   type="text"
-                  value={user.name}
+                  value={currentUser.name}
                   onChange={inputChange}
                   autoComplete="name"
                   placeholder="Enter your Full name"
@@ -165,7 +183,7 @@ const Register = () => {
                   id="username"
                   name="username"
                   type="text"
-                  value={user.username}
+                  value={currentUser.username}
                   onChange={inputChange}
                   placeholder="Enter your username"
                   required
@@ -186,7 +204,7 @@ const Register = () => {
                   id="email"
                   name="email"
                   type="email"
-                  value={user.email}
+                  value={currentUser.email}
                   onChange={inputChange}
                   autoComplete="email"
                   placeholder="Enter your email"
@@ -209,7 +227,7 @@ const Register = () => {
                   id="password"
                   name="password"
                   type="password"
-                  value={user.password}
+                  value={currentUser.password}
                   onChange={inputChange}
                   minLength={8}
                   maxLength={30}

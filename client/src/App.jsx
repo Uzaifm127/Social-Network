@@ -5,13 +5,12 @@ import NotFound from "./routes/NotFound";
 import { Toaster } from "react-hot-toast";
 import Loader from "./components/Loader";
 import Home from "./routes/Home";
-("remove after");
 import Profile from "./routes/Profile";
 import { useGetMyProfileQuery } from "./services/userApi";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import EditProfile from "./routes/EditProfile";
-import Post from "./components/Post";
+import CreatePost from "./components/CreatePost";
 
 function App() {
   const dispatch = useDispatch();
@@ -22,7 +21,7 @@ function App() {
 
   useEffect(() => {
     refetch();
-  }, [isAuthenticated, refetch]);
+  }, [isAuthenticated, refetch, user]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -52,7 +51,7 @@ function App() {
           />
         ) : (
           <>
-            {isAuthenticated && postAlert && <Post />}
+            {isAuthenticated && postAlert && <CreatePost />}
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path={`/${user.username}`} element={<Profile />} />

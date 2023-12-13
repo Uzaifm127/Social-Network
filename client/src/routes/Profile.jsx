@@ -1,12 +1,14 @@
 import { useSelector } from "react-redux";
 import SideBar from "../components/SideBar";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import placeholderImage from "../assets/Image Placeholder.png";
 
 const navLinksClass = `px-4 py-2 text-white bg-slate-400 hover:bg-slate-600 cursor-pointer rounded-lg transition duration-200 m-5 active:bg-slate-800 focus:bg-slate-900`;
 
 const Profile = () => {
-  const { user } = useSelector((state) => state.user);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
+
+  if (!isAuthenticated) return <Navigate to="/login" />;
 
   return (
     <main className="flex">

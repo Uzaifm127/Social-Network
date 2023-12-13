@@ -15,7 +15,14 @@ export const postApi = createApi({
         formData: true,
       }),
     }),
+    getAllPosts: builder.query({
+      query: (postLimit) => ({
+        url: `all?feedPostLimit=${postLimit}`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
-export const { useSharePostMutation } = postApi;
+export const { useSharePostMutation, useGetAllPostsQuery } = postApi;

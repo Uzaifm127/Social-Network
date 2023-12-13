@@ -11,8 +11,8 @@ export const app = express();
 config();
 
 // Using Middlewares
-// app.use(multer({ limits: { fileSize: 1000000000 } }).any());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({

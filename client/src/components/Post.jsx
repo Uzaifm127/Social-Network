@@ -1,72 +1,99 @@
+import PropTypes from "prop-types";
+import { RxDotsHorizontal } from "react-icons/rx";
+import { GoHeart } from "react-icons/go";
+import { GoHeartFill } from "react-icons/go";
 import { useEffect, useState } from "react";
-import { RxCross2 } from "react-icons/rx";
-import { useDispatch, useSelector } from "react-redux";
-import PostCrop from "./PostCrop";
-import PostCropPreview from "./PostCropPreview";
-import PostPrompt from "./PostPrompt";
-import PostCaption from "./PostCaption";
+import { FaRegComment } from "react-icons/fa6";
+import { LuSend } from "react-icons/lu";
+import { BsBookmark } from "react-icons/bs";
+import { BsBookmarkCheckFill } from "react-icons/bs";
 
-const Post = () => {
-  let postContent;
-
-  const [postPreview, setPostPreview] = useState();
-  const [next, setNext] = useState(false);
-
-  const { postCropAlert, postAlert } = useSelector((state) => state.toggle);
-  const { postMedia } = useSelector((state) => state.post);
-
-  const dispatch = useDispatch();
+const Post = ({ captionContent, postMediaSrc }) => {
+  const [contentExpand, setContentExpand] = useState(false);
+  const [comment, setComment] = useState("");
+  const [liked, setLiked] = useState(false);
+  const [caption, setCaption] = useState("");
 
   useEffect(() => {
-    // This code doesn't run when given states in the array changes but run when the component unmount with the older states.
-    return () => {
-      dispatch({ type: "resetMediaPost" });
-    };
-  }, [dispatch, postAlert]);
+    if (captionContent.length > 115) {
+      setCaption(captionContent.slice(0, 116));
+      setContentExpand(false);
+    } else {
+      setContentExpand(true);
+    }
+  }, [captionContent.length, captionContent]);
 
-  const inputChange = (event) => {
-    const file = event.target.files[0];
+  const likeToggle = () => setLiked((preValue) => !preValue);
 
-    setPostPreview(window.URL.createObjectURL(file));
-
-    dispatch({ type: "postCropAlertToggle", payload: true });
+  const toggleContExp = () => {
+    if (contentExpand) {
+      setCaption(captionContent.slice(0, 116));
+    } else {
+      setCaption(captionContent);
+    }
+    setContentExpand((preValue) => !preValue);
   };
 
-  if (next) {
-    postContent = <PostCaption />;
-  } else if (postMedia.length > 0) {
-    postContent = <PostCropPreview nextButtonHandler={setNext} />;
-  } else {
-    postContent = <PostPrompt onChange={inputChange} />;
-  }
-
   return (
-    <div
-      className="absolute z-10 h-screen w-screen bg-[#00000090] flex items-center justify-center"
-      name="alertBack"
-      onClick={() => {
-        dispatch({ type: "postAlertToggle", payload: false });
-      }}
-    >
-      <RxCross2
-        className="absolute top-0 right-0 -translate-x-1/2 translate-y-1/2 text-3xl text-white cursor-pointer font-bold"
-        onClick={() => dispatch({ type: "postAlertToggle", payload: false })}
-      />
-      <article
-        className="bg-[#353535] text-white rounded-xl overflow-hidden"
-        name="mainAlert"
-        onClick={(event) => {
-          event.stopPropagation();
-          dispatch({ type: "postAlertToggle", payload: true });
-        }}
-      >
-        {postCropAlert && <PostCrop Image={postPreview} />}
-        <h1 className="text-center py-3 text-lg">Create new post</h1>
-        <hr />
-        {postContent}
-      </article>
-    </div>
+    <>
+      <li className='mb-8'>
+        <section className="flex items-center w-full p-2">
+          <article className="flex items-center">
+            <img
+              className="cursor-pointer rounded-full h-9"
+              src={postMediaSrc}
+              alt="User avatar"
+            />
+            <strong className="ml-2 text-sm cursor-pointer">uzaifm.404</strong>
+            <span className="mx-1 cursor-pointer">•</span>
+            <p className="text-sm cursor-pointer">3m</p>
+          </article>
+          <RxDotsHorizontal className="ml-auto text-xl cursor-pointer" />
+        </section>
+        <img
+          onDoubleClick={() => setLiked(true)}
+          className="w-[30rem] cursor-pointer rounded-lg"
+          src={postMediaSrc}
+          alt="Post Media"
+        />
+        <section className="flex py-3 mb-3">
+          {liked ? (
+            <GoHeartFill
+              onClick={likeToggle}
+              className="text-3xl cursor-pointer text-red-500"
+            />
+          ) : (
+            <GoHeart onClick={likeToggle} className="text-3xl cursor-pointer" />
+          )}
+          <FaRegComment className="text-3xl cursor-pointer mx-5" />
+          <LuSend className="text-3xl cursor-pointer" />
+          <BsBookmark className="text-2xl cursor-pointer ml-auto" />
+        </section>
+        <p className="w-[30rem]">
+          <span className="font-bold">uzaifm.404</span> {caption}
+          <button className="text-slate-400" onClick={toggleContExp}>
+            {contentExpand ? "Read Less" : "Read more..."}
+          </button>
+        </p>
+        <button className="text-slate-400 cursor-pointer py-2">
+          View all 11 comments
+        </button>
+        <input
+          onChange={(e) => setComment(e.target.value)}
+          value={comment}
+          className="py-3 outline-none border-none block w-full"
+          type="text"
+          placeholder="Add a comment..."
+        />
+        <hr className="bg-slate-600" />
+      </li>
+    </>
   );
+};
+
+Post.propTypes = {
+  captionContent: PropTypes.string,
+  postMediaSrc: PropTypes.string,
 };
 
 export default Post;

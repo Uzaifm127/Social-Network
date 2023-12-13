@@ -10,7 +10,7 @@ const postSchema = new Schema({
     default: "",
     maxLength: [2200, "Maximum character limit exceed"],
   },
-  likes: { type: Number, default: 0 },
+  likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   comments: [
     { user: { type: Schema.Types.ObjectId, ref: "User" }, message: String },
   ],

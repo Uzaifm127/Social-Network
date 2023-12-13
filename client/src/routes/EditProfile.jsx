@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import { useDispatch, useSelector } from "react-redux";
 import AvatarEditAlert from "../components/AvatarEditAlert";
@@ -13,7 +13,9 @@ const EditProfile = () => {
   const [editProfile, { data, isSuccess, isLoading, isError, error }] =
     useEditProfileMutation();
 
-  const { user, userCroppedImage } = useSelector((state) => state.user);
+  const { user, userCroppedImage, isAuthenticated } = useSelector(
+    (state) => state.user
+  );
   const { avatarAlert, cropAlert } = useSelector((state) => state.toggle);
 
   const [avatarPreview, setAvatarPreview] = useState(undefined);
@@ -102,6 +104,8 @@ const EditProfile = () => {
 
     editProfile(formData);
   };
+
+  if (!isAuthenticated) return <Navigate to="/login" />;
 
   return (
     <main className="flex">
@@ -214,7 +218,13 @@ const EditProfile = () => {
               } rounded-lg text-white hover:bg-gray-400 focus:bg-gray-800 transition duration-200 mt-10`}
             >
               Submit
-              {isLoading && <Loader size={15} color={"#ffffff"} css={{ marginLeft: "0.5rem" }} />}
+              {isLoading && (
+                <Loader
+                  size={15}
+                  color={"#ffffff"}
+                  css={{ marginLeft: "0.5rem" }}
+                />
+              )}
             </button>
           </div>
         </section>

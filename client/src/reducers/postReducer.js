@@ -2,6 +2,7 @@ import { createReducer } from "@reduxjs/toolkit";
 
 const initialState = {
   postMedia: [],
+  feedPosts: [],
 };
 
 export const postReducer = createReducer(initialState, {
@@ -10,5 +11,8 @@ export const postReducer = createReducer(initialState, {
   },
   resetMediaPost: (state) => {
     state.postMedia = [];
+  },
+  storePosts: (state, action) => {
+    state.feedPosts.push(action.payload);
   },
 });

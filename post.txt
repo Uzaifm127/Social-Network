@@ -1,0 +1,56 @@
+post: 1
+
+New update🔥 about Social Media App.
+
+Create post functionality reaching its destination🎯.
+
+Hey LinkedIn family, I'm here to update all of you I've successfully implemented the create post📮 functionality in my app. 
+
+When user creates a post📮 then user can first upload the media regarding to the post📮 and secondly user can add caption to it and share the post📮 all over the world. 
+
+this create post📮 functionality was quite challenging for me, but I faced these challenges and yeah, I've made it.
+
+Now, the next challenge for me is to build the homepage with infinite scroll and performance optimization. I'll use react-virtualized library📚 for infinite scroll and performance optimization.
+
+If anyone have better understanding than me about react then please let me know in the comment section what library📚 should I use to make infinite scroll possible with performance optimized.
+
+I'll keep posting the updates regarding the app.
+
+till then stay tuned for further updates😊. 
+
+#future #futurism #javascript #fullstack #coding #programming #webdevelopment #reactjs
+
+
+post: 2:
+
+This is what I learned today while building a full stack project.
+
+I want to share the learnings which I got from today.
+
+Conditional rendering of components:
+
+I've learned about the conditional rendering of components in React JS without using the turnory operator at the high level. Conditional rendering helps us to structure the code and write modular and clean code.
+
+Rest and Spread operator:
+
+I learned about the difference between Rest operator and spread operator. We generally use the spread operator to spread the elements of iterable objects like array and object and rest operator in the argument of a function to collect all the elements in an array at the function call. Although both operators look very similar but it servers different purposes.
+
+post:3: 
+
+I want to share all my learning which I got while learning the TypeScript from the docs or open source code bases.
+
+I just started learning TypeScript today and here are the learnings and their crisp explanation:
+
+1. TypeScript is not a language but It is built on top of JavaScript as we can't run the TypeScript code directly, TypeScript compiler first compile the TypeScript file into JavaScript and then run on the browser. You can do tsc -init to generate the tsconfig.json file.
+
+2. There is a difference between the keyword type and interface. The type keyword is used as type aliases and make custom types but interface keyword likely serves same purpose as type keyword but it offers the inheritance means we can inherit the type from custom types and extends it further using interface. The interface keyword is suitable for object and classes in TypeScript where we don't want to extends the types from another. The type keyword is suitable making custom types of variables functions...
+
+And other concepts are too short and you can learn those concepts by just applying or making a project in TypeScript.
+
+Remember you can't learn TypeScript by just watching tutorial after tutorial or reading the docs unless you make a project in TypeScript. Although tutorials and reading the docs are needed but this is not the end goal of your learning, Your end goal of learning TypeScript is to make a project in it.
+
+Happy coding😊.
+
+
+
+
