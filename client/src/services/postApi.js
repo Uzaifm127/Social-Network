@@ -22,7 +22,26 @@ export const postApi = createApi({
         credentials: "include",
       }),
     }),
+    postLike: builder.mutation({
+      query: (userId) => ({
+        url: `/like/${userId}`,
+        method: "PUT",
+        credentials: "include",
+      }),
+    }),
+    postDislike: builder.mutation({
+      query: (userId) => ({
+        url: `/dislike/${userId}`,
+        method: "PUT",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
-export const { useSharePostMutation, useGetAllPostsQuery } = postApi;
+export const {
+  useSharePostMutation,
+  useGetAllPostsQuery,
+  usePostLikeMutation,
+  usePostDislikeMutation,
+} = postApi;

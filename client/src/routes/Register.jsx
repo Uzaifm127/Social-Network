@@ -35,7 +35,6 @@ const Register = () => {
   const dispatch = useDispatch();
 
   // useEffects
-
   useEffect(() => {
     if (currentUser.avatarPreview !== placeholder) {
       dispatch({ type: "cropAlertToggle", payload: true });
@@ -45,12 +44,15 @@ const Register = () => {
   useEffect(() => {
     if (isSuccess) {
       dispatch({ type: "changeAuth", payload: true });
+      dispatch({ type: "setMe", payload: data.user });
+      dispatch({ type: "moreAlertToggle", payload: false });
       toast.success(data?.message || "Something went wrong", {
         duration: 2500,
       });
     }
     if (error) {
       dispatch({ type: "changeAuth", payload: false });
+      dispatch({ type: "setMe", payload: {} });
       toast.error(error.data?.message || "Something went wrong", {
         duration: 2500,
       });
@@ -112,7 +114,7 @@ const Register = () => {
       <UploadPhoto
         onTotalSubmit={totalSubmitHandler}
         onImageChange={inputChange}
-        avatarPreview={userCroppedImage.filePreview || placeholder}
+        avatarPreview={userCroppedImage?.filePreview || placeholder}
       />
     );
   }

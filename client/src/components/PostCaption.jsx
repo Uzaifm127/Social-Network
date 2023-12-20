@@ -11,7 +11,7 @@ const PostCaption = () => {
   const [sharePost, { data, isSuccess, isError, isLoading, error }] =
     useSharePostMutation();
 
-  const { user } = useSelector((state) => state.user);
+  const { me } = useSelector((state) => state.user);
   const { postMedia } = useSelector((state) => state.post);
 
   const dispatch = useDispatch();
@@ -72,11 +72,11 @@ const PostCaption = () => {
 
           <div className="flex items-center p-4">
             <img
-              src={user.avatar.url}
-              alt={user.username}
+              src={me.avatar.url}
+              alt={me.username}
               className="rounded-full h-7"
             />
-            <h2 className="text-white ml-3">{user.username}</h2>
+            <h2 className="text-white ml-3">{me.username}</h2>
           </div>
           <textarea
             maxLength="2200"

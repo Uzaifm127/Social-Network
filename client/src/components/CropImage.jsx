@@ -24,7 +24,7 @@ function CropImage({ Image }) {
   };
 
   return (
-    <div className="bg-[#121212] h-screen w-screen absolute">
+    <div className="bg-[#121212] h-screen w-screen absolute z-10">
       <Crop
         image={Image}
         crop={crop}

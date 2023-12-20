@@ -14,7 +14,7 @@ const navLinksClass = `flex items-center w-full p-3 cursor-pointer hover:bg-[#35
 const navIconsClass = `text-3xl mr-5`;
 
 const SideBar = ({ loading }) => {
-  const { user } = useSelector((state) => state.user);
+  const { me } = useSelector((state) => state.user);
   const { moreAlert } = useSelector((state) => state.toggle);
   const dispatch = useDispatch();
 
@@ -64,10 +64,10 @@ const SideBar = ({ loading }) => {
                 Post
               </li>
               <li>
-                <Link to={`/${user.username}`} className={navLinksClass}>
+                <Link to={`/${me.username}`} className={navLinksClass}>
                   <img
                     className="h-7 mr-5 rounded-full"
-                    src={user.avatar?.url || defaultAvatar}
+                    src={me.avatar?.url || defaultAvatar}
                     alt="avatar"
                   />
                   Profile

@@ -3,9 +3,8 @@
   "serializable": "we've false the serializable check for this remember this",
   "moreAlert": "when we switch to home page then why moreAlert alert box appears?",
   "semantics": "you have to apply semantic tags in the app",
-  "postCropPreview": "there is an error while preview the cropped post please check it first."
-}
-
-{
-  "box-sizing": "box sizing property applied on the feed component"
+  "postCropPreview": "there is an error while preview the cropped post please check it first.",
+  "sidebar": "sidebar width is changing in different pages.",
+  "box-sizing": "box sizing property applied on the feed component",
+  "after-login": "when log in then if more alert stay opened then it will be open if we login again."
 }

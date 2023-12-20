@@ -5,7 +5,8 @@ import NotFound from "./routes/NotFound";
 import { Toaster } from "react-hot-toast";
 import Loader from "./components/Loader";
 import Home from "./routes/Home";
-import Profile from "./routes/Profile";
+import MyProfile from "./routes/MyProfile";
+import UserProfile from "./routes/UserProfile";
 import { useGetMyProfileQuery } from "./services/userApi";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,23 +15,18 @@ import CreatePost from "./components/CreatePost";
 
 function App() {
   const dispatch = useDispatch();
-  const { isAuthenticated, user } = useSelector((state) => state.user);
+  const { isAuthenticated, me, user } = useSelector((state) => state.user);
   const { postAlert } = useSelector((state) => state.toggle);
-  const { data, isLoading, isSuccess, isError, refetch } =
-    useGetMyProfileQuery();
-
-  useEffect(() => {
-    refetch();
-  }, [isAuthenticated, refetch, user]);
+  const { data, isLoading, isSuccess, isError } = useGetMyProfileQuery();
 
   useEffect(() => {
     if (isSuccess) {
       dispatch({ type: "changeAuth", payload: true });
-      dispatch({ type: "setUser", payload: data.user });
+      dispatch({ type: "setMe", payload: data.user });
     }
     if (isError) {
       dispatch({ type: "changeAuth", payload: false });
-      dispatch({ type: "setUser", payload: {} });
+      dispatch({ type: "setMe", payload: {} });
     }
   }, [dispatch, isSuccess, isError, data]);
 
@@ -40,7 +36,7 @@ function App() {
         {isLoading ? (
           <Loader
             loading={isLoading}
-            color={"#36d7b7"}
+            color={"#1e1e1e"}
             size={100}
             css={{
               position: "absolute",
@@ -53,11 +49,25 @@ function App() {
           <>
             {isAuthenticated && postAlert && <CreatePost />}
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path={`/${user.username}`} element={<Profile />} />
-              <Route path={"/accounts/edit"} element={<EditProfile />} />
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/" element={<Home />} />
+              <Route path={`/${me.username}`} element={<MyProfile />} />
+              <Route
+                path={`/${user.username}`}
+                element={
+                  <UserProfile
+                    name={user.name}
+                    username={user.username}
+                    bio={user.bio}
+                    followers={user.followers}
+                    following={user.following}
+                    avatar={user.avatar?.url}
+                    posts={user.posts}
+                  />
+                }
+              />
+              <Route path={"/accounts/edit"} element={<EditProfile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </>

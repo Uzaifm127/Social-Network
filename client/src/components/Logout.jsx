@@ -13,6 +13,7 @@ const Logout = () => {
   useEffect(() => {
     if (isSuccess) {
       dispatch({ type: "changeAuth", payload: false });
+      dispatch({ type: "setMe", payload: {} });
       toast.success(data?.message || "Something went wrong");
     } else if (isError) {
       dispatch({ type: "changeAuth", payload: true });

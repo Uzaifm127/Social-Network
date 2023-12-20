@@ -18,5 +18,6 @@ export const authenticateUser = (user, res, statusCode, message) => {
     .json({
       success: true,
       message: message,
+      user,
     });
 };

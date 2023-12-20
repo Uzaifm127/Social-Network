@@ -2,6 +2,7 @@ import { PostModel } from "../models/postModel.js";
 import { v2 as cloudinary } from "cloudinary";
 import { UserModel } from "../models/userModel.js";
 import { shuffleArray } from "../utilities/algorithms.js";
+import { ErrorHandler } from "../config/error.js";
 
 export const createPost = async (req, res, next) => {
   const { postCaption } = req.body;
@@ -34,15 +35,58 @@ export const createPost = async (req, res, next) => {
 export const getFeedPosts = async (req, res) => {
   const { following } = req.user;
   const { feedPostLimit } = req.query;
+  const { _id } = req.user;
 
-  const followingPosts = await PostModel.find({ owner: { $in: following } });
+  let posts = await PostModel.find({
+    owner: { $in: [...following, _id] },
+  }).populate("owner");
 
-  const myPosts = req.user.posts;
-
-  const posts = shuffleArray([...followingPosts, ...myPosts]);
+  posts = shuffleArray(posts);
 
   res.status(200).json({
     success: true,
     feedPosts: posts.slice(0, feedPostLimit),
+  });
+};
+
+export const likePost = async (req, res, next) => {
+  const { id } = req.params;
+
+  const post = await PostModel.findById(id);
+
+  if (!post) {
+    return next(new ErrorHandler("Post doesn't exist", 404));
+  }
+
+  const { _id } = req.user;
+
+  post.likes.push(_id);
+
+  await post.save();
+
+  res.status(200).json({
+    success: true,
+  });
+};
+
+export const dislikePost = async (req, res, next) => {
+  const { id } = req.params;
+
+  const post = await PostModel.findById(id);
+
+  if (!post) {
+    return next(new ErrorHandler("Post doesn't exist", 404));
+  }
+
+  const { _id } = req.user;
+
+  const dislikeIndex = post.likes.indexOf(_id);
+
+  post.likes.splice(dislikeIndex, 1);
+
+  await post.save();
+
+  res.status(200).json({
+    success: true,
   });
 };

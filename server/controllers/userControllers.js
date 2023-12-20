@@ -89,12 +89,10 @@ export const logoutUser = (req, res) => {
     });
 };
 
-export const getMyProfile = async (req, res) => {
-  const user = await UserModel.findById(req.user._id).populate("posts");
-
+export const getMyProfile = (req, res) => {
   res.status(200).json({
     success: true,
-    user,
+    user: req.user,
   });
 };
 

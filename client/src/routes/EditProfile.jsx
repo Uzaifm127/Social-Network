@@ -13,7 +13,7 @@ const EditProfile = () => {
   const [editProfile, { data, isSuccess, isLoading, isError, error }] =
     useEditProfileMutation();
 
-  const { user, userCroppedImage, isAuthenticated } = useSelector(
+  const { me, userCroppedImage, isAuthenticated } = useSelector(
     (state) => state.user
   );
   const { avatarAlert, cropAlert } = useSelector((state) => state.toggle);
@@ -26,18 +26,22 @@ const EditProfile = () => {
     gender: "",
   });
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     setUserEdit((preObject) => {
       return {
         ...preObject,
-        website: user.website,
-        bio: user.bio,
-        gender: user.gender,
+        website: me.website,
+        bio: me.bio,
+        gender: me.gender,
       };
     });
-  }, [user.website, user.bio, user.gender]);
+  }, [me.website, me.bio, me.gender]);
 
   useEffect(() => {
     dispatch({ type: "avatarAlertToggle", payload: false });
@@ -105,7 +109,9 @@ const EditProfile = () => {
     editProfile(formData);
   };
 
-  if (!isAuthenticated) return <Navigate to="/login" />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <main className="flex">
@@ -128,14 +134,14 @@ const EditProfile = () => {
               src={
                 avatarPreview === "remove"
                   ? placeholderImage
-                  : userCroppedImage.filePreview ||
-                    user.avatar?.url ||
+                  : userCroppedImage?.filePreview ||
+                    me.avatar?.url ||
                     placeholderImage
               }
               alt={
                 avatarPreview === "remove"
                   ? "placeholderImage"
-                  : user.name || "user"
+                  : me.name || "user"
               }
             />
             <input
@@ -146,7 +152,7 @@ const EditProfile = () => {
               hidden
             />
             <span className="ml-10">
-              <h3>{user.username}</h3>
+              <h3>{me.username}</h3>
               <Link
                 onClick={() => {
                   if (!isLoading) {

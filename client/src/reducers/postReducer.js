@@ -13,6 +13,6 @@ export const postReducer = createReducer(initialState, {
     state.postMedia = [];
   },
   storePosts: (state, action) => {
-    state.feedPosts.push(action.payload);
+    state.feedPosts = [...action.payload];
   },
 });

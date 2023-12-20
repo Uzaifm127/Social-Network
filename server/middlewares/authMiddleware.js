@@ -11,7 +11,7 @@ export const authenticated = async (req, res, next) => {
   if (!token) return next(new ErrorHandler("Please login first", 404));
 
   const { _id } = jwt.verify(token, process.env.JWT_SECRET_KEY);
-  const user = await UserModel.findById(_id);
+  const user = await UserModel.findById(_id).populate("posts");
   req.user = user;
   next();
 };

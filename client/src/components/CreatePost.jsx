@@ -42,7 +42,7 @@ const CreatePost = () => {
 
   return (
     <div
-      className="absolute z-10 h-screen w-screen bg-[#00000090] flex items-center justify-center"
+      className="fixed z-10 h-screen w-screen bg-[#00000090] flex items-center justify-center"
       name="alertBack"
       onClick={() => {
         dispatch({ type: "postAlertToggle", payload: false });

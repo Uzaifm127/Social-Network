@@ -3,9 +3,14 @@ import { Navigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import Stories from "../components/Stories";
 import Feed from "../components/Feed";
+import { useEffect } from "react";
 
 const Home = () => {
   const { isAuthenticated } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   if (!isAuthenticated) return <Navigate to="/login" />;
 
