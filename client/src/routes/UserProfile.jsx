@@ -4,6 +4,7 @@ import SideBar from "../components/SideBar";
 import { Link, Navigate } from "react-router-dom";
 import placeholderImage from "../assets/Image Placeholder.png";
 import { useEffect } from "react";
+import FollowButton from "../components/FollowButton";
 
 const navLinksClass = `px-4 py-2 text-white bg-slate-400 hover:bg-slate-600 cursor-pointer rounded-lg transition duration-200 m-5 active:bg-slate-800 focus:bg-slate-900`;
 
@@ -38,9 +39,7 @@ const UserProfile = ({
             <div className="flex items-center mb-5">
               <h1 className="text-xl mr-5">{username}</h1>
 
-              <button className="rounded-lg px-3 py-1.5 bg-sky-500 text-white">
-                Follow
-              </button>
+              <FollowButton />
             </div>
             <div className="flex items-center mb-4">
               <h2 className="mr-10">{posts.length} posts</h2>

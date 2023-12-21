@@ -6,6 +6,8 @@ import {
   logoutUser,
   registerUser,
   editUserProfile,
+  followUser,
+  searchUser,
 } from "../controllers/userControllers.js";
 import { authenticated } from "../middlewares/authMiddleware.js";
 import { uploadAvatar } from "../middlewares/multerMiddleware.js";
@@ -20,6 +22,10 @@ userRouter.post("/logout", authenticated, logoutUser);
 
 userRouter.put("/edit", authenticated, uploadAvatar, editUserProfile);
 
+userRouter.put("/follow/:id", authenticated, followUser);
+
 userRouter.get("/me", authenticated, getMyProfile);
+
+userRouter.get("/search", authenticated, searchUser);
 
 userRouter.get("/:id", authenticated, getUserProfile);

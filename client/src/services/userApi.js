@@ -43,13 +43,29 @@ export const userApi = createApi({
         formData: true,
       }),
     }),
+    followUser: builder.mutation({
+      query: (userId) => ({
+        url: `follow/${userId}`,
+        method: "PUT",
+        credentials: "include",
+      }),
+    }),
+    searchUser: builder.query({
+      query: (searchQuery) => ({
+        url: `search?q=${searchQuery}`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
 export const {
   useGetMyProfileQuery,
+  useSearchUserQuery,
   useUserRegisterMutation,
   useUserLoginMutation,
   useUserLogoutMutation,
   useEditProfileMutation,
+  useFollowUserMutation,
 } = userApi;

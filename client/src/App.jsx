@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import EditProfile from "./routes/EditProfile";
 import CreatePost from "./components/CreatePost";
+import Search from "./routes/Search";
 
 function App() {
   const dispatch = useDispatch();
@@ -52,6 +53,7 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/" element={<Home />} />
+              <Route path="/explore/search" element={<Search />} />
               <Route path={`/${me.username}`} element={<MyProfile />} />
               <Route
                 path={`/${user.username}`}

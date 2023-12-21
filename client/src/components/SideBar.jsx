@@ -6,6 +6,7 @@ import { TbMessages } from "react-icons/tb";
 import { PiPlusCircleBold } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { MdOutlineExplore } from "react-icons/md";
 import defaultAvatar from "../assets/Image Placeholder.png";
 import MoreAlert from "./MoreAlert";
 
@@ -44,9 +45,15 @@ const SideBar = ({ loading }) => {
                 </Link>
               </li>
               <li>
-                <Link className={navLinksClass}>
+                <Link to={`/explore/search`} className={navLinksClass}>
                   <HiSearch className={navIconsClass} />
                   Search
+                </Link>
+              </li>
+              <li>
+                <Link to={`/explore`} className={navLinksClass}>
+                  <MdOutlineExplore className={navIconsClass} />
+                  Explore
                 </Link>
               </li>
               <li className={navLinksClass}>

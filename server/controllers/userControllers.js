@@ -170,3 +170,41 @@ export const editUserProfile = async (req, res, next) => {
     next(new ErrorHandler(error.message, error.http_code));
   }
 };
+
+export const followUser = async (req, res, next) => {
+  const { id } = req.params;
+  const userWhoFollow = req.user;
+
+  const userToFollow = await UserModel.findById(id);
+
+  if (userToFollow) {
+    return next(new ErrorHandler("Invalid User", 404));
+  }
+
+  userWhoFollow.following.push(userToFollow);
+  userToFollow.following.push(userWhoFollow);
+
+  await userWhoFollow.save();
+  await userToFollow.save();
+
+  res.status(200).json({
+    success: true,
+  });
+};
+
+export const searchUser = async (req, res) => {
+  const { q } = req.query;
+
+  const users = await UserModel.find({ username: q });
+
+  if (!users) {
+    return res.status(404).json({
+      success: false,
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    users,
+  });
+};
