@@ -9,6 +9,9 @@ import { LuSend } from "react-icons/lu";
 import { BsBookmark } from "react-icons/bs";
 import { BsBookmarkCheckFill } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
+import { useAddCommentMutation } from "../services/commentApi";
+import WhiteScreen from "./WhiteScreen";
+import { toast } from "react-hot-toast";
 
 const Post = ({
   captionContent,
@@ -17,16 +20,20 @@ const Post = ({
   username,
   createdAt,
   likePost,
-  userId,
+  postId,
   dislikePost,
   likesArray,
   user,
+  comments,
 }) => {
   const [contentExpand, setContentExpand] = useState(false);
   const [bookMarked, setBookMarked] = useState(false);
   const [comment, setComment] = useState("");
   const [liked, setLiked] = useState(false);
   const [caption, setCaption] = useState("");
+
+  const [addComment, { data, isSuccess, isLoading, isError, error }] =
+    useAddCommentMutation();
 
   const { me } = useSelector((state) => state.user);
 
@@ -48,6 +55,19 @@ const Post = ({
     }
   }, [captionContent.length, captionContent]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data?.message || "Something went wrong", {
+        duration: 2500,
+      });
+      setComment("");
+    } else if (isError) {
+      toast.error(error.data?.message || "Something went wrong", {
+        duration: 2500,
+      });
+    }
+  }, [data, isSuccess, isError, error]);
+
   const getUserProfile = useCallback(() => {
     dispatch({ type: "setUser", payload: user });
   }, [dispatch, user]);
@@ -57,17 +77,17 @@ const Post = ({
       const action = e.currentTarget.getAttribute("data-action");
 
       if (action === "like") {
-        likePost(userId);
+        likePost(postId);
         setLiked(true);
       } else if (action === "double-click") {
-        likePost(userId);
+        likePost(postId);
         setLiked(true);
       } else {
-        dislikePost(userId);
+        dislikePost(postId);
         setLiked(false);
       }
     },
-    [likePost, userId, dislikePost]
+    [likePost, postId, dislikePost]
   );
 
   const toggleContExp = useCallback(() => {
@@ -87,8 +107,18 @@ const Post = ({
     setBookMarked(false);
   }, []);
 
+  const onAddComment = useCallback(
+    (e) => {
+      e.preventDefault();
+
+      addComment({ postId, commentMessage: comment });
+    },
+    [addComment, comment, postId]
+  );
+
   return (
     <li className="pb-8">
+      {isLoading && <WhiteScreen />}
       <section className="flex items-center w-full p-2">
         <article className="flex items-center">
           <Link to={`/${user?.username}`}>
@@ -155,16 +185,29 @@ const Post = ({
           </button>
         )}
       </p>
-      <button className="text-slate-400 cursor-pointer py-2">
-        View all 11 comments
-      </button>
-      <input
-        onChange={(e) => setComment(e.target.value)}
-        value={comment}
-        className="py-3 outline-none border-none block w-full"
-        type="text"
-        placeholder="Add a comment..."
-      />
+      {comments.length !== 0 && (
+        <button className="text-slate-400 cursor-pointer py-2">
+          View all {comments.length} comments
+        </button>
+      )}
+      <form onSubmit={onAddComment} className="flex items-center">
+        <input
+          onChange={(e) => setComment(e.target.value)}
+          value={comment}
+          autoComplete="off"
+          autoCorrect="off"
+          className="py-3 outline-none border-none block w-full"
+          type="text"
+          placeholder="Add a comment..."
+        />
+        <button
+          className={`rounded-lg px-3 py-1.5 bg-sky-500 ml-2 hover:bg-sky-400 transition duration-200 text-white`}
+          type="submit"
+        >
+          Post
+        </button>
+      </form>
+
       <hr className="bg-slate-600" />
     </li>
   );
@@ -178,8 +221,9 @@ Post.propTypes = {
   createdAt: PropTypes.string,
   likePost: PropTypes.func,
   dislikePost: PropTypes.func,
-  userId: PropTypes.string,
+  postId: PropTypes.string,
   likesArray: PropTypes.array,
+  comments: PropTypes.array,
   user: PropTypes.object,
 };
 

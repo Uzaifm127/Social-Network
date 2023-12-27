@@ -17,6 +17,7 @@ const navIconsClass = `text-3xl mr-5`;
 const SideBar = ({ loading }) => {
   const { me } = useSelector((state) => state.user);
   const { moreAlert } = useSelector((state) => state.toggle);
+
   const dispatch = useDispatch();
 
   return (
@@ -36,7 +37,7 @@ const SideBar = ({ loading }) => {
             <ul>
               <li
                 onClick={() =>
-                  moreAlert && dispatch({ type: "moreAlertToggle" })
+                  dispatch({ type: "moreAlertToggle", payload: false })
                 }
               >
                 <Link to={`/`} className={navLinksClass}>
@@ -44,7 +45,11 @@ const SideBar = ({ loading }) => {
                   Home
                 </Link>
               </li>
-              <li>
+              <li
+                onClick={() =>
+                  dispatch({ type: "moreAlertToggle", payload: false })
+                }
+              >
                 <Link to={`/explore/search`} className={navLinksClass}>
                   <HiSearch className={navIconsClass} />
                   Search

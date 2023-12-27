@@ -1,6 +1,5 @@
 import { PostModel } from "../models/postModel.js";
 import { v2 as cloudinary } from "cloudinary";
-import { UserModel } from "../models/userModel.js";
 import { shuffleArray } from "../utilities/algorithms.js";
 import { ErrorHandler } from "../config/error.js";
 
@@ -39,7 +38,12 @@ export const getFeedPosts = async (req, res) => {
 
   let posts = await PostModel.find({
     owner: { $in: [...following, _id] },
-  }).populate("owner");
+  }).populate({
+    path: "owner",
+    populate: {
+      path: "posts",
+    },
+  });
 
   posts = shuffleArray(posts);
 

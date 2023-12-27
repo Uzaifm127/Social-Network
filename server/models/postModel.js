@@ -1,4 +1,4 @@
-import  { Schema, model } from "mongoose";
+import { Schema, model } from "mongoose";
 
 const postSchema = new Schema({
   media: {
@@ -11,9 +11,7 @@ const postSchema = new Schema({
     maxLength: [2200, "Maximum character limit exceed"],
   },
   likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  comments: [
-    { user: { type: Schema.Types.ObjectId, ref: "User" }, message: String },
-  ],
+  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   owner: { type: Schema.Types.ObjectId, ref: "User" },
   createdAt: {
     type: Date,

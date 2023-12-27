@@ -119,7 +119,9 @@ const Register = () => {
     );
   }
 
-  if (isAuthenticated) return <Navigate to="/" />;
+  if (isAuthenticated) {
+    return <Navigate to="/" />;
+  }
 
   return isLoading || isFetching ? (
     <Loader

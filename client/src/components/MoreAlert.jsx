@@ -14,7 +14,7 @@ const MoreAlert = () => {
 
   return (
     <ul
-      className={`fixed left-[1%] bottom-[26%] w-1/5 text-white bg-gray-600 rounded-lg p-4`}
+      className={`fixed left-[1%] bottom-[20%] w-1/5 text-white bg-gray-600 rounded-lg p-4`}
     >
       <li onClick={() => dispatch({ type: "moreAlertToggle", payload: false })}>
         <Link to={`/accounts/edit`} className={navLinksClass}>

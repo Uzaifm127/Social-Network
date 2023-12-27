@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import PostCrop from "./PostCrop";
@@ -7,10 +7,10 @@ import PostPrompt from "./PostPrompt";
 import PostCaption from "./PostCaption";
 
 const CreatePost = () => {
-  let postContent;
-
   const [postPreview, setPostPreview] = useState();
   const [next, setNext] = useState(false);
+
+  const postContent = useRef(null);
 
   const { postCropAlert, postAlert } = useSelector((state) => state.toggle);
   const { postMedia } = useSelector((state) => state.post);
@@ -33,17 +33,16 @@ const CreatePost = () => {
   };
 
   if (next) {
-    postContent = <PostCaption />;
+    postContent.current = <PostCaption />;
   } else if (postMedia.length > 0) {
-    postContent = <PostCropPreview nextButtonHandler={setNext} />;
+    postContent.current = <PostCropPreview nextButtonHandler={setNext} />;
   } else {
-    postContent = <PostPrompt onChange={inputChange} />;
+    postContent.current = <PostPrompt onChange={inputChange} />;
   }
 
   return (
     <div
       className="fixed z-10 h-screen w-screen bg-[#00000090] flex items-center justify-center"
-      name="alertBack"
       onClick={() => {
         dispatch({ type: "postAlertToggle", payload: false });
       }}
@@ -54,7 +53,6 @@ const CreatePost = () => {
       />
       <article
         className="bg-[#353535] text-white rounded-xl overflow-hidden"
-        name="mainAlert"
         onClick={(event) => {
           event.stopPropagation();
           dispatch({ type: "postAlertToggle", payload: true });
@@ -63,7 +61,7 @@ const CreatePost = () => {
         {postCropAlert && <PostCrop Image={postPreview} />}
         <h1 className="text-center py-3 text-lg">Create new post</h1>
         <hr />
-        {postContent}
+        {postContent.current}
       </article>
     </div>
   );

@@ -1,29 +1,50 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SideBar from "../components/SideBar";
 import { Link, Navigate } from "react-router-dom";
 import placeholderImage from "../assets/Image Placeholder.png";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
+import FollowAlert from "../components/FollowAlert";
 
 const navLinksClass = `px-4 py-2 text-white bg-slate-400 hover:bg-slate-600 cursor-pointer rounded-lg transition duration-200 m-5 active:bg-slate-800 focus:bg-slate-900`;
 
 const MyProfile = () => {
-  const [highlight, setHighlight] = useState(false);
+  const { highlighter } = useSelector((state) => state.post);
 
   const { me, isAuthenticated } = useSelector((state) => state.user);
+
+  const { followAlert } = useSelector((state) => state.toggle);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     if (window.location.pathname === `/${me.username}`) {
-      setHighlight(true);
+      dispatch({ type: "setHighlighter", payload: true });
     }
-  }, [me.username]);
+  }, [me.username, dispatch]);
+  const onUserFollowersFollowingClick = useCallback(
+    (e) => {
+      const { clickedValue } = e.target.getAttribute("data-clicked");
 
-  if (!isAuthenticated) return <Navigate to="/login" />;
+      dispatch({
+        type: "followAlertToggle",
+        payload: { alert: true, valueToAlert: clickedValue },
+      });
+    },
+    [dispatch]
+  );
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <main className="flex">
       <SideBar />
+      {followAlert.alert && (
+        <FollowAlert primaryHeading={followAlert.valueToAlert} />
+      )}
       <section className="m-16 w-[80%]">
         <section className="flex items-start mx-20">
           <img
@@ -42,8 +63,21 @@ const MyProfile = () => {
             </div>
             <div className="flex items-center mb-4">
               <h2 className="mr-10">{me.posts.length} posts</h2>
-              <h2 className="mr-10">{me.followers.length} follower</h2>
-              <h2 className="mr-10">{me.following.length} following</h2>
+              <button
+                data-clicked="followers"
+                onClick={onUserFollowersFollowingClick}
+                className="mr-10"
+              >
+                {me.followers.length} follower
+              </button>
+
+              <button
+                data-clicked="following"
+                onClick={onUserFollowersFollowingClick}
+                className="mr-10"
+              >
+                {me.following.length} following
+              </button>
             </div>
             <h3 className="mb-2">{me.name}</h3>
             <p className="">{me.bio}</p>
@@ -55,7 +89,7 @@ const MyProfile = () => {
             <Link
               to={`/${me.username}`}
               className={`px-4 py-2 text-white bg-slate-400 hover:bg-slate-600 cursor-pointer rounded-lg transition duration-200 m-5 active:bg-slate-800 focus:bg-slate-900 ${
-                highlight && "bg-slate-900"
+                highlighter && "bg-slate-900"
               }`}
             >
               POSTS

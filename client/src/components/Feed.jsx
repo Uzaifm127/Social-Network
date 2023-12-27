@@ -87,8 +87,10 @@ const Feed = () => {
         next={loadMoreData}
       >
         {feedPosts.map((element) => {
-          const { caption, _id, media, createdAt, likes, owner } = element;
+          const { caption, _id, media, createdAt, likes, owner, comments } =
+            element;
           const { avatar, username } = element.owner;
+
 
           return (
             <Post
@@ -98,7 +100,8 @@ const Feed = () => {
               username={username}
               createdAt={getPostTime(createdAt)}
               postMediaSrc={media.url}
-              userId={_id}
+              postId={_id}
+              comments={comments}
               likePost={likePost}
               dislikePost={dislikePost}
               likesArray={likes}

@@ -66,6 +66,7 @@ function App() {
                     following={user.following}
                     avatar={user.avatar?.url}
                     posts={user.posts}
+                    userId={user._id}
                   />
                 }
               />

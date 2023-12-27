@@ -5,6 +5,7 @@ import { userApi } from "./services/userApi";
 import { postApi } from "./services/postApi";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { postReducer } from "./reducers/postReducer";
+import { commentApi } from "./services/commentApi";
 
 export const store = configureStore({
   reducer: {
@@ -13,11 +14,12 @@ export const store = configureStore({
     post: postReducer,
     [userApi.reducerPath]: userApi.reducer,
     [postApi.reducerPath]: postApi.reducer,
+    [commentApi.reducerPath]: commentApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(userApi.middleware, postApi.middleware),
+    }).concat(userApi.middleware, postApi.middleware, commentApi.middleware),
 });
 
 setupListeners(store.dispatch);

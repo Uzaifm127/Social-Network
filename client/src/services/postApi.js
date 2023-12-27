@@ -24,14 +24,14 @@ export const postApi = createApi({
     }),
     postLike: builder.mutation({
       query: (userId) => ({
-        url: `/like/${userId}`,
+        url: `like/${userId}`,
         method: "PUT",
         credentials: "include",
       }),
     }),
     postDislike: builder.mutation({
       query: (userId) => ({
-        url: `/dislike/${userId}`,
+        url: `dislike/${userId}`,
         method: "PUT",
         credentials: "include",
       }),

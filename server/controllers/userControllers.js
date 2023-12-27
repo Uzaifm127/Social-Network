@@ -172,30 +172,62 @@ export const editUserProfile = async (req, res, next) => {
 };
 
 export const followUser = async (req, res, next) => {
-  const { id } = req.params;
-  const userWhoFollow = req.user;
+  try {
+    const { id } = req.params;
+    const userWhoFollow = req.user;
 
-  const userToFollow = await UserModel.findById(id);
+    const userToFollow = await UserModel.findById(id);
 
-  if (userToFollow) {
-    return next(new ErrorHandler("Invalid User", 404));
+    if (!userToFollow) {
+      return next(new ErrorHandler("Invalid User", 404));
+    }
+
+    userWhoFollow.following.push(userToFollow);
+    userToFollow.followers.push(userWhoFollow);
+
+    await userWhoFollow.save();
+    await userToFollow.save();
+
+    res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    next(new ErrorHandler(error.message, error.http_code));
   }
+};
 
-  userWhoFollow.following.push(userToFollow);
-  userToFollow.following.push(userWhoFollow);
+export const unFollowUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const userWhoUnfollow = req.user;
 
-  await userWhoFollow.save();
-  await userToFollow.save();
+    const userToUnfollow = await UserModel.findById(id);
 
-  res.status(200).json({
-    success: true,
-  });
+    if (!userToUnfollow) {
+      return next(new ErrorHandler("Invalid User", 404));
+    }
+
+    const userWhoUnfollowId = userWhoUnfollow.following.indexOf(userToUnfollow);
+    const userToUnfollowId = userToUnfollow.followers.indexOf(userWhoUnfollow);
+
+    userWhoUnfollow.following.splice(userToUnfollowId, 1);
+    userToUnfollow.followers.splice(userWhoUnfollowId, 1);
+
+    await userWhoUnfollow.save();
+    await userToUnfollow.save();
+
+    res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    next(new ErrorHandler(error.message, error.http_code));
+  }
 };
 
 export const searchUser = async (req, res) => {
   const { q } = req.query;
 
-  const users = await UserModel.find({ username: q });
+  const users = await UserModel.find({ username: q }).populate("posts");
 
   if (!users) {
     return res.status(404).json({

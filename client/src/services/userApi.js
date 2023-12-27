@@ -50,6 +50,13 @@ export const userApi = createApi({
         credentials: "include",
       }),
     }),
+    unfollowUser: builder.mutation({
+      query: (userId) => ({
+        url: `unfollow/${userId}`,
+        method: "PUT",
+        credentials: "include",
+      }),
+    }),
     searchUser: builder.query({
       query: (searchQuery) => ({
         url: `search?q=${searchQuery}`,
@@ -62,10 +69,11 @@ export const userApi = createApi({
 
 export const {
   useGetMyProfileQuery,
-  useSearchUserQuery,
+  useLazySearchUserQuery,
   useUserRegisterMutation,
   useUserLoginMutation,
   useUserLogoutMutation,
   useEditProfileMutation,
   useFollowUserMutation,
+  useUnfollowUserMutation,
 } = userApi;

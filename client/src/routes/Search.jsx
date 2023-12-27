@@ -1,16 +1,29 @@
 import { useCallback, useState } from "react";
 import SideBar from "../components/SideBar";
 import User from "../components/User";
-import { useSearchUserQuery } from "../services/userApi";
+import { useLazySearchUserQuery } from "../services/userApi";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 
 const Search = () => {
-  const [searchUser, { data, isSuccess }] = useSearchUserQuery();
-
   const [search, setSearch] = useState("");
 
-  const onSearchSubmit = useCallback(() => {
-    searchUser(search);
-  }, [searchUser, search]);
+  const [trigger, result] = useLazySearchUserQuery();
+
+  const { isAuthenticated } = useSelector((state) => state.user);
+
+  const onSearchSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+
+      trigger(search);
+    },
+    [trigger, search]
+  );
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <main className="flex">
@@ -26,9 +39,21 @@ const Search = () => {
           />
         </form>
         <div className="border w-full h-[88%]">
-          <User />
-          <User />
-          <User />
+          {result.data?.users.map((element) => {
+            const { name, username, avatar, _id } = element;
+
+            return (
+              <User
+                key={_id}
+                user={element}
+                name={name}
+                hoverBgColor={"hover:bg-gray-100"}
+                username={username}
+                avatar={avatar.url}
+                userId={_id}
+              />
+            );
+          })}
         </div>
       </section>
     </main>

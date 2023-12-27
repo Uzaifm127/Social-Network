@@ -8,6 +8,7 @@ import {
   editUserProfile,
   followUser,
   searchUser,
+  unFollowUser,
 } from "../controllers/userControllers.js";
 import { authenticated } from "../middlewares/authMiddleware.js";
 import { uploadAvatar } from "../middlewares/multerMiddleware.js";
@@ -23,6 +24,8 @@ userRouter.post("/logout", authenticated, logoutUser);
 userRouter.put("/edit", authenticated, uploadAvatar, editUserProfile);
 
 userRouter.put("/follow/:id", authenticated, followUser);
+
+userRouter.put("/unfollow/:id", authenticated, unFollowUser);
 
 userRouter.get("/me", authenticated, getMyProfile);
 
