@@ -99,9 +99,14 @@ export const getMyProfile = (req, res) => {
 export const getUserProfile = async (req, res, next) => {
   const { id } = req.params;
 
-  const user = await UserModel.findById(id);
+  const user = await UserModel.findById(id)
+    .populate("posts")
+    .populate("followers")
+    .populate("following");
 
-  if (!user) return next(new ErrorHandler("User not exist", 404));
+  if (!user) {
+    return next(new ErrorHandler("User not exist", 404));
+  }
 
   res.status(200).json({
     success: true,
@@ -225,18 +230,25 @@ export const unFollowUser = async (req, res, next) => {
 };
 
 export const searchUser = async (req, res) => {
-  const { q } = req.query;
+  try {
+    const { q } = req.query;
 
-  const users = await UserModel.find({ username: q }).populate("posts");
+    const users = await UserModel.find({ username: q })
+      .populate("posts")
+      .populate("followers")
+      .populate("following");
 
-  if (!users) {
-    return res.status(404).json({
-      success: false,
+    if (!users) {
+      return res.status(404).json({
+        success: false,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      users,
     });
+  } catch (error) {
+    next(new ErrorHandler(error.message, error.http_code));
   }
-
-  res.status(200).json({
-    success: true,
-    users,
-  });
 };

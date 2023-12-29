@@ -5,27 +5,22 @@ import User from "./User";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import "../globals.css";
-import { useCallback } from "react";
+import { useRef } from "react";
 
 const FollowAlert = ({ primaryHeading, followers, following }) => {
   const { followAlert } = useSelector((state) => state.toggle);
 
+  const usersArray = useRef(null);
+
   const dispatch = useDispatch();
 
-  console.log(followers)
-  console.log(following)
-  console.log(primaryHeading)
+  if (primaryHeading === "followers") {
+    usersArray.current = followers;
+  } else if (primaryHeading === "following") {
+    usersArray.current = following;
+  }
 
-  const getUser = useCallback(
-    (index) => {
-      if (primaryHeading === "followers") {
-        return followers[index];
-      } else if (primaryHeading === "following") {
-        return following[index];
-      }
-    },
-    [followers, primaryHeading, following]
-  );
+  console.log(usersArray.current[0])
 
   return (
     <div
@@ -66,18 +61,19 @@ const FollowAlert = ({ primaryHeading, followers, following }) => {
                 <List
                   className="no-scrollbars"
                   height={height}
-                  itemCount={80}
+                  itemCount={usersArray.current.length}
                   itemSize={70}
                   width={width}
                 >
                   {({ index, style }) => {
-                    const { _id, avatar, username, name } = getUser(index);
+                    const { _id, avatar, username, name } =
+                      usersArray.current[index];
 
                     return (
                       <User
                         key={_id}
                         style={style}
-                        user={getUser()}
+                        user={usersArray.current[index]}
                         name={name}
                         hoverBgColor={"hover:bg-[#444]"}
                         username={username}

@@ -38,12 +38,7 @@ export const getFeedPosts = async (req, res) => {
 
   let posts = await PostModel.find({
     owner: { $in: [...following, _id] },
-  }).populate({
-    path: "owner",
-    populate: {
-      path: "posts",
-    },
-  });
+  }).populate("owner");
 
   posts = shuffleArray(posts);
 

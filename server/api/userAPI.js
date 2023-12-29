@@ -31,4 +31,4 @@ userRouter.get("/me", authenticated, getMyProfile);
 
 userRouter.get("/search", authenticated, searchUser);
 
-userRouter.get("/:id", authenticated, getUserProfile);
+userRouter.get("/get-user/:id", authenticated, getUserProfile);

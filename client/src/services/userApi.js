@@ -13,6 +13,13 @@ export const userApi = createApi({
         credentials: "include",
       }),
     }),
+    getUserProfile: builder.query({
+      query: (userId) => ({
+        url: `get-user/${userId}`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
     userRegister: builder.mutation({
       query: (data) => ({
         url: `register`,
@@ -69,6 +76,7 @@ export const userApi = createApi({
 
 export const {
   useGetMyProfileQuery,
+  useGetUserProfileQuery,
   useLazySearchUserQuery,
   useUserRegisterMutation,
   useUserLoginMutation,

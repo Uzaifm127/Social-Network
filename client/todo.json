@@ -7,5 +7,6 @@
   "sidebar": "sidebar width is changing in different pages.",
   "box-sizing": "box sizing property applied on the feed component",
   "persist state": "we have to persist the state of authentication and get authentication state on refresh means we have to set two layers to check authentication",
-  "don't save": "don't save the user in user state when clicked user is me in everywhere in app."
+  "don't save": "don't save the user in user state when clicked user is me in everywhere in app.",
+  "handle network error": "separate this network error, internal server error, general error than actual error which is handled already like in login form we throw an error when user doesn't exist but show different page when user network is off or low and other issues as well show different page rather navigating to login page"
 }

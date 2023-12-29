@@ -23,9 +23,10 @@ const MyProfile = () => {
       dispatch({ type: "setHighlighter", payload: true });
     }
   }, [me.username, dispatch]);
+
   const onUserFollowersFollowingClick = useCallback(
     (e) => {
-      const { clickedValue } = e.target.getAttribute("data-clicked");
+      const clickedValue = e.target.getAttribute("data-clicked");
 
       dispatch({
         type: "followAlertToggle",
@@ -43,7 +44,11 @@ const MyProfile = () => {
     <main className="flex">
       <SideBar />
       {followAlert.alert && (
-        <FollowAlert primaryHeading={followAlert.valueToAlert} />
+        <FollowAlert
+          following={me.following}
+          followers={me.followers}
+          primaryHeading={followAlert.valueToAlert}
+        />
       )}
       <section className="m-16 w-[80%]">
         <section className="flex items-start mx-20">

@@ -57,18 +57,7 @@ function App() {
               <Route path={`/${me.username}`} element={<MyProfile />} />
               <Route
                 path={`/${user.username}`}
-                element={
-                  <UserProfile
-                    name={user.name}
-                    username={user.username}
-                    bio={user.bio}
-                    followers={user.followers}
-                    following={user.following}
-                    avatar={user.avatar?.url}
-                    posts={user.posts}
-                    userId={user._id}
-                  />
-                }
+                element={<UserProfile userId={user._id} />}
               />
               <Route path={"/accounts/edit"} element={<EditProfile />} />
               <Route path="*" element={<NotFound />} />
