@@ -35,10 +35,10 @@ const Search = () => {
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Enter the username"
+            placeholder="Enter the username..."
           />
         </form>
-        <div className="border w-full h-[88%]">
+        <div className="w-full h-[88%]">
           {result.data?.users.map((element) => {
             const { name, username, avatar, _id } = element;
 

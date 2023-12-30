@@ -15,7 +15,7 @@ const UserProfile = ({ userId }) => {
   const { data: userData, isLoading: userLoading } =
     useGetUserProfileQuery(userId);
 
-  const followButton = useGetFollowStatus(userId);
+  const { followButton } = useGetFollowStatus(userId);
 
   const { isAuthenticated } = useSelector((state) => state.user);
 
@@ -51,8 +51,6 @@ const UserProfile = ({ userId }) => {
     },
     [dispatch]
   );
-
-  console.log(userData?.user)
 
   if (!isAuthenticated) {
     return <Navigate to="/login" />;

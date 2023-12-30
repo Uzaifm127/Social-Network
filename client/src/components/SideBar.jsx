@@ -8,9 +8,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { MdOutlineExplore } from "react-icons/md";
 import defaultAvatar from "../assets/Image Placeholder.png";
+import Popup from "./Popup";
 import MoreAlert from "./MoreAlert";
 
-const navLinksClass = `flex items-center w-full p-3 cursor-pointer hover:bg-[#353535] rounded-lg transition duration-250 my-3`;
+const navLinksClass = `flex items-center w-full p-3 cursor-pointer hover:bg-[#353535] rounded-lg relative transition duration-250 my-3`;
 
 const navIconsClass = `text-3xl mr-5`;
 
@@ -62,6 +63,12 @@ const SideBar = ({ loading }) => {
                 </Link>
               </li>
               <li className={navLinksClass}>
+                <Popup
+                  popHeight={"h-5"}
+                  popupValue={1}
+                  popWidth={"w-5"}
+                  popCoordinates={"top-[7%] left-[3%]"}
+                />
                 <TbMessages className={navIconsClass} />
                 Messages
               </li>

@@ -20,8 +20,6 @@ const FollowAlert = ({ primaryHeading, followers, following }) => {
     usersArray.current = following;
   }
 
-  console.log(usersArray.current[0])
-
   return (
     <div
       className="fixed z-10 h-screen w-screen bg-[#00000090] flex items-center justify-center"

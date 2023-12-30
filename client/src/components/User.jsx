@@ -1,13 +1,7 @@
 import PropTypes from "prop-types";
-import FollowButton from "./FollowButton";
-import {
-  useFollowUserMutation,
-  useUnfollowUserMutation,
-} from "../services/userApi";
-import { useCallback, useRef } from "react";
-import UnfollowButton from "./UnfollowButton";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { useGetFollowStatus } from "../utils/hooks/useGetFollowStatus";
 
 const User = ({
   style,
@@ -18,45 +12,16 @@ const User = ({
   userId,
   hoverBgColor,
 }) => {
-  const [
-    followUser,
-    { isSuccess: isFollowSuccess, isLoading: isFollowLoading },
-  ] = useFollowUserMutation();
-  const [unfollowUser, { isLoading: isUnfollowLoading }] =
-    useUnfollowUserMutation();
-
-  const { me } = useSelector((state) => state.user);
+  const { followButton, unfollowLoading, followLoading } =
+    useGetFollowStatus(userId);
 
   const dispatch = useDispatch();
-
-  const button = useRef(null);
-
-  const onFollowClick = useCallback(() => {
-    followUser(userId);
-  }, [followUser, userId]);
-
-  const onUnfollowClick = useCallback(() => {
-    unfollowUser(userId);
-  }, [unfollowUser, userId]);
-
-  if (isFollowSuccess || me.following.includes(userId)) {
-    button.current = (
-      <UnfollowButton
-        loading={isUnfollowLoading}
-        onUnfollowClick={onUnfollowClick}
-      />
-    );
-  } else {
-    button.current = (
-      <FollowButton loading={isFollowLoading} onFollowClick={onFollowClick} />
-    );
-  }
 
   // we have to implement the following and unfollowing state using websockets server here
   return (
     <article
       className={`flex items-center my-3 p-3 cursor-pointer ${hoverBgColor} rounded-lg transition duration-250 ${
-        (isFollowLoading || isUnfollowLoading) &&
+        (followLoading || unfollowLoading) &&
         "relative -z-10 cursor-not-allowed"
       }`}
       style={style}
@@ -74,7 +39,7 @@ const User = ({
           <h4>{name}</h4>
         </div>
       </Link>
-      <div className="ml-auto">{button.current}</div>
+      <div className="ml-auto">{followButton}</div>
     </article>
   );
 };

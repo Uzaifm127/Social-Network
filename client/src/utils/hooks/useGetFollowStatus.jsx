@@ -27,7 +27,16 @@ export const useGetFollowStatus = (userId) => {
     unfollowUser(userId);
   }, [unfollowUser, userId]);
 
-  if (isFollowSuccess || me.following.includes(userId)) {
+  const isFollowing = useCallback(
+    // This function checks whether I follow the given user or not.
+    (array) => {
+      return array.some((element) => element._id === userId);
+    },
+    [userId]
+  );
+  if (userId === me._id) {
+    button.current = <></>;
+  } else if (isFollowSuccess || isFollowing(me.following)) {
     button.current = (
       <UnfollowButton
         loading={isUnfollowLoading}
@@ -40,5 +49,9 @@ export const useGetFollowStatus = (userId) => {
     );
   }
 
-  return button.current;
+  return {
+    followButton: button.current,
+    followLoading: isFollowLoading,
+    unfollowLoading: isUnfollowLoading,
+  };
 };
