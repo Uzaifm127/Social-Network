@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import SideBar from "../components/SideBar";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import placeholderImage from "../assets/Image Placeholder.png";
 import { useCallback, useEffect } from "react";
 import FollowAlert from "../components/FollowAlert";
@@ -16,8 +16,6 @@ const UserProfile = ({ userId }) => {
     useGetUserProfileQuery(userId);
 
   const { followButton } = useGetFollowStatus(userId);
-
-  const { isAuthenticated } = useSelector((state) => state.user);
 
   const { highlighter } = useSelector((state) => state.post);
 
@@ -51,10 +49,6 @@ const UserProfile = ({ userId }) => {
     },
     [dispatch]
   );
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
 
   return (
     <main className="flex">

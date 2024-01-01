@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useAddCommentMutation } from "../services/commentApi";
 import WhiteScreen from "./WhiteScreen";
 import { toast } from "react-hot-toast";
+import { useBookmarkMutation } from "../services/postApi";
 
 const Post = ({
   captionContent,
@@ -32,12 +33,33 @@ const Post = ({
   const [liked, setLiked] = useState(false);
   const [caption, setCaption] = useState("");
 
-  const [addComment, { data, isSuccess, isLoading, isError, error }] =
-    useAddCommentMutation();
+  const [
+    addComment,
+    {
+      data: commentData,
+      isSuccess: commentSuccess,
+      isLoading: commentLoading,
+      error: commentError,
+    },
+  ] = useAddCommentMutation();
+  const [
+    bookmark,
+    { data: bookmarkData, isSuccess: bookmarkSuccess, bookmarkError },
+  ] = useBookmarkMutation();
 
   const { me } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const isBookmarked = me.bookmarkedPosts.some((element) => {
+      return element._id === postId;
+    });
+
+    if (isBookmarked) {
+      setBookMarked(true);
+    }
+  }, [me.bookmarkedPosts, postId]);
 
   useEffect(() => {
     if (likesArray.includes(me._id)) {
@@ -56,20 +78,34 @@ const Post = ({
   }, [captionContent.length, captionContent]);
 
   useEffect(() => {
-    if (isSuccess) {
-      toast.success(data?.message || "Something went wrong", {
+    if (bookmarkSuccess) {
+      toast.success(bookmarkData?.message || "Something went wrong", {
         duration: 2500,
       });
       setComment("");
-    } else if (isError) {
-      toast.error(error.data?.message || "Something went wrong", {
+    } else if (bookmarkError) {
+      toast.error(bookmarkError.data?.message || "Something went wrong", {
         duration: 2500,
       });
     }
-  }, [data, isSuccess, isError, error]);
+  }, [bookmarkSuccess, bookmarkData, bookmarkError]);
+
+  useEffect(() => {
+    if (commentSuccess) {
+      toast.success(commentData?.message || "Something went wrong", {
+        duration: 2500,
+      });
+      setComment("");
+    } else if (commentError) {
+      toast.error(commentError.data?.message || "Something went wrong", {
+        duration: 2500,
+      });
+    }
+  }, [commentData, commentSuccess, commentError]);
 
   const getUserProfile = useCallback(() => {
     dispatch({ type: "setUser", payload: user });
+    localStorage.setItem("username", user.username);
   }, [dispatch, user]);
 
   const likeDislikeHandler = useCallback(
@@ -101,11 +137,13 @@ const Post = ({
 
   const addBookMark = useCallback(() => {
     setBookMarked(true);
-  }, []);
+    bookmark({ postId, action: "add" });
+  }, [postId, bookmark]);
 
   const removeBookMark = useCallback(() => {
     setBookMarked(false);
-  }, []);
+    bookmark({ postId, action: "remove" });
+  }, [postId, bookmark]);
 
   const onAddComment = useCallback(
     (e) => {
@@ -118,7 +156,7 @@ const Post = ({
 
   return (
     <li className="pb-8">
-      {isLoading && <WhiteScreen />}
+      {commentLoading && <WhiteScreen />}
       <section className="flex items-center w-full p-2">
         <article className="flex items-center">
           <Link to={`/${user?.username}`}>

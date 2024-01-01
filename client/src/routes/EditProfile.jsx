@@ -1,4 +1,4 @@
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import { useDispatch, useSelector } from "react-redux";
 import AvatarEditAlert from "../components/AvatarEditAlert";
@@ -13,9 +13,7 @@ const EditProfile = () => {
   const [editProfile, { data, isSuccess, isLoading, isError, error }] =
     useEditProfileMutation();
 
-  const { me, userCroppedImage, isAuthenticated } = useSelector(
-    (state) => state.user
-  );
+  const { me, userCroppedImage } = useSelector((state) => state.user);
   const { avatarAlert, cropAlert } = useSelector((state) => state.toggle);
 
   const [avatarPreview, setAvatarPreview] = useState(undefined);
@@ -109,9 +107,9 @@ const EditProfile = () => {
     editProfile(formData);
   };
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/login" />;
+  // }
 
   return (
     <main className="flex">

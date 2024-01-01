@@ -89,3 +89,38 @@ export const dislikePost = async (req, res, next) => {
     success: true,
   });
 };
+
+export const bookmarkPost = async (req, res, next) => {
+  const { id } = req.params;
+  const user = req.user;
+  const bmPost = user.bookmarkedPosts;
+  const { action } = req.body;
+
+  const postToBookmark = await PostModel.findById(id);
+
+  if (!postToBookmark) {
+    return next(new ErrorHandler("Invalid Post", 404));
+  }
+
+  if (action === "add") {
+    bmPost.push(id);
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Bookmarked successfully",
+    });
+  } else {
+    const indexToRemove = bmPost.findIndex((element) => {
+      return element._id === id;
+    });
+
+    bmPost.splice(indexToRemove, 1);
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Bookmarked removed",
+    });
+  }
+};

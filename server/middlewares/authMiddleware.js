@@ -15,12 +15,13 @@ export const authenticated = async (req, res, next) => {
     const user = await UserModel.findById(_id)
       .populate("posts")
       .populate("followers")
-      .populate("following");
+      .populate("following")
+      .populate("bookmarkedPosts");
 
     req.user = user;
     next();
   } catch (error) {
-    console.log(error);
+    console.log(error)
     next(new ErrorHandler(error.message, error.http_code));
   }
 };

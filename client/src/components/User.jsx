@@ -31,6 +31,7 @@ const User = ({
         to={`/${username}`}
         onClick={() => {
           dispatch({ type: "setUser", payload: user });
+          localStorage.setItem("username", user.username);
         }}
       >
         <img className="rounded-full h-12" src={avatar} alt={name} />

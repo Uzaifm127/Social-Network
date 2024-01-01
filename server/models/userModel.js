@@ -27,6 +27,7 @@ const userSchema = new Schema({
     select: false,
   },
   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+  bookmarkedPosts: [{type: mongoose.Schema.Types.ObjectId, ref: "Post"}],
   followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   website: { type: String, default: "" },

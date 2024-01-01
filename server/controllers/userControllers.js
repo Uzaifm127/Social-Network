@@ -24,6 +24,7 @@ export const registerUser = async (req, res, next) => {
         username,
         email,
         password,
+        bookmarkedPosts: [],
         posts: [],
         followers: [],
         following: [],
@@ -52,6 +53,10 @@ export const registerUser = async (req, res, next) => {
       username,
       email,
       password,
+      bookmarkedPosts: [],
+      posts: [],
+      followers: [],
+      following: [],
     });
 
     authenticateUser(newUser, res, 201, "Account successfully created");

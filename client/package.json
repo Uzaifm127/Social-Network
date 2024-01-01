@@ -22,7 +22,8 @@
     "react-router-dom": "^6.17.0",
     "react-spinners": "^0.13.8",
     "react-virtualized-auto-sizer": "^1.0.20",
-    "react-window": "^1.8.10"
+    "react-window": "^1.8.10",
+    "vite-plugin-rewrite-all": "^1.0.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

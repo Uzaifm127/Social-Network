@@ -36,6 +36,14 @@ export const postApi = createApi({
         credentials: "include",
       }),
     }),
+    bookmark: builder.mutation({
+      query: ({ postId, action }) => ({
+        url: `bookmark/${postId}`,
+        body: { action },
+        method: "PUT",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
@@ -43,5 +51,6 @@ export const {
   useSharePostMutation,
   useGetAllPostsQuery,
   usePostLikeMutation,
+  useBookmarkMutation,
   usePostDislikeMutation,
 } = postApi;

@@ -1,8 +1,8 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Register from "./routes/Register";
 import Login from "./routes/Login";
 import NotFound from "./routes/NotFound";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import Loader from "./components/Loader";
 import Home from "./routes/Home";
 import MyProfile from "./routes/MyProfile";
@@ -15,10 +15,11 @@ import CreatePost from "./components/CreatePost";
 import Search from "./routes/Search";
 
 function App() {
-  const dispatch = useDispatch();
-  const { isAuthenticated, me, user } = useSelector((state) => state.user);
+  const { isAuthenticated, user, me } = useSelector((state) => state.user);
   const { postAlert } = useSelector((state) => state.toggle);
-  const { data, isLoading, isSuccess, isError } = useGetMyProfileQuery();
+  const { data, isLoading, isSuccess, isError, error } = useGetMyProfileQuery();
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (isSuccess) {
@@ -28,8 +29,9 @@ function App() {
     if (isError) {
       dispatch({ type: "changeAuth", payload: false });
       dispatch({ type: "setMe", payload: {} });
+      toast.error(error.data?.message);
     }
-  }, [dispatch, isSuccess, isError, data]);
+  }, [dispatch, isSuccess, error, isError, data]);
 
   return (
     <>
@@ -52,14 +54,38 @@ function App() {
             <Routes>
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/" element={<Home />} />
-              <Route path="/explore/search" element={<Search />} />
-              <Route path={`/${me.username}`} element={<MyProfile />} />
               <Route
-                path={`/${user.username}`}
-                element={<UserProfile userId={user._id} />}
+                path="/"
+                element={isAuthenticated ? <Home /> : <Navigate to="/login" />}
               />
-              <Route path={"/accounts/edit"} element={<EditProfile />} />
+              <Route
+                path="/explore/search"
+                element={
+                  isAuthenticated ? <Search /> : <Navigate to="/login" />
+                }
+              />
+              <Route
+                path={`/${me.username}`}
+                element={
+                  isAuthenticated ? <MyProfile /> : <Navigate to="/login" />
+                }
+              />
+              <Route
+                path={`/${localStorage.getItem("username")}`}
+                element={
+                  isAuthenticated ? (
+                    <UserProfile userId={user._id} />
+                  ) : (
+                    <Navigate to="/login" />
+                  )
+                }
+              />
+              <Route
+                path={"/accounts/edit"}
+                element={
+                  isAuthenticated ? <EditProfile /> : <Navigate to="/login" />
+                }
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </>
