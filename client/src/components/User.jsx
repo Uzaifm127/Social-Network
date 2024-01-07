@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import placeholder from "../assets/Image Placeholder.png";
 import { useGetFollowStatus } from "../utils/hooks/useGetFollowStatus";
 
 const User = ({
@@ -34,7 +35,11 @@ const User = ({
           localStorage.setItem("username", user.username);
         }}
       >
-        <img className="rounded-full h-12" src={avatar} alt={name} />
+        <img
+          className="rounded-full h-12"
+          src={avatar || placeholder}
+          alt={name}
+        />
         <div className="ml-3">
           <h3>{username}</h3>
           <h4>{name}</h4>

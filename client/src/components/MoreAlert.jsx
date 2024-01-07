@@ -3,13 +3,15 @@ import { Link } from "react-router-dom";
 import { TbHomeRibbon } from "react-icons/tb";
 import { MdOutlineDarkMode } from "react-icons/md";
 import Logout from "./Logout";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const navLinksClass = `flex items-center w-full p-3 cursor-pointer hover:bg-slate-300 rounded-lg transition duration-250`;
 
 const navIconsClass = `text-3xl mr-5`;
 
 const MoreAlert = () => {
+  const { me } = useSelector((state) => state.user);
+
   const dispatch = useDispatch();
 
   return (
@@ -24,7 +26,7 @@ const MoreAlert = () => {
       </li>
 
       <li onClick={() => dispatch({ type: "moreAlertToggle", payload: false })}>
-        <Link to={`/`} className={navLinksClass}>
+        <Link to={`/${me.username}/saved`} className={navLinksClass}>
           <TbHomeRibbon className={navIconsClass} />
           Saved
         </Link>

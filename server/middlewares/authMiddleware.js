@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
-import { ErrorHandler } from "../config/error.js";
+import { ErrorHandler } from "../utilities/error.js";
 import { UserModel } from "../models/userModel.js";
 
 config();
@@ -21,7 +21,7 @@ export const authenticated = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    console.log(error)
+    console.log(error);
     next(new ErrorHandler(error.message, error.http_code));
   }
 };

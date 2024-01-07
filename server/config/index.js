@@ -1,7 +1,17 @@
+import mongoose from "mongoose";
 import cloudinary from "cloudinary";
 import { config } from "dotenv";
 
 config();
+
+export const connectDB = async (url) => {
+  try {
+    await mongoose.connect(url);
+    console.log("DB connected");
+  } catch (error) {
+    console.log("Some error while connecting to DB");
+  }
+};
 
 export const cloudinaryConfig = () => {
   cloudinary.v2.config({

@@ -1,5 +1,5 @@
 import { UserModel } from "../models/userModel.js";
-import { ErrorHandler } from "../config/error.js";
+import { ErrorHandler } from "../utilities/error.js";
 import { authenticateUser } from "../utilities/auth.js";
 import { v2 as cloudinary } from "cloudinary";
 

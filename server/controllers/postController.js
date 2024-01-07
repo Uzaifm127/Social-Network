@@ -1,34 +1,41 @@
 import { PostModel } from "../models/postModel.js";
 import { v2 as cloudinary } from "cloudinary";
 import { shuffleArray } from "../utilities/algorithms.js";
-import { ErrorHandler } from "../config/error.js";
+import { ErrorHandler } from "../utilities/error.js";
 
-export const createPost = async (req, res, next) => {
-  const { postCaption } = req.body;
-  const { file, user } = req;
+export const createPost = async (req, res) => {
+  try {
+    const { postCaption } = req.body;
+    const { file, user } = req;
 
-  const b64 = Buffer.from(file.buffer).toString("base64");
-  const fileData = `data:${file.mimetype};base64,${b64}`;
+    const b64 = Buffer.from(file.buffer).toString("base64");
+    const fileData = `data:${file.mimetype};base64,${b64}`;
 
-  const { secure_url, public_id } = await cloudinary.uploader.upload(fileData, {
-    folder: "postMedia",
-  });
+    const { secure_url, public_id } = await cloudinary.uploader.upload(
+      fileData,
+      {
+        folder: "postMedia",
+      }
+    );
 
-  const post = await PostModel.create({
-    media: { url: secure_url, publicId: public_id },
-    caption: postCaption,
-    likes: [],
-    comments: [],
-    owner: user._id,
-  });
+    const post = await PostModel.create({
+      media: { url: secure_url, publicId: public_id },
+      caption: postCaption,
+      likes: [],
+      comments: [],
+      owner: user._id,
+    });
 
-  user.posts.push(post._id);
-  await user.save();
+    user.posts.push(post._id);
+    await user.save();
 
-  res.status(200).json({
-    success: true,
-    message: "Post successfully shared",
-  });
+    res.status(200).json({
+      success: true,
+      message: "Post successfully shared",
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const getFeedPosts = async (req, res) => {

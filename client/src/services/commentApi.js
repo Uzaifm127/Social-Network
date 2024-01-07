@@ -14,7 +14,41 @@ export const commentApi = createApi({
         credentials: "include",
       }),
     }),
+    replyComment: builder.mutation({
+      query: () => ({
+        url: `reply-comment`,
+        method: "PUT",
+        credentials: "include",
+      }),
+    }),
+    getComments: builder.query({
+      query: (postId) => ({
+        url: `get?postId=${postId}`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+    likeComment: builder.mutation({
+      query: (commentId) => ({
+        url: `like/${commentId}`,
+        method: "PUT",
+        credentials: "include",
+      }),
+    }),
+    dislikeComment: builder.mutation({
+      query: (commentId) => ({
+        url: `dislike/${commentId}`,
+        method: "PUT",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
-export const { useAddCommentMutation } = commentApi;
+export const {
+  useAddCommentMutation,
+  useReplyCommentMutation,
+  useGetCommentsQuery,
+  useDislikeCommentMutation,
+  useLikeCommentMutation,
+} = commentApi;

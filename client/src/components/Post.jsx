@@ -1,18 +1,14 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { RxDotsHorizontal } from "react-icons/rx";
-import { GoHeart } from "react-icons/go";
-import { GoHeartFill } from "react-icons/go";
 import { useCallback, useEffect, useState } from "react";
-import { FaRegComment } from "react-icons/fa6";
-import { LuSend } from "react-icons/lu";
-import { BsBookmark } from "react-icons/bs";
-import { BsBookmarkCheckFill } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
 import { useAddCommentMutation } from "../services/commentApi";
 import WhiteScreen from "./WhiteScreen";
 import { toast } from "react-hot-toast";
 import { useBookmarkMutation } from "../services/postApi";
+import { Heart, MessageCircle, Send, Bookmark } from "react-feather";
+import { useGetTime } from "../utils/hooks/useGetTime";
 
 const Post = ({
   captionContent,
@@ -25,6 +21,7 @@ const Post = ({
   dislikePost,
   likesArray,
   user,
+  currentPost,
   comments,
 }) => {
   const [contentExpand, setContentExpand] = useState(false);
@@ -32,6 +29,8 @@ const Post = ({
   const [comment, setComment] = useState("");
   const [liked, setLiked] = useState(false);
   const [caption, setCaption] = useState("");
+
+  const postTime = useGetTime(createdAt);
 
   const [
     addComment,
@@ -62,6 +61,7 @@ const Post = ({
   }, [me.bookmarkedPosts, postId]);
 
   useEffect(() => {
+    // there will be a bug when you implement who liked your post.
     if (likesArray.includes(me._id)) {
       setLiked(true);
     }
@@ -154,6 +154,10 @@ const Post = ({
     [addComment, comment, postId]
   );
 
+  const viewComments = useCallback(() => {
+    dispatch({ type: "storeCurrentPost", payload: currentPost });
+  }, [currentPost, dispatch]);
+
   return (
     <li className="pb-8">
       {commentLoading && <WhiteScreen />}
@@ -176,7 +180,7 @@ const Post = ({
             </strong>
           </Link>
           <span className="mx-1 cursor-pointer">•</span>
-          <p className="text-sm cursor-pointer">{createdAt}</p>
+          <p className="text-sm cursor-pointer">{postTime}</p>
         </article>
         <RxDotsHorizontal className="ml-auto text-xl cursor-pointer" />
       </section>
@@ -189,29 +193,45 @@ const Post = ({
       />
       <section className="flex py-3 mb-3">
         {liked ? (
-          <GoHeartFill
-            data-action="dislike"
+          <Heart
+            className="cursor-pointer"
             onClick={likeDislikeHandler}
-            className="text-3xl cursor-pointer text-red-500"
+            data-action="dislike"
+            fill="#f56565"
+            color="#f56565"
+            strokeWidth={1.5}
+            size={32}
           />
         ) : (
-          <GoHeart
-            data-action="like"
+          <Heart
+            className="cursor-pointer"
             onClick={likeDislikeHandler}
-            className="text-3xl cursor-pointer"
+            data-action="like"
+            strokeWidth={1.5}
+            size={32}
           />
         )}
-        <FaRegComment className="text-3xl cursor-pointer mx-5" />
-        <LuSend className="text-3xl cursor-pointer" />
+        <MessageCircle
+          strokeWidth={1.5}
+          size={32}
+          className="text-3xl cursor-pointer mx-3"
+        />
+        <Send strokeWidth={1.5} size={32} className="text-3xl cursor-pointer" />
+
         {bookMarked ? (
-          <BsBookmarkCheckFill
-            onClick={removeBookMark}
+          <Bookmark
             className="text-2xl cursor-pointer ml-auto"
+            onClick={removeBookMark}
+            fill="black"
+            strokeWidth={1.5}
+            size={32}
           />
         ) : (
-          <BsBookmark
-            onClick={addBookMark}
+          <Bookmark
             className="text-2xl cursor-pointer ml-auto"
+            onClick={addBookMark}
+            strokeWidth={1.5}
+            size={32}
           />
         )}
       </section>
@@ -224,9 +244,14 @@ const Post = ({
         )}
       </p>
       {comments.length !== 0 && (
-        <button className="text-slate-400 cursor-pointer py-2">
-          View all {comments.length} comments
-        </button>
+        <Link to={`/p/${postId}`}>
+          <button
+            onClick={viewComments}
+            className="text-slate-400 cursor-pointer py-2"
+          >
+            View all {comments.length} comments
+          </button>
+        </Link>
       )}
       <form onSubmit={onAddComment} className="flex items-center">
         <input
@@ -263,6 +288,7 @@ Post.propTypes = {
   likesArray: PropTypes.array,
   comments: PropTypes.array,
   user: PropTypes.object,
+  currentPost: PropTypes.object,
 };
 
 export default Post;

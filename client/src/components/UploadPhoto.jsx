@@ -5,7 +5,7 @@ const UploadPhoto = ({ onImageChange, avatarPreview, onTotalSubmit }) => {
     <form
       onSubmit={onTotalSubmit}
       name="withImage"
-      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg border min-w-[15rem] py-20 px-5 flex flex-col"
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg border min-w-[25rem] p-20 shadow-lg flex flex-col"
     >
       <label
         htmlFor="upload-image"

@@ -11,13 +11,15 @@ import { useGetMyProfileQuery } from "./services/userApi";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import EditProfile from "./routes/EditProfile";
+import Saved from "./routes/Saved";
 import CreatePost from "./components/CreatePost";
 import Search from "./routes/Search";
+import PostPreview from "./routes/PostPreview";
 
 function App() {
   const { isAuthenticated, user, me } = useSelector((state) => state.user);
   const { postAlert } = useSelector((state) => state.toggle);
-  const { data, isLoading, isSuccess, isError, error } = useGetMyProfileQuery();
+  const { data, isLoading, isSuccess, isError } = useGetMyProfileQuery();
 
   const dispatch = useDispatch();
 
@@ -29,9 +31,8 @@ function App() {
     if (isError) {
       dispatch({ type: "changeAuth", payload: false });
       dispatch({ type: "setMe", payload: {} });
-      toast.error(error.data?.message);
     }
-  }, [dispatch, isSuccess, error, isError, data]);
+  }, [dispatch, isSuccess, isError, data]);
 
   return (
     <>
@@ -71,6 +72,10 @@ function App() {
                 }
               />
               <Route
+                path={`/${me.username}/saved`}
+                element={isAuthenticated ? <Saved /> : <Navigate to="/login" />}
+              />
+              <Route
                 path={`/${localStorage.getItem("username")}`}
                 element={
                   isAuthenticated ? (
@@ -84,6 +89,12 @@ function App() {
                 path={"/accounts/edit"}
                 element={
                   isAuthenticated ? <EditProfile /> : <Navigate to="/login" />
+                }
+              />
+              <Route
+                path={"/p/:postId"}
+                element={
+                  isAuthenticated ? <PostPreview /> : <Navigate to="/login" />
                 }
               />
               <Route path="*" element={<NotFound />} />

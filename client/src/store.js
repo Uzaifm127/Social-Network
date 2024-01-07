@@ -5,6 +5,7 @@ import { userApi } from "./services/userApi";
 import { postApi } from "./services/postApi";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { postReducer } from "./reducers/postReducer";
+import { commentReducer } from "./reducers/commentReducer";
 import { commentApi } from "./services/commentApi";
 
 export const store = configureStore({
@@ -12,6 +13,7 @@ export const store = configureStore({
     user: userReducer,
     toggle: toggleReducer,
     post: postReducer,
+    comment: commentReducer,
     [userApi.reducerPath]: userApi.reducer,
     [postApi.reducerPath]: postApi.reducer,
     [commentApi.reducerPath]: commentApi.reducer,

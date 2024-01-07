@@ -3,6 +3,7 @@ import { createReducer } from "@reduxjs/toolkit";
 const initialState = {
   postMedia: [],
   feedPosts: [],
+  currentPost: {},
   highlighter: false,
 };
 
@@ -15,6 +16,9 @@ export const postReducer = createReducer(initialState, {
   },
   storePosts: (state, action) => {
     state.feedPosts = [...action.payload];
+  },
+  storeCurrentPost: (state, action) => {
+    state.currentPost = action.payload;
   },
   setHighlighter: (state, action) => {
     state.highlighter = action.payload;

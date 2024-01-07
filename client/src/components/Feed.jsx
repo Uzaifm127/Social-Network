@@ -41,42 +41,18 @@ const Feed = () => {
   }, [refetch, postLimit]);
 
   const likePost = useCallback(
-    (userId) => {
-      postLike(userId);
+    (postId) => {
+      postLike(postId);
     },
     [postLike]
   );
 
   const dislikePost = useCallback(
-    (userId) => {
-      postDislike(userId);
+    (postId) => {
+      postDislike(postId);
     },
     [postDislike]
   );
-
-  const getPostTime = useCallback((createdDate) => {
-    const currentDate = new Date();
-    const postDate = new Date(createdDate);
-
-    const postTime = currentDate - postDate;
-    const postTimeDays = Math.floor(postTime / 1000 / 3600 / 24);
-    const postTimeHours = Math.floor(postTime / 1000 / 3600);
-    const postTimeMinutes = Math.floor(postTime / 1000 / 60);
-    const postTimeSeconds = Math.floor(postTime / 1000);
-
-    if (postTimeDays > 0) {
-      return `${postTimeDays}d`;
-    }
-    if (postTimeHours > 0) {
-      return `${postTimeHours}h`;
-    }
-    if (postTimeMinutes > 0) {
-      return `${postTimeMinutes}m`;
-    }
-    if (postTimeSeconds > 0) {
-      return `${postTimeSeconds}s`;
-    }
-  }, []);
 
   return (
     <ul className="flex flex-col items-center pt-5 box-border">
@@ -91,14 +67,15 @@ const Feed = () => {
             element;
           const { avatar, username } = element.owner;
 
-
           return (
             <Post
               user={owner}
+              currentPost={element}
               captionContent={caption}
               avatar={avatar.url}
               username={username}
-              createdAt={getPostTime(createdAt)}
+              // createdAt={getPostTime(createdAt)}
+              createdAt={createdAt}
               postMediaSrc={media.url}
               postId={_id}
               comments={comments}

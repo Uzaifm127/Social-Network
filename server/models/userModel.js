@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from "mongoose";
+import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 
 const userSchema = new Schema({
@@ -6,37 +6,42 @@ const userSchema = new Schema({
     url: String,
     publicId: String,
   },
-  name: {
+  bio: {
     type: String,
-    maxLength: [15, "Please enter a short name"],
-    required: [true, "Please Enter your name"],
+    maxLength: [150, "Maximum character limit exceed"],
+    default: "",
   },
-  username: {
-    type: String,
-    maxLength: [15, "Please enter a short username"],
-    required: [true, "Please provide the username"],
-  },
+  bookmarkedPosts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
   email: {
     type: String,
     required: [true, "Please Enter your email"],
     unique: [true, "Email already exist"],
+  },
+  followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  following: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  gender: { type: String, default: "" },
+  name: {
+    type: String,
+    maxLength: [15, "Please enter a short name"],
+    required: [true, "Please Enter your name"],
   },
   password: {
     type: String,
     required: [true, "Please Enter your password"],
     select: false,
   },
-  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
-  bookmarkedPosts: [{type: mongoose.Schema.Types.ObjectId, ref: "Post"}],
-  followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  website: { type: String, default: "" },
-  bio: {
+  posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+  role: {
     type: String,
-    maxLength: [150, "Maximum character limit exceed"],
-    default: "",
+    enum: ["LEADER", "USER"],
+    default: "USER",
   },
-  gender: { type: String, default: "" },
+  username: {
+    type: String,
+    maxLength: [15, "Please enter a short username"],
+    required: [true, "Please provide the username"],
+  },
+  website: { type: String, default: "" },
   createdAt: {
     type: Date,
     default: Date.now(),
