@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import { useGetTime } from "../utils/hooks/useGetTime";
 import { useSelector } from "react-redux";
 import placeholder from "../assets/Image Placeholder.png";
-// import Replies from "./Comment";
 import {
   useDislikeCommentMutation,
   useLikeCommentMutation,
@@ -15,11 +14,9 @@ const CommentReplies = ({
   username,
   commentMessage,
   commentLikes,
-  currentElement,
   createdAt,
   commentId,
   onReply,
-  style,
 }) => {
   const [commentLike, setCommentLike] = useState(false);
 
@@ -57,7 +54,7 @@ const CommentReplies = ({
   );
 
   return (
-    <section style={style} className="flex w-full relative items-start p-4">
+    <section className="flex w-full relative items-start p-4">
       <img
         className="rounded-full h-9 cursor-pointer"
         src={avatar || placeholder}
@@ -76,37 +73,34 @@ const CommentReplies = ({
         </p>
         <div className="flex mt-2 text-gray-300">
           <span>{commentTime}</span>
-          {currentElement !== 0 && (
-            <>
-              <span className="flex items-center mx-3 cursor-pointer">
-                {commentLike ? (
-                  <Heart
-                    className="mr-2 cursor-pointer"
-                    onClick={likeDislikeHandler}
-                    data-action="dislike"
-                    fill="#f56565"
-                    color="#f56565"
-                    strokeWidth={1.5}
-                    size={16}
-                  />
-                ) : (
-                  <Heart
-                    className="mr-2 cursor-pointer"
-                    onClick={likeDislikeHandler}
-                    data-action="like"
-                    strokeWidth={1.5}
-                    size={16}
-                  />
-                )}
-                {commentLikes?.length !== 0 && (
-                  <>{commentLikes?.length} likes</>
-                )}
-              </span>
-              <button onClick={onReply} className="cursor-pointer">
-                Reply
-              </button>
-            </>
-          )}
+
+          <>
+            <span className="flex items-center mx-3 cursor-pointer">
+              {commentLike ? (
+                <Heart
+                  className="mr-2 cursor-pointer"
+                  onClick={likeDislikeHandler}
+                  data-action="dislike"
+                  fill="#f56565"
+                  color="#f56565"
+                  strokeWidth={1.5}
+                  size={16}
+                />
+              ) : (
+                <Heart
+                  className="mr-2 cursor-pointer"
+                  onClick={likeDislikeHandler}
+                  data-action="like"
+                  strokeWidth={1.5}
+                  size={16}
+                />
+              )}
+              {commentLikes?.length !== 0 && <>{commentLikes?.length} likes</>}
+            </span>
+            <button onClick={onReply} className="cursor-pointer">
+              Reply
+            </button>
+          </>
         </div>
       </div>
     </section>
@@ -119,10 +113,7 @@ CommentReplies.propTypes = {
   createdAt: PropTypes.string,
   commentId: PropTypes.string,
   commentLikes: PropTypes.array,
-  currentElement: PropTypes.number,
   onReply: PropTypes.func,
-  replies: PropTypes.array,
-  style: PropTypes.object,
   username: PropTypes.string,
 };
 

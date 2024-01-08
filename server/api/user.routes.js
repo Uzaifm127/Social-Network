@@ -9,7 +9,7 @@ import {
   followUser,
   searchUser,
   unFollowUser,
-} from "../controllers/userControllers.js";
+} from "../controllers/user.controllers.js";
 import { authenticated } from "../middlewares/authMiddleware.js";
 import { uploadAvatar } from "../middlewares/multerMiddleware.js";
 

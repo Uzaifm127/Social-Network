@@ -1,8 +1,8 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-import { userRouter } from "./api/userAPI.js";
-import { postRouter } from "./api/postAPI.js";
-import { commentRouter } from "./api/commentAPI.js";
+import { userRouter } from "./api/user.routes.js";
+import { postRouter } from "./api/post.routes.js";
+import { commentRouter } from "./api/comment.routes.js";
 import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 import { config } from "dotenv";
 import cors from "cors";

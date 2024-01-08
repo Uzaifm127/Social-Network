@@ -15,9 +15,10 @@ export const commentApi = createApi({
       }),
     }),
     replyComment: builder.mutation({
-      query: () => ({
-        url: `reply-comment`,
+      query: ({ commentId, repliedMessage }) => ({
+        url: `reply-comment?commentId=${commentId}`,
         method: "PUT",
+        body: { repliedMessage },
         credentials: "include",
       }),
     }),

@@ -5,7 +5,7 @@ import {
   dislikePost,
   likePost,
   bookmarkPost,
-} from "../controllers/postController.js";
+} from "../controllers/post.controllers.js";
 import { uploadPost } from "../middlewares/multerMiddleware.js";
 import { authenticated } from "../middlewares/authMiddleware.js";
 

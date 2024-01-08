@@ -20,7 +20,6 @@ const Comment = ({
   createdAt,
   commentId,
   onReply,
-  style,
 }) => {
   const [commentLike, setCommentLike] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
@@ -61,7 +60,7 @@ const Comment = ({
   );
 
   return (
-    <section style={style} className="flex w-full relative items-start p-4">
+    <section className="flex w-full relative items-start p-4">
       <img
         className="rounded-full h-9 cursor-pointer"
         src={avatar || placeholder}
@@ -109,6 +108,10 @@ const Comment = ({
               <button
                 onClick={() => {
                   dispatch({ type: "changeCommentType", payload: "reply" });
+                  dispatch({
+                    type: "storeRepliedCommendId",
+                    payload: commentId,
+                  });
                   onReply(username);
                 }}
                 className="cursor-pointer"
@@ -127,35 +130,39 @@ const Comment = ({
               </button>
             ) : (
               <button className="ml-3" onClick={() => setShowReplies(true)}>
-                View replies - {replies.length}
+                View replies ({replies.length})
               </button>
             )}
           </div>
         )}
-        <section id="replies" className="ml-7">
-          {replies?.map((element, index) => {
-            const { _id, message, likes, replies, createdAt } = element;
-            const { avatar, username } = element.owner;
+        {showReplies && (
+          <section id="replies" className="ml-7">
+            {replies?.map((element) => {
+              const { _id, message, likes, createdAt } = element;
+              const { avatar, username } = element.owner;
 
-            return (
-              <CommentReplies
-                key={_id}
-                commentId={_id}
-                currentElement={index}
-                commentMessage={message}
-                avatar={avatar?.url}
-                username={username}
-                replies={replies}
-                onReply={() => {
-                  dispatch({ type: "changeCommentType", payload: "reply" });
-                  onReply(username);
-                }}
-                createdAt={createdAt}
-                commentLikes={likes}
-              />
-            );
-          })}
-        </section>
+              return (
+                <CommentReplies
+                  key={_id}
+                  commentId={_id}
+                  commentMessage={message}
+                  avatar={avatar?.url}
+                  username={username}
+                  onReply={() => {
+                    dispatch({ type: "changeCommentType", payload: "reply" });
+                    dispatch({
+                      type: "storeRepliedCommendId",
+                      payload: commentId,
+                    });
+                    onReply(username);
+                  }}
+                  createdAt={createdAt}
+                  commentLikes={likes}
+                />
+              );
+            })}
+          </section>
+        )}
       </div>
     </section>
   );
@@ -170,7 +177,6 @@ Comment.propTypes = {
   currentElement: PropTypes.number,
   onReply: PropTypes.func,
   replies: PropTypes.array,
-  style: PropTypes.object,
   username: PropTypes.string,
 };
 

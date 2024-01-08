@@ -1,7 +1,7 @@
-import { PostModel } from "../models/postModel.js";
+import { PostModel } from "../models/post.model.js";
 import { v2 as cloudinary } from "cloudinary";
-import { shuffleArray } from "../utilities/algorithms.js";
-import { ErrorHandler } from "../utilities/error.js";
+import { shuffleArray } from "../utils/algorithms.js";
+import { ErrorHandler } from "../utils/error.js";
 
 export const createPost = async (req, res) => {
   try {

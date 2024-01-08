@@ -1,6 +1,6 @@
-import { UserModel } from "../models/userModel.js";
-import { ErrorHandler } from "../utilities/error.js";
-import { authenticateUser } from "../utilities/auth.js";
+import { UserModel } from "../models/user.model.js";
+import { ErrorHandler } from "../utils/error.js";
+import { authenticateUser } from "../utils/auth.js";
 import { v2 as cloudinary } from "cloudinary";
 
 export const registerUser = async (req, res, next) => {

@@ -5,7 +5,7 @@ import {
   likeComment,
   dislikeComment,
   replyComment,
-} from "../controllers/commentController.js";
+} from "../controllers/comment.controllers.js";
 import { authenticated } from "../middlewares/authMiddleware.js";
 
 export const commentRouter = Router();

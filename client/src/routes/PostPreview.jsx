@@ -24,7 +24,9 @@ import CommentSkeletonLoader from "../components/loaders/CommentSkeletonLoader";
 const PostPreview = () => {
   const { me } = useSelector((state) => state.user);
   const { currentPost } = useSelector((state) => state.post);
-  const { commentType } = useSelector((state) => state.comment);
+  const { commentType, repliedCommentId } = useSelector(
+    (state) => state.comment
+  );
 
   const { data: allCommentsData, isLoading: getCommentLoading } =
     useGetCommentsQuery(currentPost._id);
@@ -40,7 +42,15 @@ const PostPreview = () => {
     },
   ] = useAddCommentMutation();
 
-  const [replyComment] = useReplyCommentMutation();
+  const [
+    replyComment,
+    {
+      data: replyData,
+      isSuccess: replySuccess,
+      isLoading: replyPostLoading,
+      error: replyError,
+    },
+  ] = useReplyCommentMutation();
 
   const [
     bookmark,
@@ -77,7 +87,6 @@ const PostPreview = () => {
       toast.success(bookmarkData?.message || "Something went wrong", {
         duration: 2500,
       });
-      setComment("");
     } else if (bookmarkError) {
       toast.error(bookmarkError.data?.message || "Something went wrong", {
         duration: 2500,
@@ -97,6 +106,19 @@ const PostPreview = () => {
       });
     }
   }, [commentData, commentSuccess, commentError]);
+
+  useEffect(() => {
+    if (replySuccess) {
+      toast.success(replyData?.message || "Something went wrong", {
+        duration: 2500,
+      });
+      setComment("");
+    } else if (replyError) {
+      toast.error(replyError.data?.message || "Something went wrong", {
+        duration: 2500,
+      });
+    }
+  }, [replyData, replySuccess, replyError]);
 
   const likeDislikeHandler = useCallback(
     (e) => {
@@ -133,10 +155,17 @@ const PostPreview = () => {
       if (commentType === "comment" && commentType) {
         addComment({ postId: currentPost._id, commentMessage: comment });
       } else {
-        replyComment();
+        replyComment({ commentId: repliedCommentId, repliedMessage: comment });
       }
     },
-    [addComment, comment, currentPost._id, commentType, replyComment]
+    [
+      addComment,
+      comment,
+      currentPost._id,
+      commentType,
+      replyComment,
+      repliedCommentId,
+    ]
   );
 
   const onReplyClick = useCallback((username) => {
@@ -167,12 +196,14 @@ const PostPreview = () => {
     [dispatch, allCommentsData?.replies, allCommentsData?.comments]
   );
 
+  console.log(allCommentsData?.comments);
+
   return (
     <div
       className="fixed z-50 h-screen w-screen bg-[#00000090] flex items-center justify-center"
       onClick={() => navigate(-1)}
     >
-      {commentLoading && <WhiteScreen />}
+      {(commentLoading || replyPostLoading) && <WhiteScreen />}
       <RxCross2
         className="absolute top-0 right-0 -translate-x-1/2 translate-y-1/2 text-3xl text-white cursor-pointer font-bold"
         onClick={() => navigate(-1)}
