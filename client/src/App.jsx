@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Register from "./routes/Register";
 import Login from "./routes/Login";
 import NotFound from "./routes/NotFound";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import Loader from "./components/Loader";
 import Home from "./routes/Home";
 import MyProfile from "./routes/MyProfile";

@@ -9,10 +9,12 @@ import {
   useDislikeCommentMutation,
   useLikeCommentMutation,
 } from "../services/commentApi";
+import { useGetUserProfile } from "../utils/hooks/useGetUserProfile";
 
 const Comment = ({
   avatar,
   username,
+  commentUser,
   commentMessage,
   commentLikes,
   replies,
@@ -29,6 +31,7 @@ const Comment = ({
 
   const dispatch = useDispatch();
 
+  const getUser = useGetUserProfile();
   const commentTime = useGetTime(createdAt);
 
   const [dislikeComment] = useDislikeCommentMutation();
@@ -62,6 +65,7 @@ const Comment = ({
   return (
     <section className="flex w-full relative items-start p-4">
       <img
+        onClick={() => getUser(commentUser)}
         className="rounded-full h-9 cursor-pointer"
         src={avatar || placeholder}
         alt={username}
@@ -69,7 +73,12 @@ const Comment = ({
 
       <div className="flex items-start flex-col ml-3">
         <p>
-          <span className="font-bold cursor-pointer">{username}</span>
+          <span
+            onClick={() => getUser(commentUser)}
+            className="font-bold cursor-pointer"
+          >
+            {username}
+          </span>
           {username === currentPost.owner.username && (
             <span className="bg-slate-300 pointer-events-none text-[0.7rem] ml-1 relative -top-[0.2rem] text-slate-700 px-1 py-1 rounded-[0.2rem]">
               Author
@@ -146,6 +155,7 @@ const Comment = ({
                   key={_id}
                   commentId={_id}
                   commentMessage={message}
+                  commentUser={element.owner}
                   avatar={avatar?.url}
                   username={username}
                   onReply={() => {
@@ -178,6 +188,7 @@ Comment.propTypes = {
   onReply: PropTypes.func,
   replies: PropTypes.array,
   username: PropTypes.string,
+  commentUser: PropTypes.object,
 };
 
 export default Comment;

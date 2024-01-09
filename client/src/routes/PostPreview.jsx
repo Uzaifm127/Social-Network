@@ -20,6 +20,7 @@ import {
 import WhiteScreen from "../components/WhiteScreen";
 import Comment from "../components/Comment";
 import CommentSkeletonLoader from "../components/loaders/CommentSkeletonLoader";
+import { useGetUserProfile } from "../utils/hooks/useGetUserProfile";
 
 const PostPreview = () => {
   const { me } = useSelector((state) => state.user);
@@ -27,6 +28,9 @@ const PostPreview = () => {
   const { commentType, repliedCommentId } = useSelector(
     (state) => state.comment
   );
+
+  // Calling the custom hooks
+  const getUser = useGetUserProfile();
 
   const { data: allCommentsData, isLoading: getCommentLoading } =
     useGetCommentsQuery(currentPost._id);
@@ -196,8 +200,6 @@ const PostPreview = () => {
     [dispatch, allCommentsData?.replies, allCommentsData?.comments]
   );
 
-  console.log(allCommentsData?.comments);
-
   return (
     <div
       className="fixed z-50 h-screen w-screen bg-[#00000090] flex items-center justify-center"
@@ -221,11 +223,15 @@ const PostPreview = () => {
         <section className="text-white w-[45%]">
           <section className="flex w-full relative items-center p-4">
             <img
+              onClick={() => getUser(currentPost.owner)}
               className="rounded-full h-9 cursor-pointer"
               src={currentPost.owner.avatar.url}
               alt={currentPost.owner.name}
             />
-            <strong className="ml-3 cursor-pointer">
+            <strong
+              onClick={() => getUser(currentPost.owner)}
+              className="ml-3 cursor-pointer"
+            >
               {currentPost.owner.username}
             </strong>
             <MoreHorizontal
@@ -273,6 +279,7 @@ const PostPreview = () => {
                     currentElement={index}
                     commentMessage={message}
                     avatar={avatar?.url}
+                    commentUser={element.owner}
                     username={username}
                     replies={replies}
                     onReply={onReplyClick}

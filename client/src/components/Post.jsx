@@ -9,6 +9,8 @@ import { toast } from "react-hot-toast";
 import { useBookmarkMutation } from "../services/postApi";
 import { Heart, MessageCircle, Send, Bookmark } from "react-feather";
 import { useGetTime } from "../utils/hooks/useGetTime";
+import { useGetUserProfile } from "../utils/hooks/useGetUserProfile";
+import placeholder from "../assets/Image Placeholder.png";
 
 const Post = ({
   captionContent,
@@ -24,14 +26,18 @@ const Post = ({
   currentPost,
   comments,
 }) => {
+  // Calling the useStates
   const [contentExpand, setContentExpand] = useState(false);
   const [bookMarked, setBookMarked] = useState(false);
   const [comment, setComment] = useState("");
   const [liked, setLiked] = useState(false);
   const [caption, setCaption] = useState("");
 
+  // Calling the custom hooks
+  const getUser = useGetUserProfile();
   const postTime = useGetTime(createdAt);
 
+  // Calling the APIs hooks
   const [
     addComment,
     {
@@ -46,10 +52,13 @@ const Post = ({
     { data: bookmarkData, isSuccess: bookmarkSuccess, bookmarkError },
   ] = useBookmarkMutation();
 
+  // useSelectors
   const { me } = useSelector((state) => state.user);
 
+  // useDispatch
   const dispatch = useDispatch();
 
+  // useEffects for the side effects
   useEffect(() => {
     const isBookmarked = me.bookmarkedPosts.some((element) => {
       return element._id === postId;
@@ -103,11 +112,7 @@ const Post = ({
     }
   }, [commentData, commentSuccess, commentError]);
 
-  const getUserProfile = useCallback(() => {
-    dispatch({ type: "setUser", payload: user });
-    localStorage.setItem("username", user.username);
-  }, [dispatch, user]);
-
+  // Custom functions 
   const likeDislikeHandler = useCallback(
     (e) => {
       const action = e.currentTarget.getAttribute("data-action");
@@ -163,22 +168,20 @@ const Post = ({
       {commentLoading && <WhiteScreen />}
       <section className="flex items-center w-full p-2">
         <article className="flex items-center">
-          <Link to={`/${user?.username}`}>
-            <img
-              onClick={getUserProfile}
-              className="cursor-pointer rounded-full h-9"
-              src={avatar}
-              alt="User avatar"
-            />
-          </Link>
-          <Link to={`/${user?.username}`}>
-            <strong
-              onClick={getUserProfile}
-              className="ml-2 text-sm cursor-pointer"
-            >
-              {username}
-            </strong>
-          </Link>
+          <img
+            onClick={() => getUser(user)}
+            className="cursor-pointer rounded-full h-9"
+            src={avatar || placeholder}
+            alt="User avatar"
+          />
+
+          <strong
+            onClick={() => getUser(user)}
+            className="ml-2 text-sm cursor-pointer"
+          >
+            {username}
+          </strong>
+
           <span className="mx-1 cursor-pointer">•</span>
           <p className="text-sm cursor-pointer">{postTime}</p>
         </article>

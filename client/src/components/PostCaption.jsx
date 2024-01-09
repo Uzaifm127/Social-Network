@@ -4,6 +4,7 @@ import { useSharePostMutation } from "../services/postApi";
 import Loader from "./Loader";
 import { toast } from "react-hot-toast";
 import PostSuccess from "./PostSuccess";
+import placeholder from "../assets/Image Placeholder.png"
 
 const PostCaption = () => {
   const [postCaption, setPostCaption] = useState();
@@ -72,7 +73,7 @@ const PostCaption = () => {
 
           <div className="flex items-center p-4">
             <img
-              src={me.avatar.url}
+              src={me.avatar.url || placeholder}
               alt={me.username}
               className="rounded-full h-7"
             />

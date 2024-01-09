@@ -8,12 +8,14 @@ import {
   useDislikeCommentMutation,
   useLikeCommentMutation,
 } from "../services/commentApi";
+import { useGetUserProfile } from "../utils/hooks/useGetUserProfile";
 
 const CommentReplies = ({
   avatar,
   username,
   commentMessage,
   commentLikes,
+  commentUser,
   createdAt,
   commentId,
   onReply,
@@ -23,6 +25,7 @@ const CommentReplies = ({
   const { currentPost } = useSelector((state) => state.post);
   const { me } = useSelector((state) => state.user);
 
+  const getUser = useGetUserProfile();
   const commentTime = useGetTime(createdAt);
 
   const [dislikeComment] = useDislikeCommentMutation();
@@ -56,6 +59,7 @@ const CommentReplies = ({
   return (
     <section className="flex w-full relative items-start p-4">
       <img
+        onClick={() => getUser(commentUser)}
         className="rounded-full h-9 cursor-pointer"
         src={avatar || placeholder}
         alt={username}
@@ -63,7 +67,12 @@ const CommentReplies = ({
 
       <div className="flex items-start flex-col ml-3">
         <p>
-          <span className="font-bold cursor-pointer">{username}</span>
+          <span
+            onClick={() => getUser(commentUser)}
+            className="font-bold cursor-pointer"
+          >
+            {username}
+          </span>
           {username === currentPost.owner.username && (
             <span className="bg-slate-300 pointer-events-none text-[0.7rem] ml-1 relative -top-[0.2rem] text-slate-700 px-1 py-1 rounded-[0.2rem]">
               Author
@@ -115,6 +124,7 @@ CommentReplies.propTypes = {
   commentLikes: PropTypes.array,
   onReply: PropTypes.func,
   username: PropTypes.string,
+  commentUser: PropTypes.object,
 };
 
 export default CommentReplies;
