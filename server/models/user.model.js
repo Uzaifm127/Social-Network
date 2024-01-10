@@ -21,6 +21,7 @@ const userSchema = new Schema(
     followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: Schema.Types.ObjectId, ref: "User" }],
     gender: { type: String, default: "" },
+    myStories: [{ type: Schema.Types.ObjectId, ref: "Story" }],
     name: {
       type: String,
       maxLength: [15, "Please enter a short name"],

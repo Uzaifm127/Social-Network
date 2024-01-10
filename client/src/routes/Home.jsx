@@ -52,22 +52,22 @@ const Home = () => {
           />
           <section
             ref={storiesRef}
-            className="w-[100%] flex items-center h-20 border mt-6 box-border overflow-x-scroll scroll-smooth no-scrollbars"
+            className="w-[100%] flex items-center h-20 mt-6 box-border overflow-x-scroll scroll-smooth no-scrollbars"
           >
-            <Stories storyRef={storyRef} />
-            <Stories storyRef={storyRef} />
-            <Stories storyRef={storyRef} />
-            <Stories storyRef={storyRef} />
-            <Stories storyRef={storyRef} />
-            <Stories storyRef={storyRef} />
-            <Stories storyRef={storyRef} />
-            <Stories storyRef={storyRef} />
-            <Stories storyRef={storyRef} />
-            <Stories storyRef={storyRef} />
-            <Stories storyRef={storyRef} />
-            <Stories storyRef={storyRef} />
-            <Stories storyRef={storyRef} />
-            <Stories storyRef={storyRef} />
+            <Stories storyHeight={"h-14"} storyRef={storyRef} />
+            <Stories storyHeight={"h-14"} storyRef={storyRef} />
+            <Stories storyHeight={"h-14"} storyRef={storyRef} />
+            <Stories storyHeight={"h-14"} storyRef={storyRef} />
+            <Stories storyHeight={"h-14"} storyRef={storyRef} />
+            <Stories storyHeight={"h-14"} storyRef={storyRef} />
+            <Stories storyHeight={"h-14"} storyRef={storyRef} />
+            <Stories storyHeight={"h-14"} storyRef={storyRef} />
+            <Stories storyHeight={"h-14"} storyRef={storyRef} />
+            <Stories storyHeight={"h-14"} storyRef={storyRef} />
+            <Stories storyHeight={"h-14"} storyRef={storyRef} />
+            <Stories storyHeight={"h-14"} storyRef={storyRef} />
+            <Stories storyHeight={"h-14"} storyRef={storyRef} />
+            <Stories storyHeight={"h-14"} storyRef={storyRef} />
           </section>
         </div>
         <Feed />
