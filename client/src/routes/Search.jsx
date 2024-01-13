@@ -3,11 +3,14 @@ import SideBar from "../components/SideBar";
 import User from "../components/User";
 import { useLazySearchUserQuery } from "../services/userApi";
 import SearchSkewLoading from "../components/loaders/SearchSkewLoading";
+import { useDispatch } from "react-redux";
 
 const Search = () => {
   const [search, setSearch] = useState("");
 
   const [trigger, result] = useLazySearchUserQuery();
+
+  const dispatch = useDispatch();
 
   const onSearchSubmit = useCallback(
     (e) => {
@@ -19,7 +22,12 @@ const Search = () => {
   );
 
   return (
-    <main className="flex">
+    <main
+      className="flex"
+      onClick={() => {
+        dispatch({ type: "postTypeAlertToggle", payload: false });
+      }}
+    >
       <SideBar />
       <section className="w-[80%] p-10">
         <form onSubmit={onSearchSubmit} className="w-full">

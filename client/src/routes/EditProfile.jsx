@@ -112,7 +112,12 @@ const EditProfile = () => {
   // }
 
   return (
-    <main className="flex">
+    <main
+      className="flex"
+      onClick={() => {
+        dispatch({ type: "postTypeAlertToggle", payload: false });
+      }}
+    >
       {cropAlert && <CropImage Image={avatarPreview} />}
       {avatarAlert && <AvatarEditAlert setAvatarPreview={setAvatarPreview} />}
       <SideBar loading={isLoading} />

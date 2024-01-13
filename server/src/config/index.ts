@@ -4,7 +4,7 @@ import { config } from "dotenv";
 
 config();
 
-export const connectDB = async (url) => {
+export const connectDB = async (url: string) => {
   try {
     await mongoose.connect(url);
     console.log("DB connected");

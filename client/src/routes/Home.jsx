@@ -3,10 +3,13 @@ import Stories from "../components/Stories";
 import Feed from "../components/Feed";
 import { useCallback, useEffect, useRef } from "react";
 import { ChevronsLeft, ChevronsRight } from "react-feather";
+import { useDispatch } from "react-redux";
 
 const Home = () => {
   const storiesRef = useRef(null);
   const storyRef = useRef(null);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -35,8 +38,12 @@ const Home = () => {
     }
   }, []);
 
+  const removeAllAlerts = useCallback(() => {
+    dispatch({ type: "postTypeAlertToggle", payload: false });
+  }, [dispatch]);
+
   return (
-    <main className="flex">
+    <main className="flex" onClick={removeAllAlerts}>
       <SideBar />
       <section className="w-[53%] border px-14">
         <div className="relative">

@@ -39,7 +39,12 @@ const MyProfile = ({ refreshLoading }) => {
   );
 
   return (
-    <main className="flex">
+    <main
+      className="flex"
+      onClick={() => {
+        dispatch({ type: "postTypeAlertToggle", payload: false });
+      }}
+    >
       <SideBar />
       {followAlert.alert && (
         <FollowAlert

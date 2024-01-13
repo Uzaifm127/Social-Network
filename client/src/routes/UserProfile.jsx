@@ -51,7 +51,12 @@ const UserProfile = ({ userId }) => {
   );
 
   return (
-    <main className="flex">
+    <main
+      className="flex"
+      onClick={() => {
+        dispatch({ type: "postTypeAlertToggle", payload: false });
+      }}
+    >
       <SideBar loading={userLoading} />
       {followAlert.alert && !userLoading && (
         <FollowAlert

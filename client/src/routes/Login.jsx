@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import { useUserLoginMutation } from "../services/userApi";
 import Loader from "../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +15,9 @@ const Login = () => {
     email: "",
     password: "",
   });
+
+  const location = useLocation();
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -47,7 +50,7 @@ const Login = () => {
   };
 
   if (isAuthenticated) {
-    return <Navigate to="/" />;
+    return <Navigate to={location.state.prevPath} />;
   }
 
   return isLoading || isFetching ? (

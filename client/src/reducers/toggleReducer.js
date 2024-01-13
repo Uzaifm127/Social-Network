@@ -6,6 +6,7 @@ const initialState = {
   moreAlert: false,
   cropAlert: false,
   postAlert: false,
+  postTypeAlert: false,
   postCropAlert: false,
   followAlert: {
     valueToAlert: undefined,
@@ -31,6 +32,9 @@ export const toggleReducer = createReducer(initialState, {
   },
   postAlertToggle: (state, action) => {
     state.postAlert = action.payload;
+  },
+  postTypeAlertToggle: (state, action) => {
+    state.postTypeAlert = action.payload;
   },
   postCropAlertToggle: (state, action) => {
     state.postCropAlert = action.payload;

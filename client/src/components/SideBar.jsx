@@ -10,6 +10,7 @@ import { MdOutlineExplore } from "react-icons/md";
 import defaultAvatar from "../assets/Image Placeholder.png";
 import Popup from "./Popup";
 import MoreAlert from "./MoreAlert";
+import PostTypePrompt from "./PostTypePrompt";
 
 const navLinksClass = `flex items-center w-full p-3 cursor-pointer hover:bg-[#353535] rounded-lg relative transition duration-250 my-3`;
 
@@ -17,7 +18,7 @@ const navIconsClass = `text-3xl mr-5`;
 
 const SideBar = ({ loading }) => {
   const { me } = useSelector((state) => state.user);
-  const { moreAlert } = useSelector((state) => state.toggle);
+  const { moreAlert, postTypeAlert } = useSelector((state) => state.toggle);
 
   const dispatch = useDispatch();
 
@@ -72,15 +73,19 @@ const SideBar = ({ loading }) => {
                 <TbMessages className={navIconsClass} />
                 Messages
               </li>
-              <li
-                className={navLinksClass}
-                onClick={() => {
-                  moreAlert && dispatch({ type: "moreAlertToggle" });
-                  dispatch({ type: "postAlertToggle", payload: true });
-                }}
-              >
-                <PiPlusCircleBold className={navIconsClass} />
-                Post
+              <li className="relative">
+                {postTypeAlert && <PostTypePrompt />}
+                <button
+                  className={navLinksClass}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    moreAlert && dispatch({ type: "moreAlertToggle" });
+                    dispatch({ type: "postTypeAlertToggle", payload: true });
+                  }}
+                >
+                  <PiPlusCircleBold className={navIconsClass} />
+                  Post
+                </button>
               </li>
               <li>
                 <Link to={`/${me.username}`} className={navLinksClass}>

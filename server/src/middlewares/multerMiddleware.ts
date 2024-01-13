@@ -1,6 +1,6 @@
-import multer, { memoryStorage } from "multer";
+import multer, { memoryStorage, StorageEngine } from "multer";
 
-const Storage = new memoryStorage();
+const Storage: StorageEngine = memoryStorage();
 
 export const uploadAvatar = multer({ storage: Storage }).single("avatar");
 

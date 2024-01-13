@@ -2,8 +2,13 @@ import { UserModel } from "../models/user.model.js";
 import { ErrorHandler } from "../utils/error.js";
 import { authenticateUser } from "../utils/auth.js";
 import { v2 as cloudinary } from "cloudinary";
+import { NextFunction, Request, Response } from "express";
 
-export const registerUser = async (req, res, next) => {
+export const registerUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { name, username, email, password } = req.body;
 
@@ -11,9 +16,13 @@ export const registerUser = async (req, res, next) => {
 
     const userName = await UserModel.findOne({ username });
 
-    if (userEmail) return next(new ErrorHandler("User already exist", 400));
+    if (userEmail) {
+      return next(new ErrorHandler("User already exist", 400));
+    }
 
-    if (userName) return next(new ErrorHandler("Invalid username"));
+    if (userName) {
+      return next(new ErrorHandler("Invalid username", 404));
+    }
 
     const avatar = req.file;
 
@@ -65,7 +74,11 @@ export const registerUser = async (req, res, next) => {
   }
 };
 
-export const loginUser = async (req, res, next) => {
+export const loginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { email, password } = req.body;
 
   const user = await UserModel.findOne({ email }).select("+password");
@@ -78,7 +91,7 @@ export const loginUser = async (req, res, next) => {
   authenticateUser(user, res, 200, "Logged in successfully");
 };
 
-export const logoutUser = (req, res) => {
+export const logoutUser = (req: Request, res: Response) => {
   const ENV = process.env.ENVIRONMENT;
   res
     .status(200)
@@ -94,14 +107,18 @@ export const logoutUser = (req, res) => {
     });
 };
 
-export const getMyProfile = (req, res) => {
+export const getMyProfile = (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
     user: req.user,
   });
 };
 
-export const getUserProfile = async (req, res, next) => {
+export const getUserProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
 
   const user = await UserModel.findById(id)
@@ -119,7 +136,11 @@ export const getUserProfile = async (req, res, next) => {
   });
 };
 
-export const editUserProfile = async (req, res, next) => {
+export const editUserProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { bio, website, gender, avatarMessage } = req.body;
     const { user, file: avatar } = req;
@@ -181,7 +202,11 @@ export const editUserProfile = async (req, res, next) => {
   }
 };
 
-export const followUser = async (req, res, next) => {
+export const followUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
     const userWhoFollow = req.user;
@@ -206,7 +231,11 @@ export const followUser = async (req, res, next) => {
   }
 };
 
-export const unFollowUser = async (req, res, next) => {
+export const unFollowUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
     const userWhoUnfollow = req.user;
@@ -234,7 +263,11 @@ export const unFollowUser = async (req, res, next) => {
   }
 };
 
-export const searchUser = async (req, res) => {
+export const searchUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { q } = req.query;
 

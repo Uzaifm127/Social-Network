@@ -1,8 +1,13 @@
 import { ErrorHandler } from "../utils/error.js";
 import { CommentModel } from "../models/comment.model.js";
 import { PostModel } from "../models/post.model.js";
+import { NextFunction, Request, Response } from "express";
 
-export const addComment = async (req, res, next) => {
+export const addComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { commentMessage } = req.body;
     const { postId } = req.query;
@@ -33,7 +38,11 @@ export const addComment = async (req, res, next) => {
   }
 };
 
-export const replyComment = async (req, res, next) => {
+export const replyComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { commentId } = req.query;
   const { repliedMessage } = req.body;
 
@@ -60,7 +69,11 @@ export const replyComment = async (req, res, next) => {
   });
 };
 
-export const getComments = async (req, res, next) => {
+export const getComments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { postId } = req.query;
 
   const post = await PostModel.findById(postId)
@@ -104,7 +117,11 @@ export const getComments = async (req, res, next) => {
   });
 };
 
-export const likeComment = async (req, res, next) => {
+export const likeComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { commentId } = req.params;
 
@@ -125,7 +142,11 @@ export const likeComment = async (req, res, next) => {
   }
 };
 
-export const dislikeComment = async (req, res, next) => {
+export const dislikeComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { commentId } = req.params;
 
