@@ -11,7 +11,7 @@ import {
   unFollowUser,
 } from "../controllers/user.controllers.js";
 import { authenticated } from "../middlewares/authMiddleware.js";
-import { uploadAvatar } from "../middlewares/multerMiddleware.js";
+import { uploadAvatar } from "../middlewares/multer.middleware.js";
 
 export const userRouter = Router();
 

@@ -18,13 +18,10 @@ const storySchema = new Schema(
     },
     duration: {
       type: Number,
-      max: 30000, // Maximum story duration is 30 seconds.
+      max: 60000, // Maximum story duration is 60 seconds.
       required: true,
     },
-    isMine: {
-      type: Boolean,
-      required: true,
-    },
+    owner: { type: Schema.Types.ObjectId, ref: "User" },
     likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
     expiresAt: { type: Date, expires: 3600 * 24 },
   },

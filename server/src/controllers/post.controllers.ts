@@ -1,9 +1,10 @@
+import { Request, Response, NextFunction } from "express";
 import { PostModel } from "../models/post.model.js";
 import { v2 as cloudinary } from "cloudinary";
 import { shuffleArray } from "../utils/algorithms.js";
 import { ErrorHandler } from "../utils/error.js";
 
-export const createPost = async (req, res) => {
+export const createPost = async (req: Request, res: Response) => {
   try {
     const { postCaption } = req.body;
     const { file, user } = req;
@@ -38,7 +39,7 @@ export const createPost = async (req, res) => {
   }
 };
 
-export const getFeedPosts = async (req, res) => {
+export const getFeedPosts = async (req: Request, res: Response) => {
   const { following } = req.user;
   const { feedPostLimit } = req.query;
   const { _id } = req.user;

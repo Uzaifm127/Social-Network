@@ -6,7 +6,7 @@ import {
   likePost,
   bookmarkPost,
 } from "../controllers/post.controllers.js";
-import { uploadPost } from "../middlewares/multerMiddleware.js";
+import { uploadPost } from "../middlewares/multer.middleware.js";
 import { authenticated } from "../middlewares/authMiddleware.js";
 
 export const postRouter = Router();
