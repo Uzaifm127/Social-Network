@@ -1,7 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Webcam from "react-webcam";
 
 const Test = () => {
   const [message, setMessage] = useState();
+
+  const webcamRef = useRef(null);
 
   const socket = useMemo(() => {
     return new WebSocket("ws://localhost:4000");
@@ -22,6 +25,7 @@ const Test = () => {
 
   return (
     <>
+      
       <form onSubmit={sendMessage}>
         <input
           type="text"

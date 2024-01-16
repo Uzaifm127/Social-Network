@@ -68,7 +68,13 @@ function App() {
             />
             <Route
               path="/test"
-              element={isAuthenticated ? <Test /> : <Navigate to="/login" />}
+              element={
+                isAuthenticated ? (
+                  <Test />
+                ) : (
+                  <Navigate to="/login" state={{ prevPath: "/test" }} />
+                )
+              }
             />{" "}
             {/*Test, remove after*/}
             <Route
