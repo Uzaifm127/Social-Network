@@ -15,7 +15,15 @@ export const storyApi = createApi({
         formData: true,
       }),
     }),
+    getAllFollowingStories: builder.query({
+      query: () => ({
+        url: `all-following`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
-export const { useCreateStoryMutation } = storyApi;
+export const { useCreateStoryMutation, useGetAllFollowingStoriesQuery } =
+  storyApi;

@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./*"],
-      "@hooks/*": ["./src/utils/hooks/*"]
-    }
-  }
-}

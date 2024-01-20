@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 
 const PostTypePrompt = () => {
   const btnClass = useMemo(() => {
@@ -10,7 +11,10 @@ const PostTypePrompt = () => {
 
   return (
     <div className="absolute bg-white text-[#161616] -translate-y-2 bottom-full left-0 p-2 w-[100%] rounded-lg z-10">
-      <button className={btnClass}>Story</button>
+      <Link to={"/stories/create"}>
+        <button className={btnClass}>Story</button>
+      </Link>
+
       <button
         onClick={() => {
           dispatch({ type: "postAlertToggle", payload: true });

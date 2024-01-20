@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 const Logout = () => {
   const [userLogout, { data, isSuccess, isError, error }] =
     useUserLogoutMutation();
+
   const dispatch = useDispatch();
 
   useEffect(() => {

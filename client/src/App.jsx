@@ -25,6 +25,7 @@ function App() {
 
   const dispatch = useDispatch();
 
+  // To handle the authentication of the user.
   useEffect(() => {
     if (isSuccess) {
       dispatch({ type: "changeAuth", payload: true });

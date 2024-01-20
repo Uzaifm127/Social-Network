@@ -8,7 +8,7 @@ const storySchema = new Schema(
     },
     storyType: {
       type: String,
-      enum: ["video", "photo", "text"],
+      enum: ["video", "image", "text"],
       required: true,
     },
     tag: {
@@ -18,8 +18,8 @@ const storySchema = new Schema(
     },
     duration: {
       type: Number,
-      max: 60000, // Maximum story duration is 60 seconds.
-      required: true,
+      max: 60, // Maximum story duration is 60 seconds.
+      default: 60,
     },
     owner: { type: Schema.Types.ObjectId, ref: "User" },
     likes: [{ type: Schema.Types.ObjectId, ref: "User" }],

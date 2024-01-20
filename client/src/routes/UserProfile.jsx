@@ -128,7 +128,7 @@ const UserProfile = ({ userId }) => {
               </Link>
             </ul>
           </nav>
-          <section id="posts" className="flex justify-center">
+          <section id="posts" className="flex justify-center flex-wrap">
             {userData?.user?.posts.map((element) => {
               const { media, _id } = element;
 
@@ -152,13 +152,6 @@ const UserProfile = ({ userId }) => {
 };
 
 UserProfile.propTypes = {
-  // username: PropTypes.string,
-  // posts: PropTypes.array,
-  // followers: PropTypes.array,
-  // following: PropTypes.array,
-  // bio: PropTypes.string,
-  // name: PropTypes.string,
-  // avatar: PropTypes.string,
   userId: PropTypes.string,
 };
 

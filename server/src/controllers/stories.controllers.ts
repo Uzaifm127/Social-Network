@@ -8,31 +8,57 @@ export const createStory = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { storyType, duration } = req.body;
-  const { file, user } = req;
+  try {
+    const { storyType, duration } = req.body;
+    const { file, user } = req;
 
-  const b64 = Buffer.from(file.buffer).toString("base64");
-  const fileData = `data:${file.mimetype};base64,${b64}`;
+    const b64 = Buffer.from(file.buffer).toString("base64");
+    const fileData = `data:${file.mimetype};base64,${b64}`;
 
-  const { public_id, secure_url } = await cloudinary.uploader.upload(fileData, {
-    folder: "storiesMedia",
+    const { public_id, secure_url } = await cloudinary.uploader.upload(
+      fileData,
+      {
+        folder: "storiesMedia",
+        resource_type: storyType,
+      }
+    );
+
+    const story = await StoryModel.create({
+      story: {
+        url: secure_url,
+        publicId: public_id,
+      },
+      storyType,
+      tag: "temporary",
+      duration,
+    });
+
+    user.myStories.push(story._id);
+    await user.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Story published",
+    });
+  } catch (error) {
+    next(new ErrorHandler(error.message, error.http_code));
+  }
+};
+
+export const getAllFollowingStories = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const following = req.user.following.populate("myStories");
+
+  const followingStories = following.map((element) => {
+    return { userAvatar: element.avatar.url, userStories: element.myStories };
   });
 
-  const story = await StoryModel.create({
-    story: {
-      url: secure_url,
-      publicId: public_id,
-    },
-    storyType,
-    tag: "temporary",
-    duration,
-  });
-
-  user.myStories.push(story._id);
-  await user.save();
-
-  res.status(201).json({
-    message: "Story published",
+  res.status(200).json({
+    success: true,
+    stories: followingStories,
   });
 };
 

@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
-import placeholder from "../assets/Image Placeholder.png";
+// import placeholder from "../assets/Image Placeholder.png";
 
-const Stories = ({ storyRef, storyHeight }) => {
+const Stories = ({ storyRef, storyHeight, userAvatar }) => {
   return (
     <img
       ref={storyRef}
       className={`${storyHeight} cursor-pointer mx-2 rounded-full p-[2px] border-2 border-green-500`}
-      src={placeholder}
+      src={userAvatar}
       alt=""
     />
   );
@@ -15,6 +15,7 @@ const Stories = ({ storyRef, storyHeight }) => {
 Stories.propTypes = {
   storyHeight: PropTypes.string,
   storyRef: PropTypes.object,
+  userAvatar: PropTypes.string,
 };
 
 export default Stories;

@@ -9,6 +9,7 @@ export const createPost = async (req: Request, res: Response) => {
     const { postCaption } = req.body;
     const { file, user } = req;
 
+
     const b64 = Buffer.from(file.buffer).toString("base64");
     const fileData = `data:${file.mimetype};base64,${b64}`;
 

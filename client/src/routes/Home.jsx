@@ -4,10 +4,15 @@ import Feed from "../components/Feed";
 import { useCallback, useEffect, useRef } from "react";
 import { ChevronsLeft, ChevronsRight } from "react-feather";
 import { useDispatch } from "react-redux";
+import { useGetAllFollowingStoriesQuery } from "../services/stories.api";
 
 const Home = () => {
   const storiesRef = useRef(null);
   const storyRef = useRef(null);
+
+  const { data } = useGetAllFollowingStoriesQuery();
+
+  console.log(data);
 
   const dispatch = useDispatch();
 

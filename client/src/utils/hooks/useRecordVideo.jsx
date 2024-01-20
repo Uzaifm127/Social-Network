@@ -2,7 +2,6 @@ import { useCallback, useRef, useState } from "react";
 
 export const useRecordVideo = () => {
   const [isCapturing, setIsCapturing] = useState(false);
-  const [recordedChunks, setRecordedChunks] = useState([]);
   const [recordedVideoSrc, setRecordedVideoSrc] = useState(null);
   const [recordedVideo, setRecordedVideo] = useState(null);
 
@@ -13,9 +12,9 @@ export const useRecordVideo = () => {
 
     // Means if we have a data to proceed
     if (data.size > 0) {
-      setRecordedChunks((prev) => [...prev, data]);
+      const blob = new Blob([data], { type: "video/webm" });
 
-      const file = new File([data], "recorded-story-media.webm", {
+      const file = new File([blob], "recorded-story-media.webm", {
         type: "video/webm",
       });
 

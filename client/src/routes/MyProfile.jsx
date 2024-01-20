@@ -113,7 +113,7 @@ const MyProfile = ({ refreshLoading }) => {
               </Link>
             </ul>
           </nav>
-          <section id="posts" className="flex justify-center">
+          <section id="posts" className="flex justify-center flex-wrap">
             {me.posts.map((element) => {
               const { media, _id } = element;
 
@@ -124,7 +124,7 @@ const MyProfile = ({ refreshLoading }) => {
                 >
                   <div
                     className={`absolute h-full w-full top-0 left-0 bg-no-repeat bg-center bg-cover transition duration-200 hover:opacity-70`}
-                    style={{ backgroundImage: `url('${media.url}')` }}
+                    style={{ backgroundImage: `url('${media?.url}')` }}
                   ></div>
                 </div>
               );

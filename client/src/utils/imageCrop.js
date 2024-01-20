@@ -35,6 +35,7 @@ export const getCroppedImage = async (imgSrc, pixelCrop) => {
       const file = new File([imgBlob], "croppedAvatar.png", {
         type: "image/png",
       });
+
       const filePreview = window.URL.createObjectURL(imgBlob);
       resolve({ file, filePreview });
     }, "image/png");
