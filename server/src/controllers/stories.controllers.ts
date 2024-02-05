@@ -1,7 +1,10 @@
 import { StoryModel } from "../models/stories.model.js";
+import { UserModel } from "../models/user.model.js";
 import { Request, Response, NextFunction } from "express";
 import { ErrorHandler } from "../utils/error.js";
 import { v2 as cloudinary } from "cloudinary";
+import { v4 as uuidv4 } from "uuid";
+import { populate } from "dotenv";
 
 export const createStory = async (
   req: Request,
@@ -31,6 +34,7 @@ export const createStory = async (
       storyType,
       tag: "temporary",
       duration,
+      expiresAt: Date.now(),
     });
 
     user.myStories.push(story._id);
@@ -50,16 +54,50 @@ export const getAllFollowingStories = async (
   res: Response,
   next: NextFunction
 ) => {
-  const following = req.user.following.populate("myStories");
+  const user = req.user;
+  const following = user.following;
+  let populatedUser = await user.populate("myStories");
+  const myStories = populatedUser.myStories;
 
-  const followingStories = following.map((element) => {
-    return { userAvatar: element.avatar.url, userStories: element.myStories };
+  // following.map returns a promise as callback is async func.
+  let followingStories = await Promise.all(
+    following.map(async (user) => {
+      // Use await to populate an existing document.
+      const stories = await user.populate("myStories");
+
+      return {
+        _id: user._id,
+        userAvatar: user.avatar.url,
+        username: user.username,
+        userStories: stories.myStories,
+      };
+    })
+  );
+
+  followingStories = followingStories.filter((story) => {
+    return story.userStories.length > 0;
   });
 
-  res.status(200).json({
-    success: true,
-    stories: followingStories,
-  });
+  if (myStories.length > 0) {
+    const myStoryElement = {
+      _id: req.user._id,
+      userAvatar: req.user.avatar.url,
+      username: req.user.username,
+      userStories: myStories,
+    };
+
+    const stories = [myStoryElement, ...followingStories];
+
+    return res.status(200).json({
+      success: true,
+      stories,
+    });
+  } else {
+    res.status(200).json({
+      success: true,
+      stories: followingStories,
+    });
+  }
 };
 
 export const getStory = async (
@@ -67,11 +105,16 @@ export const getStory = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { storyId } = req.params;
+  const { storyUserId } = req.params;
 
-  const story = await StoryModel.findById(storyId);
+  const storyUser = await UserModel.findById(storyUserId).populate("myStories");
 
-  if (!story) {
+  if (!storyUser) {
     return next(new ErrorHandler("Invalid story", 404));
   }
+
+  res.status(200).json({
+    success: true,
+    storyUser,
+  });
 };

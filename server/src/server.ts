@@ -3,6 +3,7 @@ import { app } from "./app.js";
 import { cloudinaryConfig, connectDB } from "./config/index.js";
 import { config } from "dotenv";
 import SendGridMail from "@sendgrid/mail";
+import { v4 as uuidv4 } from "uuid";
 import { createServer } from "http";
 
 config();
@@ -22,20 +23,26 @@ const server = createServer(app);
 
 const wss = new WebSocketServer({ server });
 
-wss.on("connection", (socket) => {
-  console.log(`New Socket is connected`);
-  console.log(wss.clients.size);
-  //   console.log(wss.clients.values.toString());
+const clients = new Map();
 
-  socket.on("close", () => {
+wss.on("connection", (ws) => {
+  const clientId = uuidv4().replace(/-/g, "");
+
+  clients.set(clientId, ws);
+
+  ws.send(clientId);
+
+  ws.on("close", () => {
     console.log("connection closed successfully on close event");
   });
 
-  socket.on("message", (message) => {
+  ws.on("message", (message) => {
     if (message instanceof Buffer) {
       const decoder = new TextDecoder();
       const data = decoder.decode(message);
-      socket.emit("chat-message", data);
+      ws.emit("chat-message", data);
+    } else {
+      ws.emit("chat-message", message);
     }
     console.log(message.toString("utf-8"));
   });

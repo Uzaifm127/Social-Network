@@ -1,11 +1,12 @@
-import { UserModel } from "../models/user.model.js";
-import { ErrorHandler } from "../utils/error.js";
-import { authenticateUser } from "../utils/auth.js";
+import { UserModel } from "@/models/user.model.js";
+import { ErrorHandler } from "@/utils/error.js";
+import { authenticateUser } from "@/utils/auth.js";
 import { v2 as cloudinary } from "cloudinary";
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
+import { CustomReq } from "@/types/index.js";
 
 export const registerUser = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {
@@ -69,13 +70,13 @@ export const registerUser = async (
     });
 
     authenticateUser(newUser, res, 201, "Account successfully created");
-  } catch (error) {
+   } catch (error) {
     next(new ErrorHandler(error.message, error.http_code));
   }
 };
 
 export const loginUser = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {
@@ -91,7 +92,7 @@ export const loginUser = async (
   authenticateUser(user, res, 200, "Logged in successfully");
 };
 
-export const logoutUser = (req: Request, res: Response) => {
+export const logoutUser = (req: CustomReq, res: Response) => {
   const ENV = process.env.ENVIRONMENT;
   res
     .status(200)
@@ -107,7 +108,7 @@ export const logoutUser = (req: Request, res: Response) => {
     });
 };
 
-export const getMyProfile = (req: Request, res: Response) => {
+export const getMyProfile = (req: CustomReq, res: Response) => {
   res.status(200).json({
     success: true,
     user: req.user,
@@ -115,7 +116,7 @@ export const getMyProfile = (req: Request, res: Response) => {
 };
 
 export const getUserProfile = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {
@@ -137,14 +138,16 @@ export const getUserProfile = async (
 };
 
 export const editUserProfile = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { bio, website, gender, avatarMessage } = req.body;
     const { user, file: avatar } = req;
-    const { publicId } = req.user;
+    const {
+      avatar: { publicId },
+    } = req.user;
 
     if (!avatar) {
       if (avatarMessage === "remove") {
@@ -203,7 +206,7 @@ export const editUserProfile = async (
 };
 
 export const followUser = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {
@@ -232,7 +235,7 @@ export const followUser = async (
 };
 
 export const unFollowUser = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {
@@ -264,7 +267,7 @@ export const unFollowUser = async (
 };
 
 export const searchUser = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {

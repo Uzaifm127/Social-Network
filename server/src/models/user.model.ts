@@ -1,7 +1,8 @@
 import { Schema, model } from "mongoose";
+import { UserTypes } from "../types/models/user.types.js";
 import bcrypt from "bcrypt";
 
-const userSchema = new Schema(
+const userSchema = new Schema<UserTypes>(
   {
     avatar: {
       url: String,
@@ -16,7 +17,7 @@ const userSchema = new Schema(
     email: {
       type: String,
       required: [true, "Please Enter your email"],
-      unique: [true, "Email already exist"],
+      unique: true,
     },
     followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: Schema.Types.ObjectId, ref: "User" }],
@@ -57,8 +58,8 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.methods.matchPassword = async function (password) {
+userSchema.methods.matchPassword = async function (password: string) {
   return await bcrypt.compare(password, this.password);
 };
 
-export const UserModel = model("User", userSchema);
+export const UserModel = model<UserTypes>("User", userSchema);

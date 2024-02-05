@@ -13,4 +13,4 @@ storyRouter.post("/new", authenticated, uploadStory, createStory);
 
 storyRouter.get("/all-following", authenticated, getAllFollowingStories);
 
-storyRouter.get("/get/:storyId", authenticated, getStory);
+storyRouter.get("/get/:storyUserId", authenticated, getStory);

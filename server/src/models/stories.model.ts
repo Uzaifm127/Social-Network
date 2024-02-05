@@ -23,7 +23,12 @@ const storySchema = new Schema(
     },
     owner: { type: Schema.Types.ObjectId, ref: "User" },
     likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    expiresAt: { type: Date, expires: 3600 * 24 },
+    expiresAt: {
+      type: Date,
+      // expires: 3600 * 24,
+      expires: 60,
+      required: true,
+    },
   },
   { timestamps: true }
 );

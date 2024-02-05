@@ -2,12 +2,13 @@ import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import { ErrorHandler } from "../utils/error.js";
 import { UserModel } from "../models/user.model.js";
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
+import { CustomReq } from "@/types/index.js";
 
 config();
 
 export const authenticated = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {
@@ -29,7 +30,7 @@ export const authenticated = async (
 
     req.user = user;
     next();
-  } catch (error) {
+  } catch (error: unknown) {
     next(new ErrorHandler(error.message, error.http_code));
   }
 };
