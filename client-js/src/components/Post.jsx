@@ -112,7 +112,7 @@ const Post = ({
     }
   }, [commentData, commentSuccess, commentError]);
 
-  // Custom functions 
+  // Custom functions
   const likeDislikeHandler = useCallback(
     (e) => {
       const action = e.currentTarget.getAttribute("data-action");

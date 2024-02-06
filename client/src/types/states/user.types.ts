@@ -1,20 +1,23 @@
+import { Post } from "@/types/states/post.types";
+import { Story } from "@/types/states/story.types";
+
 interface Avatar {
   url: string;
   publicId: string;
 }
 
-interface User {
+export interface User {
   avatar: Avatar;
   __id: string;
   bio: string;
-  // bookmarkedPosts
+  bookmarkedPosts: Array<Post>;
   email: string;
   followers: User | string;
   following: User | string;
   gender: "MALE" | "FEMALE" | "OTHERS";
-  // myStories:
+  myStories: Array<Story>;
   name: string;
-  // posts:
+  posts: Array<Post>;
   role: "LEADER" | "USER";
   username: string;
   website: string;
@@ -25,6 +28,6 @@ interface User {
 
 export interface UserState {
   isAuthenticated: boolean;
-  me: User;
-  user: User;
+  me: User | object;
+  user: User | object;
 }

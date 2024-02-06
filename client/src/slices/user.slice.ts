@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-// import { UserState } from "../types/states/user.types";
+import { UserState } from "@/types/states/user.types";
 
 // To Do:- We have to implement the types to all the files in slices directory.
 
-const initialState = {
+const initialState: UserState = {
   isAuthenticated: false,
   userCroppedImage: undefined,
   me: {},

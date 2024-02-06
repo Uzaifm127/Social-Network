@@ -1,14 +1,14 @@
-import { UserState } from "@/types/states/user.types";
+import { User } from "@/types/states/user.types";
 
 export interface ProfileOutput {
   success: boolean;
-  user: UserState;
+  user: User;
 }
 
 export interface AuthResult {
   success: boolean;
   message: string;
-  user: UserState;
+  user: User;
 }
 
 export interface LoginArg {
@@ -29,7 +29,7 @@ export interface LogoutResult {
 
 export interface SearchResult {
   success: boolean;
-  users: Array<UserState>;
+  users: Array<User>;
 }
 
 export interface EditProfileArg {
