@@ -13,6 +13,7 @@ import { useGetTime } from "@hooks/custom/useGetTime";
 import { useGetUserProfile } from "@hooks/custom/useGetUserProfile";
 import { useAppSelector, useAppDispatch } from "@hooks/hooks";
 import { Post } from "@/types/states/post.types";
+import { setCurrentPost } from "@/slices/post.slice";
 
 const Post: React.FC<PostPropTypes> = ({
   captionContent,
@@ -51,7 +52,7 @@ const Post: React.FC<PostPropTypes> = ({
   ] = useAddCommentMutation();
   const [
     bookmark,
-    { data: bookmarkData, isSuccess: bookmarkSuccess, bookmarkError },
+    { data: bookmarkData, isSuccess: bookmarkSuccess, error: bookmarkError },
   ] = useBookmarkMutation();
 
   // useSelectors
@@ -95,9 +96,20 @@ const Post: React.FC<PostPropTypes> = ({
       });
       setComment("");
     } else if (bookmarkError) {
-      toast.error(bookmarkError.data?.message || "Something went wrong", {
-        duration: 2500,
-      });
+      if ("status" in bookmarkError) {
+        // you can access all properties of `FetchBaseQueryError` here
+        const { data } = bookmarkError;
+        if (data) {
+          toast.error(data.message || "Something went wrong", {
+            duration: 2500,
+          });
+        }
+      } else {
+        // you can access all properties of `SerializedError` here
+        toast.error(bookmarkError.message || "Something went wrong", {
+          duration: 2500,
+        });
+      }
     }
   }, [bookmarkSuccess, bookmarkData, bookmarkError]);
 
@@ -162,7 +174,7 @@ const Post: React.FC<PostPropTypes> = ({
   );
 
   const viewComments = useCallback(() => {
-    dispatch({ type: "storeCurrentPost", payload: currentPost });
+    dispatch(setCurrentPost(currentPost));
   }, [currentPost, dispatch]);
 
   return (

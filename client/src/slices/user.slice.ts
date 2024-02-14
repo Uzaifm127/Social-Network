@@ -4,11 +4,34 @@ import { UserState } from "@/types/states/user.types";
 
 // To Do:- We have to implement the types to all the files in slices directory.
 
+const user = {
+  avatar: {
+    url: "",
+    publicId: "",
+  },
+  _id: "",
+  bio: "",
+  bookmarkedPosts: [],
+  email: "",
+  followers: [],
+  following: [],
+  gender: "",
+  myStories: [],
+  name: "",
+  posts: [],
+  role: "USER",
+  username: "",
+  website: "",
+  createdAt: "",
+  updatedAt: "",
+  __v: 0,
+};
+
 const initialState: UserState = {
   isAuthenticated: false,
   userCroppedImage: undefined,
-  me: {},
-  user: {},
+  me: user,
+  user: user,
 };
 
 const userSlice = createSlice({

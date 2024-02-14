@@ -3,7 +3,7 @@ import { config } from "dotenv";
 import { ErrorHandler } from "../utils/error.js";
 import { UserModel } from "../models/user.model.js";
 import { NextFunction, Response } from "express";
-import { CustomReq } from "@/types/index.js";
+import { CustomReq } from "../types/index.js";
 
 config();
 
@@ -22,11 +22,10 @@ export const authenticated = async (
     const { _id } = jwt.verify(token, process.env.JWT_SECRET_KEY || "") as {
       _id: string;
     };
-    const user = await UserModel.findById(_id)
-      .populate("posts")
-      .populate("followers")
-      .populate("following")
-      .populate("bookmarkedPosts");
+    const user = await UserModel.findById(_id).populate("posts");
+    // .populate("followers")
+    // .populate("following");
+    // .populate("bookmarkedPosts");
 
     req.user = user;
     next();

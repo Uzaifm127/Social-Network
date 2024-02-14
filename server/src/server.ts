@@ -8,14 +8,22 @@ import { createServer } from "http";
 
 config();
 
+if (!process.env.DB_URL) {
+  throw new Error("env variable of data url not found.");
+}
+
+if (!process.env.SENDGRID_API_KEY) {
+  throw new Error("env variable of sendgrid api key not found.");
+}
+
 // Connect to the cloudinary SDK to use cloudinary.
 cloudinaryConfig();
 
 // Connecting to the database.
-connectDB(process.env.DB_URL || "");
+connectDB(process.env.DB_URL);
 
 // Setting the api key of SendGrid for sending the emails.
-SendGridMail.setApiKey(process.env.SENDGRID_API_KEY || "");
+SendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const PORT = process.env.PORT || 4000;
 

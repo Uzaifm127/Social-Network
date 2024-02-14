@@ -8,8 +8,8 @@ export interface UserTypes extends Document {
   bio: string;
   bookmarkedPosts: Types.Array<Types.ObjectId>;
   email: string;
-  followers: Types.Array<Types.ObjectId>;
-  following: Types.Array<Types.ObjectId>;
+  followers: Types.Array<Types.ObjectId> | Types.Array<UserTypes>;
+  following: Types.Array<Types.ObjectId> | Types.Array<UserTypes>;
   gender: string;
   myStories: Types.Array<Types.ObjectId>;
   name: string;

@@ -1,12 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {};
+const initialState = {
+  currentStory: null,
+};
 
 const storySlice = createSlice({
   name: "story",
   initialState,
-  reducers: {},
+  reducers: {
+    setCurrentStory: (state, action) => {
+      state.currentStory = action.payload;
+    },
+  },
 });
 
-export const {} = storySlice.actions;
+export const { setCurrentStory } = storySlice.actions;
 export default storySlice.reducer;

@@ -31,11 +31,3 @@ export interface SearchResult {
   success: boolean;
   users: Array<User>;
 }
-
-export interface EditProfileArg {
-  website: string;
-  bio: string;
-  gender: string;
-  avatarMessage?: string;
-  avatar?: File;
-}

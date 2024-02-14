@@ -9,6 +9,7 @@ import Loader from "@components/loaders/Loader";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useAppSelector, useAppDispatch } from "@hooks/hooks";
 import { Post as PostElement } from "@/types/states/post.types";
+import { setPosts } from "@/slices/post.slice";
 
 const Feed: React.FC = () => {
   const [postLimit, setPostLimit] = useState<number>(15);
@@ -32,8 +33,7 @@ const Feed: React.FC = () => {
   useEffect(() => {
     if (allPostData) {
       const { feedPosts } = allPostData;
-
-      dispatch({ type: "storePosts", payload: feedPosts });
+      dispatch(setPosts(feedPosts));
     }
   }, [allPostSuccess, allPostData, dispatch]);
 

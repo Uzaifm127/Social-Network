@@ -1,9 +1,9 @@
-import { UserModel } from "@/models/user.model.js";
-import { ErrorHandler } from "@/utils/error.js";
-import { authenticateUser } from "@/utils/auth.js";
+import { UserModel } from "../models/user.model.js";
+import { ErrorHandler } from "../utils/error.js";
+import { authenticateUser } from "../utils/auth.js";
 import { v2 as cloudinary } from "cloudinary";
 import { NextFunction, Response } from "express";
-import { CustomReq } from "@/types/index.js";
+import { CustomReq } from "../types/index.js";
 
 export const registerUser = async (
   req: CustomReq,
@@ -70,7 +70,7 @@ export const registerUser = async (
     });
 
     authenticateUser(newUser, res, 201, "Account successfully created");
-   } catch (error) {
+  } catch (error) {
     next(new ErrorHandler(error.message, error.http_code));
   }
 };
@@ -98,7 +98,7 @@ export const logoutUser = (req: CustomReq, res: Response) => {
     .status(200)
     .cookie("token", "", {
       maxAge: 0,
-      sameSite: ENV === "development" ? "Lax" : "None",
+      sameSite: ENV === "development" ? "lax" : "none",
       secure: ENV === "development" ? false : true,
       httpOnly: ENV === "development" ? false : true,
     })
@@ -151,10 +151,8 @@ export const editUserProfile = async (
 
     if (!avatar) {
       if (avatarMessage === "remove") {
-        await cloudinary.uploader.destroy({
-          folder: "avatar",
+        await cloudinary.uploader.destroy(publicId, {
           invalidate: true,
-          public_id: publicId,
         });
 
         user.avatar.publicId = "";
@@ -220,8 +218,8 @@ export const followUser = async (
       return next(new ErrorHandler("Invalid User", 404));
     }
 
-    userWhoFollow.following.push(userToFollow);
-    userToFollow.followers.push(userWhoFollow);
+    userWhoFollow.following.push(userToFollow._id);
+    userToFollow.followers.push(userWhoFollow._id);
 
     await userWhoFollow.save();
     await userToFollow.save();
@@ -241,7 +239,7 @@ export const unFollowUser = async (
 ) => {
   try {
     const { id } = req.params;
-    const userWhoUnfollow = req.user;
+    const userWhoUnfollow = req.user._id;
 
     const userToUnfollow = await UserModel.findById(id);
 
@@ -249,7 +247,9 @@ export const unFollowUser = async (
       return next(new ErrorHandler("Invalid User", 404));
     }
 
-    const userWhoUnfollowId = userWhoUnfollow.following.indexOf(userToUnfollow);
+    const userWhoUnfollowId = userWhoUnfollow.following.indexOf(
+      userToUnfollow._id
+    );
     const userToUnfollowId = userToUnfollow.followers.indexOf(userWhoUnfollow);
 
     userWhoUnfollow.following.splice(userToUnfollowId, 1);

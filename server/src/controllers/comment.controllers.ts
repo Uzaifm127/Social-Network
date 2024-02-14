@@ -1,10 +1,11 @@
 import { ErrorHandler } from "../utils/error.js";
 import { CommentModel } from "../models/comment.model.js";
 import { PostModel } from "../models/post.model.js";
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
+import { CustomReq } from "../types/index.js";
 
 export const addComment = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {

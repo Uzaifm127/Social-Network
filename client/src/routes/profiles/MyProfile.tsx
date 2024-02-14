@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useMemo, useCallback, useEffect, MouseEvent } from "react";
 import SideBar from "@components/layouts/Sidebar";
 import placeholderImage from "@assets/Image Placeholder.png";
 import FollowAlert from "@components/alerts/FollowAlert";
 import UserSkewLoader from "@components/loaders/UserSkewLoader";
-import { useCallback, useEffect } from "react";
+import clsx from "clsx";
 import { Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@hooks/hooks";
 import { MyProfilePropTypes } from "@/types/propTypes";
 import { Post } from "@/types/states/post.types";
-
-const navLinksClass = `px-4 py-2 text-white bg-slate-400 hover:bg-slate-600 cursor-pointer rounded-lg transition duration-200 m-5 active:bg-slate-800 focus:bg-slate-900`;
+import { setFollowAlert, setPostTypeAlert } from "@/slices/toggle.slice";
 
 const MyProfile: React.FC<MyProfilePropTypes> = ({ refreshLoading }) => {
+  const navLinksClass = useMemo(() => {
+    return "px-4 py-2 text-white bg-slate-400 hover:bg-slate-600 cursor-pointer rounded-lg transition duration-200 m-5 active:bg-slate-800 focus:bg-slate-900";
+  }, []);
+
   const { highlighter } = useAppSelector((state) => state.post);
 
   const { me } = useAppSelector((state) => state.user);
@@ -28,27 +31,22 @@ const MyProfile: React.FC<MyProfilePropTypes> = ({ refreshLoading }) => {
     }
   }, [me.username, dispatch]);
 
-  const onUserFollowersFollowingClick = useCallback(
-    (e) => {
-      const clickedValue = e.target.getAttribute("data-clicked");
+  const followClick = useCallback(
+    (e: MouseEvent) => {
+      const clickedValue = (e.target as HTMLButtonElement).getAttribute(
+        "data-clicked"
+      );
 
-      dispatch({
-        type: "followAlertToggle",
-        payload: { alert: true, valueToAlert: clickedValue },
-      });
+      const payload = { alert: true, valueToAlert: clickedValue };
+      dispatch(setFollowAlert(payload));
     },
     [dispatch]
   );
 
   return (
-    <main
-      className="flex"
-      onClick={() => {
-        dispatch({ type: "postTypeAlertToggle", payload: false });
-      }}
-    >
-      <SideBar />
-      {followAlert.alert && (
+    <main className="flex" onClick={() => dispatch(setPostTypeAlert(false))}>
+      <SideBar loading={refreshLoading} />
+      {followAlert.alert && !refreshLoading && (
         <FollowAlert
           following={me.following}
           followers={me.followers}
@@ -78,7 +76,7 @@ const MyProfile: React.FC<MyProfilePropTypes> = ({ refreshLoading }) => {
                 <h2 className="mr-10">{me.posts.length} posts</h2>
                 <button
                   data-clicked="followers"
-                  onClick={onUserFollowersFollowingClick}
+                  onClick={followClick}
                   className="mr-10"
                 >
                   {me.followers.length} follower
@@ -86,7 +84,7 @@ const MyProfile: React.FC<MyProfilePropTypes> = ({ refreshLoading }) => {
 
                 <button
                   data-clicked="following"
-                  onClick={onUserFollowersFollowingClick}
+                  onClick={followClick}
                   className="mr-10"
                 >
                   {me.following.length} following
@@ -101,9 +99,12 @@ const MyProfile: React.FC<MyProfilePropTypes> = ({ refreshLoading }) => {
             <ul className="flex">
               <Link
                 to={`/${me.username}`}
-                className={`px-4 py-2 text-white bg-slate-400 hover:bg-slate-600 cursor-pointer rounded-lg transition duration-200 m-5 active:bg-slate-800 focus:bg-slate-900 ${
-                  highlighter && "bg-slate-900"
-                }`}
+                className={clsx(
+                  "px-4 py-2 text-white bg-slate-400 hover:bg-slate-600 cursor-pointer rounded-lg transition duration-200 m-5 active:bg-slate-800 focus:bg-slate-900",
+                  {
+                    "bg-slate-900": highlighter,
+                  }
+                )}
               >
                 POSTS
               </Link>

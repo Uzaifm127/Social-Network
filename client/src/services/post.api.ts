@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
   CreatePostResult,
-  CreatePostArg,
   AllPostResult,
   LikeDislikeResult,
   ServerErrorType,
@@ -15,7 +14,7 @@ export const postApi = createApi({
     baseUrl: import.meta.env.VITE_APP_POST_BASE_URL,
   }),
   endpoints: (builder) => ({
-    sharePost: builder.mutation<CreatePostResult, CreatePostArg>({
+    sharePost: builder.mutation<CreatePostResult, FormData>({
       query: (data) => ({
         url: `new`,
         method: "POST",

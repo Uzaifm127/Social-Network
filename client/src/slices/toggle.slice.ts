@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { ToggleTypes } from "@/types/states/toggle.types";
 
-const initialState = {
+const initialState: ToggleTypes = {
   toaster: false,
   avatarAlert: false,
   moreAlert: false,

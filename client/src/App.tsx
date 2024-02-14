@@ -90,7 +90,7 @@ const App: React.FC = () => {
               path={`/${me.username}`}
               element={
                 isAuthenticated ? (
-                  <MyProfile />
+                  <MyProfile refreshLoading={false} />
                 ) : (
                   <Navigate
                     to="/login"

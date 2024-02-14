@@ -8,13 +8,13 @@ interface Avatar {
 
 export interface User {
   avatar: Avatar;
-  __id: string;
+  _id: string;
   bio: string;
   bookmarkedPosts: Array<Post>;
   email: string;
-  followers: User | string;
-  following: User | string;
-  gender: "MALE" | "FEMALE" | "OTHERS";
+  followers: Array<User>;
+  following: Array<User>;
+  gender: "MALE" | "FEMALE" | "OTHERS" | "";
   myStories: Array<Story>;
   name: string;
   posts: Array<Post>;
@@ -28,6 +28,7 @@ export interface User {
 
 export interface UserState {
   isAuthenticated: boolean;
-  me: User | object;
-  user: User | object;
+  userCroppedImage: { file: File; filePreview: string } | undefined;
+  me: User;
+  user: User;
 }

@@ -3,9 +3,9 @@ const SearchSkewLoading = () => {
 
   return (
     <div className="w-full h-[88%] animate-pulse">
-      {array.map((element, index) => {
+      {array.map((element) => {
         return (
-          <article key={index} className="my-3 p-3 flex items-center">
+          <article key={element} className="my-3 p-3 flex items-center">
             <div className="flex items-center">
               <div className="rounded-full h-10 w-10 bg-slate-300"></div>
               <div className="ml-3">

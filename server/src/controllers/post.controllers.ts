@@ -1,13 +1,22 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Response } from "express";
 import { PostModel } from "../models/post.model.js";
 import { v2 as cloudinary } from "cloudinary";
 import { shuffleArray } from "../utils/algorithms.js";
 import { ErrorHandler } from "../utils/error.js";
+import { CustomReq } from "../types/index.js";
 
-export const createPost = async (req: Request, res: Response) => {
+export const createPost = async (
+  req: CustomReq,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { postCaption } = req.body;
     const { file, user } = req;
+
+    if (!file) {
+      return next(new ErrorHandler("file not found", 404));
+    }
 
     const b64 = Buffer.from(file.buffer).toString("base64");
     const fileData = `data:${file.mimetype};base64,${b64}`;
@@ -39,7 +48,7 @@ export const createPost = async (req: Request, res: Response) => {
   }
 };
 
-export const getFeedPosts = async (req: Request, res: Response) => {
+export const getFeedPosts = async (req: CustomReq, res: Response) => {
   const { following } = req.user;
   const { feedPostLimit } = req.query;
   const { _id } = req.user;
@@ -52,11 +61,15 @@ export const getFeedPosts = async (req: Request, res: Response) => {
 
   res.status(200).json({
     success: true,
-    feedPosts: posts.slice(0, feedPostLimit),
+    feedPosts: posts.slice(0, parseInt(feedPostLimit)),
   });
 };
 
-export const likePost = async (req, res, next) => {
+export const likePost = async (
+  req: CustomReq,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
 
   const post = await PostModel.findById(id);
@@ -76,7 +89,11 @@ export const likePost = async (req, res, next) => {
   });
 };
 
-export const dislikePost = async (req, res, next) => {
+export const dislikePost = async (
+  req: CustomReq,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
 
   const post = await PostModel.findById(id);
@@ -98,10 +115,14 @@ export const dislikePost = async (req, res, next) => {
   });
 };
 
-export const bookmarkPost = async (req, res, next) => {
-  const { id } = req.params;
+export const bookmarkPost = async (
+  req: CustomReq,
+  res: Response,
+  next: NextFunction
+) => {
   const user = req.user;
   const bmPost = user.bookmarkedPosts;
+  const { id } = req.params;
   const { action } = req.body;
 
   const postToBookmark = await PostModel.findById(id);
@@ -120,7 +141,7 @@ export const bookmarkPost = async (req, res, next) => {
     });
   } else {
     const indexToRemove = bmPost.findIndex((element) => {
-      return element._id === id;
+      return element.equals(id);
     });
 
     bmPost.splice(indexToRemove, 1);

@@ -1,19 +1,23 @@
 import { StoryModel } from "../models/stories.model.js";
 import { UserModel } from "../models/user.model.js";
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { ErrorHandler } from "../utils/error.js";
 import { v2 as cloudinary } from "cloudinary";
-import { v4 as uuidv4 } from "uuid";
-import { populate } from "dotenv";
+import { CustomReq } from "../types/index.js";
+import { UserTypes } from "../types/models/user.types.js";
 
 export const createStory = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { storyType, duration } = req.body;
     const { file, user } = req;
+
+    if (!file) {
+      return next(new ErrorHandler("file not found", 404));
+    }
 
     const b64 = Buffer.from(file.buffer).toString("base64");
     const fileData = `data:${file.mimetype};base64,${b64}`;
@@ -50,11 +54,11 @@ export const createStory = async (
 };
 
 export const getAllFollowingStories = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {
-  const user = req.user;
+  const user = await req.user.populate("following");
   const following = user.following;
   let populatedUser = await user.populate("myStories");
   const myStories = populatedUser.myStories;
@@ -63,18 +67,25 @@ export const getAllFollowingStories = async (
   let followingStories = await Promise.all(
     following.map(async (user) => {
       // Use await to populate an existing document.
-      const stories = await user.populate("myStories");
+      if ("populate" in user) {
+        const stories = await user.populate("myStories");
 
-      return {
-        _id: user._id,
-        userAvatar: user.avatar.url,
-        username: user.username,
-        userStories: stories.myStories,
-      };
+        return {
+          _id: user._id,
+          userAvatar: user.avatar.url,
+          username: user.username,
+          userStories: stories.myStories,
+        };
+      }
     })
   );
 
   followingStories = followingStories.filter((story) => {
+    if (!story) {
+      // If there is no story, then we don't filter that element.
+      return false;
+    }
+
     return story.userStories.length > 0;
   });
 
@@ -101,7 +112,7 @@ export const getAllFollowingStories = async (
 };
 
 export const getStory = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {

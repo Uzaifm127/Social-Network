@@ -6,7 +6,6 @@ import {
   LoginArg,
   LogoutResult,
   SearchResult,
-  EditProfileArg,
 } from "@/types/queries/user";
 
 export const userApi = createApi({
@@ -50,7 +49,7 @@ export const userApi = createApi({
     userLogout: builder.mutation<LogoutResult, void>({
       query: () => ({ url: `logout`, method: "POST", credentials: "include" }),
     }),
-    editProfile: builder.mutation<AuthResult, EditProfileArg>({
+    editProfile: builder.mutation<AuthResult, FormData>({
       query: (data) => ({
         url: `edit`,
         method: "PUT",

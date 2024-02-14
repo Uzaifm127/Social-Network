@@ -1,11 +1,11 @@
 import React from "react";
 
 const SearchSkewLoading: React.FC = () => {
-  const array: Array<number> = [...new Array(6).keys()];
+  const array = [...new Array(6).keys()];
 
   return (
     <div className="w-full h-[88%] animate-pulse">
-      {array.map<JSX.Element>((element: number) => {
+      {array.map((element: number) => {
         return (
           <article key={element} className="my-3 p-3 flex items-center">
             <div className="flex items-center">

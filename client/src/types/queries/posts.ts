@@ -5,11 +5,6 @@ export interface CreatePostResult {
   message: string;
 }
 
-export interface CreatePostArg {
-  postMedia: File;
-  postCaption: string;
-}
-
 export interface AllPostResult {
   success: boolean;
   feedPosts: Array<Post>;

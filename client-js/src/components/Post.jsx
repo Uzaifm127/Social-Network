@@ -49,7 +49,7 @@ const Post = ({
   ] = useAddCommentMutation();
   const [
     bookmark,
-    { data: bookmarkData, isSuccess: bookmarkSuccess, bookmarkError },
+    { data: bookmarkData, isSuccess: bookmarkSuccess, error: bookmarkError },
   ] = useBookmarkMutation();
 
   // useSelectors

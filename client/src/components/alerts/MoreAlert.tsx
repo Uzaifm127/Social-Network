@@ -1,15 +1,16 @@
 import React, { useMemo } from "react";
+import Logout from "@components/Logout";
 import { GoGear } from "react-icons/go";
 import { Link } from "react-router-dom";
 import { TbHomeRibbon } from "react-icons/tb";
 import { MdOutlineDarkMode } from "react-icons/md";
-import Logout from "@components/Logout";
 import { useAppDispatch, useAppSelector } from "@hooks/hooks";
+import { setMoreAlert } from "@/slices/toggle.slice";
 
 const MoreAlert: React.FC = () => {
   const { me } = useAppSelector((state) => state.user);
 
-  const navLinksClass: string = useMemo(() => {
+  const navLinksClass = useMemo(() => {
     return `flex items-center w-full p-3 cursor-pointer hover:bg-slate-300 rounded-lg transition duration-250`;
   }, []);
 
@@ -21,21 +22,21 @@ const MoreAlert: React.FC = () => {
     <ul
       className={`fixed left-[1%] bottom-[20%] w-1/5 text-white bg-gray-600 rounded-lg p-4`}
     >
-      <li onClick={() => dispatch({ type: "moreAlertToggle", payload: false })}>
+      <li onClick={() => dispatch(setMoreAlert(false))}>
         <Link to={`/accounts/edit`} className={navLinksClass}>
           <GoGear className={navIconsClass} />
           Setting
         </Link>
       </li>
 
-      <li onClick={() => dispatch({ type: "moreAlertToggle", payload: false })}>
+      <li onClick={() => dispatch(setMoreAlert(false))}>
         <Link to={`/${me.username}/saved`} className={navLinksClass}>
           <TbHomeRibbon className={navIconsClass} />
           Saved
         </Link>
       </li>
 
-      <li onClick={() => dispatch({ type: "moreAlertToggle", payload: false })}>
+      <li onClick={() => dispatch(setMoreAlert(false))}>
         <Link to={`/`} className={navLinksClass}>
           <MdOutlineDarkMode className={navIconsClass} />
           Switch Appearance

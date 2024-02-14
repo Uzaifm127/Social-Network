@@ -1,11 +1,11 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { TbLogout2 } from "react-icons/tb";
 import { useUserLogoutMutation } from "@services/user.api";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useAppDispatch } from "@hooks/hooks";
 
-const Logout = () => {
+const Logout: React.FC = () => {
   const [userLogout, { data, isSuccess, isError, error }] =
     useUserLogoutMutation();
 

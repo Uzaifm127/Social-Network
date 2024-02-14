@@ -9,9 +9,10 @@ import { useAppDispatch, useAppSelector } from "@/lib/utils/hooks/hooks";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { MdOutlineExplore } from "react-icons/md";
 import defaultAvatar from "../assets/Image Placeholder.png";
-// import Popup from "@components/";
+import Popup from "@components/Popup";
 import MoreAlert from "@components/alerts/MoreAlert";
-import PostTypePrompt from "./PostTypePrompt";
+import PostTypePrompt from "@components/posts/PostTypePrompt";
+import { setMoreAlert, setPostTypeAlert } from "@/slices/toggle.slice";
 
 const SideBar: React.FC<SideBarPropTypes> = ({ loading }) => {
   const { me } = useAppSelector((state) => state.user);
@@ -40,21 +41,13 @@ const SideBar: React.FC<SideBarPropTypes> = ({ loading }) => {
           </header>
           <nav>
             <ul>
-              <li
-                onClick={() =>
-                  dispatch({ type: "moreAlertToggle", payload: false })
-                }
-              >
+              <li onClick={() => dispatch(setMoreAlert(false))}>
                 <Link to={`/`} className={navLinksClass}>
                   <TiHome className={navIconsClass} />
                   Home
                 </Link>
               </li>
-              <li
-                onClick={() =>
-                  dispatch({ type: "moreAlertToggle", payload: false })
-                }
-              >
+              <li onClick={() => dispatch(setMoreAlert(false))}>
                 <Link to={`/explore/search`} className={navLinksClass}>
                   <HiSearch className={navIconsClass} />
                   Search
@@ -82,8 +75,10 @@ const SideBar: React.FC<SideBarPropTypes> = ({ loading }) => {
                   className={navLinksClass}
                   onClick={(e) => {
                     e.stopPropagation();
-                    moreAlert && dispatch({ type: "moreAlertToggle" });
-                    dispatch({ type: "postTypeAlertToggle", payload: true });
+                    if (moreAlert) {
+                      dispatch(setMoreAlert(undefined));
+                    }
+                    dispatch(setPostTypeAlert(true));
                   }}
                 >
                   <PiPlusCircleBold className={navIconsClass} />
@@ -104,9 +99,7 @@ const SideBar: React.FC<SideBarPropTypes> = ({ loading }) => {
                 {moreAlert && <MoreAlert />}
                 <button
                   className={navLinksClass}
-                  onClick={() =>
-                    dispatch({ type: "moreAlertToggle", payload: undefined })
-                  }
+                  onClick={() => dispatch(setMoreAlert(undefined))}
                 >
                   <RxHamburgerMenu className={navIconsClass} />
                   More
