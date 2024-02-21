@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
+import { PostTypes } from "../types/models/post.types.js";
 
-const postSchema = new Schema(
+const postSchema = new Schema<PostTypes>(
   {
     media: {
       url: String,
@@ -18,4 +19,4 @@ const postSchema = new Schema(
   { timestamps: true }
 );
 
-export const PostModel = model("Post", postSchema);
+export const PostModel = model<PostTypes>("Post", postSchema);

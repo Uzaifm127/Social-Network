@@ -8,7 +8,7 @@ interface StoryMedia {
 // This is the types of individual story document which is stored in stories collection in DB.
 export interface Story {
   story: StoryMedia;
-  __id: string;
+  _id: string;
   storyType: "image" | "video" | "text";
   tag: "temporary" | "permanent";
   duration: number;

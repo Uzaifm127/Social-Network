@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "@/lib/utils/hooks/hooks";
 import { useSharePostMutation } from "@services/post.api";
 import Loader from "@components/loaders/Loader";
@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import PostSuccess from "@components/posts/PostSuccess";
 import placeholder from "@assets/Image Placeholder.png";
 import { setPostAlert } from "@/slices/toggle.slice";
+import { SimpleResponse } from "@/types";
 
 const PostCaption: React.FC = () => {
   const [postCaption, setPostCaption] = useState<string>("");
@@ -22,28 +23,41 @@ const PostCaption: React.FC = () => {
     let timerId: number;
 
     if (isSuccess) {
-      toast.success(data?.message || "Something went wrong");
+      toast.success(data?.message || "Something went wrong", {
+        duration: 2500,
+      });
 
       timerId = setTimeout(() => {
         dispatch(setPostAlert(false));
       }, 5000);
     } else if (error) {
       if ("status" in error) {
-        toast.error(error.data?.message || "Something went wrong");
+        // you can access all properties of `FetchBaseQueryError` here
+        toast.error(
+          (error.data as SimpleResponse).message || "Something went wrong",
+          {
+            duration: 2500,
+          }
+        );
+      } else {
+        // you can access all properties of `SerializedError` here
+        toast.error(error.message || "Something went wrong", {
+          duration: 2500,
+        });
       }
     }
 
     return () => clearTimeout(timerId);
   }, [isSuccess, data, error, dispatch]);
 
-  const submitPost = () => {
+  const submitPost = useCallback(() => {
     const formData = new FormData();
 
     formData.append("postMedia", postMedia[0].file);
     formData.append("postCaption", postCaption);
 
     sharePost(formData);
-  };
+  }, [postCaption, postMedia, sharePost]);
 
   return (
     <div

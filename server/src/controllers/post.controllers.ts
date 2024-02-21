@@ -4,6 +4,7 @@ import { v2 as cloudinary } from "cloudinary";
 import { shuffleArray } from "../utils/algorithms.js";
 import { ErrorHandler } from "../utils/error.js";
 import { CustomReq } from "../types/index.js";
+import { PostTypes } from "../types/models/post.types.js";
 
 export const createPost = async (
   req: CustomReq,
@@ -14,8 +15,12 @@ export const createPost = async (
     const { postCaption } = req.body;
     const { file, user } = req;
 
+    if (!user) {
+      throw new Error("req.user object is undefined");
+    }
+
     if (!file) {
-      return next(new ErrorHandler("file not found", 404));
+      throw new ErrorHandler("file not found", 404);
     }
 
     const b64 = Buffer.from(file.buffer).toString("base64");
@@ -44,25 +49,36 @@ export const createPost = async (
       message: "Post successfully shared",
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
-export const getFeedPosts = async (req: CustomReq, res: Response) => {
-  const { following } = req.user;
-  const { feedPostLimit } = req.query;
-  const { _id } = req.user;
+export const getFeedPosts = async (
+  req: CustomReq,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!req.user) {
+      throw new Error("req.user object is undefined");
+    }
 
-  let posts = await PostModel.find({
-    owner: { $in: [...following, _id] },
-  }).populate("owner");
+    const { following } = req.user;
+    const { feedPostLimit } = req.query;
 
-  posts = shuffleArray(posts);
+    const posts = await PostModel.find({
+      owner: { $in: [...following, req.user._id] },
+    }).populate("owner");
 
-  res.status(200).json({
-    success: true,
-    feedPosts: posts.slice(0, parseInt(feedPostLimit)),
-  });
+    const shuffledPosts = shuffleArray<PostTypes>(posts);
+
+    res.status(200).json({
+      success: true,
+      feedPosts: shuffledPosts.slice(0, parseInt(feedPostLimit as string)),
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const likePost = async (
@@ -70,23 +86,31 @@ export const likePost = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id } = req.params;
+  try {
+    if (!req.user) {
+      throw new Error("req.user object is undefined");
+    }
 
-  const post = await PostModel.findById(id);
+    const { id } = req.params;
 
-  if (!post) {
-    return next(new ErrorHandler("Post doesn't exist", 404));
+    const post = await PostModel.findById(id);
+
+    if (!post) {
+      throw new ErrorHandler("Post doesn't exist", 404);
+    }
+
+    const { _id } = req.user;
+
+    post.likes.push(_id);
+
+    await post.save();
+
+    res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    next(error);
   }
-
-  const { _id } = req.user;
-
-  post.likes.push(_id);
-
-  await post.save();
-
-  res.status(200).json({
-    success: true,
-  });
 };
 
 export const dislikePost = async (
@@ -94,25 +118,33 @@ export const dislikePost = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id } = req.params;
+  try {
+    if (!req.user) {
+      throw new Error("req.user object is undefined");
+    }
 
-  const post = await PostModel.findById(id);
+    const { id } = req.params;
 
-  if (!post) {
-    return next(new ErrorHandler("Post doesn't exist", 404));
+    const post = await PostModel.findById(id);
+
+    if (!post) {
+      throw new ErrorHandler("Post doesn't exist", 404);
+    }
+
+    const { _id } = req.user;
+
+    const dislikeIndex = post.likes.indexOf(_id);
+
+    post.likes.splice(dislikeIndex, 1);
+
+    await post.save();
+
+    res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    next(error);
   }
-
-  const { _id } = req.user;
-
-  const dislikeIndex = post.likes.indexOf(_id);
-
-  post.likes.splice(dislikeIndex, 1);
-
-  await post.save();
-
-  res.status(200).json({
-    success: true,
-  });
 };
 
 export const bookmarkPost = async (
@@ -120,36 +152,45 @@ export const bookmarkPost = async (
   res: Response,
   next: NextFunction
 ) => {
-  const user = req.user;
-  const bmPost = user.bookmarkedPosts;
-  const { id } = req.params;
-  const { action } = req.body;
+  try {
+    if (!req.user) {
+      throw new Error("req.user object is undefined");
+    }
 
-  const postToBookmark = await PostModel.findById(id);
+    const user = req.user;
+    const bmPost = user.bookmarkedPosts;
+    const { id } = req.params;
+    const { action } = req.body;
 
-  if (!postToBookmark) {
-    return next(new ErrorHandler("Invalid Post", 404));
-  }
+    const postToBookmark = await PostModel.findById(id);
 
-  if (action === "add") {
-    bmPost.push(id);
-    await user.save();
+    // if you want to use `next` for error then use return along with it.
+    if (!postToBookmark) {
+      throw new ErrorHandler("Invalid Post", 404);
+    }
 
-    res.status(200).json({
-      success: true,
-      message: "Bookmarked successfully",
-    });
-  } else {
-    const indexToRemove = bmPost.findIndex((element) => {
-      return element.equals(id);
-    });
+    if (action === "add") {
+      bmPost.push(id);
+      await user.save();
 
-    bmPost.splice(indexToRemove, 1);
-    await user.save();
+      res.status(200).json({
+        success: true,
+        message: "Bookmarked successfully",
+      });
+    } else {
+      const indexToRemove = bmPost.findIndex((element) => {
+        return element.toString() === id;
+      });
 
-    res.status(200).json({
-      success: true,
-      message: "Bookmarked removed",
-    });
+      bmPost.splice(indexToRemove, 1);
+      await user.save();
+
+      res.status(200).json({
+        success: true,
+        message: "Bookmarked removed",
+      });
+    }
+  } catch (error) {
+    next(error);
   }
 };

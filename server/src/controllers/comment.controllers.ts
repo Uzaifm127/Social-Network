@@ -3,6 +3,14 @@ import { CommentModel } from "../models/comment.model.js";
 import { PostModel } from "../models/post.model.js";
 import { NextFunction, Response } from "express";
 import { CustomReq } from "../types/index.js";
+import { v4 as uuidv4 } from "uuid";
+import {
+  AllCommentsType,
+  CommentTypes,
+  FirstComment,
+} from "../types/models/comment.types.js";
+import { UserTypes } from "../types/models/user.types.js";
+import { Types } from "mongoose";
 
 export const addComment = async (
   req: CustomReq,
@@ -14,6 +22,10 @@ export const addComment = async (
     const { postId } = req.query;
 
     const post = await PostModel.findById(postId);
+
+    if (!req.user) {
+      throw new Error("req.user object is undefined");
+    }
 
     if (!post) {
       return next(new ErrorHandler("Comment Invalid on given post", 404));
@@ -35,91 +47,111 @@ export const addComment = async (
       message: "Comment added",
     });
   } catch (error) {
-    next(new ErrorHandler(error.message, error.http_code));
+    next(error);
   }
 };
 
 export const replyComment = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {
-  const { commentId } = req.query;
-  const { repliedMessage } = req.body;
+  try {
+    const { commentId } = req.query;
+    const { repliedMessage } = req.body;
 
-  const comment = await CommentModel.findById(commentId);
+    const comment = await CommentModel.findById(commentId);
 
-  if (!comment) {
-    return next(new ErrorHandler("Invalid comment", 404));
+    if (!req.user) {
+      throw new Error("req.user object is undefined");
+    }
+
+    if (!comment) {
+      return next(new ErrorHandler("Invalid comment", 404));
+    }
+
+    const reply = await CommentModel.create({
+      message: repliedMessage,
+      likes: [],
+      owner: req.user._id,
+      replies: undefined,
+      tag: "reply",
+    });
+
+    (comment.replies as Types.Array<CommentTypes>).push(reply);
+    await comment.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Replied successfully",
+    });
+  } catch (error) {
+    next(error);
   }
-
-  const reply = await CommentModel.create({
-    message: repliedMessage,
-    likes: [],
-    owner: req.user._id,
-    replies: undefined,
-    tag: "reply",
-  });
-
-  comment.replies.push(reply);
-  await comment.save();
-
-  res.status(200).json({
-    success: true,
-    message: "Replied successfully",
-  });
 };
 
 export const getComments = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {
-  const { postId } = req.query;
+  try {
+    const { postId } = req.query;
 
-  const post = await PostModel.findById(postId)
-    .populate({
-      path: "comments",
-      populate: [
-        { path: "owner" },
-        { path: "likes" },
-        {
-          path: "replies",
-          populate: [{ path: "likes" }, { path: "owner" }],
-        },
-      ],
-    })
-    .populate("owner");
+    const post = await PostModel.findById(postId)
+      .populate({
+        path: "comments",
+        populate: [
+          { path: "owner" },
+          { path: "likes" },
+          {
+            path: "replies",
+            populate: [{ path: "likes" }, { path: "owner" }],
+          },
+        ],
+      })
+      .populate("owner");
 
-  if (!post) {
-    return next(new ErrorHandler("Invalid Post", 404));
-  }
+    if (!post) {
+      throw new ErrorHandler("Invalid Post", 404);
+    }
 
-  const comments = [
-    {
+    const firstComment = {
       message: post.caption,
-      owner: post.owner,
+      owner: post.owner as UserTypes,
       replies: [],
       likes: [],
       createdAt: post.createdAt,
-      _id: "6534223Aa8da8dfa8sd",
-    },
-    ...post.comments,
-  ];
+      _id: uuidv4().replace(/[-]/g, ""),
+    };
 
-  const replies = comments.reduce((accumulator, element) => {
-    return [...accumulator, ...element.replies];
-  }, []);
+    const comments: AllCommentsType = [
+      firstComment,
+      ...(post.comments as Array<CommentTypes>),
+    ];
 
-  res.status(200).json({
-    success: true,
-    comments,
-    replies,
-  });
+    const replies = comments.reduce<CommentTypes[]>(
+      (accumulator: CommentTypes[], element: CommentTypes | FirstComment) => {
+        return [
+          ...accumulator,
+          ...(element.replies as CommentTypes[] | never[]),
+        ];
+      },
+      []
+    );
+
+    res.status(200).json({
+      success: true,
+      comments,
+      replies,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const likeComment = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {
@@ -128,23 +160,27 @@ export const likeComment = async (
 
     const comment = await CommentModel.findById(commentId);
 
-    if (!comment) {
-      return next(new ErrorHandler("Invalid comment", 404));
+    if (!req.user) {
+      throw new Error("req.user object is undefined");
     }
 
-    comment.likes.push(req.user._id);
+    if (!comment) {
+      throw new ErrorHandler("Invalid comment", 404);
+    }
+
+    (comment.likes as Types.Array<Types.ObjectId>).push(req.user._id);
     await comment.save();
 
     res.status(200).json({
       success: true,
     });
   } catch (error) {
-    next(new ErrorHandler(error.message, error.http_code));
+    next(error);
   }
 };
 
 export const dislikeComment = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction
 ) => {
@@ -154,20 +190,24 @@ export const dislikeComment = async (
     const comment = await CommentModel.findById(commentId).populate("likes");
 
     if (!comment) {
-      return next(new ErrorHandler("Invalid comment", 404));
+      throw new ErrorHandler("Invalid comment", 404);
     }
 
     const commentIndex = comment.likes.findIndex((element) => {
+      if (!req.user) {
+        throw new Error("req.user object is undefined");
+      }
+
       return req.user._id === element._id;
     });
 
-    comment.splice(commentIndex, 1);
+    comment.likes.splice(commentIndex, 1);
     await comment.save();
 
     res.status(200).json({
       success: true,
     });
   } catch (error) {
-    next(new ErrorHandler(error.message, error.http_code));
+    next(error);
   }
 };

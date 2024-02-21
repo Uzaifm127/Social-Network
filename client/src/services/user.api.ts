@@ -2,7 +2,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
   ProfileOutput,
   AuthResult,
-  RegisterArg,
   LoginArg,
   LogoutResult,
   SearchResult,
@@ -28,7 +27,7 @@ export const userApi = createApi({
         credentials: "include",
       }),
     }),
-    userRegister: builder.mutation<AuthResult, RegisterArg>({
+    userRegister: builder.mutation<AuthResult, FormData>({
       query: (data) => ({
         url: `register`,
         method: "POST",

@@ -11,12 +11,16 @@ export const createStory = async (
   res: Response,
   next: NextFunction
 ) => {
+  if (!req.user) {
+    throw new ErrorHandler("req.user object is undefined", 404);
+  }
+
   try {
     const { storyType, duration } = req.body;
     const { file, user } = req;
 
     if (!file) {
-      return next(new ErrorHandler("file not found", 404));
+      throw new ErrorHandler("file not found", 404);
     }
 
     const b64 = Buffer.from(file.buffer).toString("base64");
@@ -49,7 +53,7 @@ export const createStory = async (
       message: "Story published",
     });
   } catch (error) {
-    next(new ErrorHandler(error.message, error.http_code));
+    next(error);
   }
 };
 
@@ -58,56 +62,64 @@ export const getAllFollowingStories = async (
   res: Response,
   next: NextFunction
 ) => {
-  const user = await req.user.populate("following");
-  const following = user.following;
-  let populatedUser = await user.populate("myStories");
-  const myStories = populatedUser.myStories;
-
-  // following.map returns a promise as callback is async func.
-  let followingStories = await Promise.all(
-    following.map(async (user) => {
-      // Use await to populate an existing document.
-      if ("populate" in user) {
-        const stories = await user.populate("myStories");
-
-        return {
-          _id: user._id,
-          userAvatar: user.avatar.url,
-          username: user.username,
-          userStories: stories.myStories,
-        };
-      }
-    })
-  );
-
-  followingStories = followingStories.filter((story) => {
-    if (!story) {
-      // If there is no story, then we don't filter that element.
-      return false;
+  try {
+    if (!req.user) {
+      throw new ErrorHandler("req.user object is undefined", 404);
     }
 
-    return story.userStories.length > 0;
-  });
+    const user = await req.user.populate("following");
+    const following = user.following;
+    let populatedUser = await user.populate("myStories");
+    const myStories = populatedUser.myStories;
 
-  if (myStories.length > 0) {
-    const myStoryElement = {
-      _id: req.user._id,
-      userAvatar: req.user.avatar.url,
-      username: req.user.username,
-      userStories: myStories,
-    };
+    // following.map returns a promise as callback is async func.
+    let followingStories = await Promise.all(
+      following.map(async (user) => {
+        // Use await to populate an existing document.
+        if ("populate" in user) {
+          const stories = await user.populate("myStories");
 
-    const stories = [myStoryElement, ...followingStories];
+          return {
+            _id: user._id,
+            userAvatar: user.avatar.url,
+            username: user.username,
+            userStories: stories.myStories,
+          };
+        }
+      })
+    );
 
-    return res.status(200).json({
-      success: true,
-      stories,
+    followingStories = followingStories.filter((story) => {
+      if (!story) {
+        // If there is no story, then we don't filter that element.
+        return false;
+      }
+
+      return story.userStories.length > 0;
     });
-  } else {
-    res.status(200).json({
-      success: true,
-      stories: followingStories,
-    });
+
+    if (myStories.length > 0) {
+      const myStoryElement = {
+        _id: req.user._id,
+        userAvatar: req.user.avatar.url,
+        username: req.user.username,
+        userStories: myStories,
+      };
+
+      const stories = [myStoryElement, ...followingStories];
+
+      return res.status(200).json({
+        success: true,
+        stories,
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        stories: followingStories,
+      });
+    }
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -116,16 +128,22 @@ export const getStory = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { storyUserId } = req.params;
+  try {
+    const { storyUserId } = req.params;
 
-  const storyUser = await UserModel.findById(storyUserId).populate("myStories");
+    const storyUser = await UserModel.findById(storyUserId).populate(
+      "myStories"
+    );
 
-  if (!storyUser) {
-    return next(new ErrorHandler("Invalid story", 404));
+    if (!storyUser) {
+      throw new ErrorHandler("Invalid story", 404);
+    }
+
+    res.status(200).json({
+      success: true,
+      storyUser,
+    });
+  } catch (error) {
+    next(error);
   }
-
-  res.status(200).json({
-    success: true,
-    storyUser,
-  });
 };

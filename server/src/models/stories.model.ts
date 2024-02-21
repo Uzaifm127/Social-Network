@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
+import { StoryTypes } from "../types/models/stories.types.js";
 
-const storySchema = new Schema(
+const storySchema = new Schema<StoryTypes>(
   {
     story: {
       url: String,
@@ -33,4 +34,4 @@ const storySchema = new Schema(
   { timestamps: true }
 );
 
-export const StoryModel = model("Story", storySchema);
+export const StoryModel = model<StoryTypes>("Story", storySchema);

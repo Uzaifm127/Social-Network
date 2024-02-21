@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import WhiteScreen from "@components/loaders/WhiteScreenLoader";
 import placeholder from "@assets/Image Placeholder.png";
 import { PostPropTypes } from "@/types/propTypes/index";
@@ -14,6 +14,8 @@ import { useGetUserProfile } from "@hooks/custom/useGetUserProfile";
 import { useAppSelector, useAppDispatch } from "@hooks/hooks";
 import { Post } from "@/types/states/post.types";
 import { setCurrentPost } from "@/slices/post.slice";
+import { SimpleResponse } from "@/types";
+import { useIsPostLiked } from "@/lib/utils/hooks/custom/useIsPostLiked";
 
 const Post: React.FC<PostPropTypes> = ({
   captionContent,
@@ -39,6 +41,7 @@ const Post: React.FC<PostPropTypes> = ({
   // Calling the custom hooks
   const getUser = useGetUserProfile();
   const postTime = useGetTime(createdAt);
+  const hasLiked = useIsPostLiked();
 
   // Calling the APIs hooks
   const [
@@ -74,10 +77,12 @@ const Post: React.FC<PostPropTypes> = ({
 
   useEffect(() => {
     // there will be a bug when you implement who liked your post.
-    if (likesArray.includes(me._id)) {
+
+    // Checking if user already liked the given post or not.
+    if (hasLiked(likesArray, me)) {
       setLiked(true);
     }
-  }, [likesArray, me._id]);
+  }, [likesArray, me, hasLiked]);
 
   useEffect(() => {
     if (captionContent.length > 115) {
@@ -98,12 +103,13 @@ const Post: React.FC<PostPropTypes> = ({
     } else if (bookmarkError) {
       if ("status" in bookmarkError) {
         // you can access all properties of `FetchBaseQueryError` here
-        const { data } = bookmarkError;
-        if (data) {
-          toast.error(data.message || "Something went wrong", {
+        toast.error(
+          (bookmarkError.data as SimpleResponse).message ||
+            "Something went wrong",
+          {
             duration: 2500,
-          });
-        }
+          }
+        );
       } else {
         // you can access all properties of `SerializedError` here
         toast.error(bookmarkError.message || "Something went wrong", {
@@ -120,14 +126,26 @@ const Post: React.FC<PostPropTypes> = ({
       });
       setComment("");
     } else if (commentError) {
-      toast.error(commentError.data?.message || "Something went wrong", {
-        duration: 2500,
-      });
+      if ("status" in commentError) {
+        // you can access all properties of `FetchBaseQueryError` here
+        toast.error(
+          (commentError.data as SimpleResponse).message ||
+            "Something went wrong",
+          {
+            duration: 2500,
+          }
+        );
+      } else {
+        // you can access all properties of `SerializedError` here
+        toast.error(commentError.message || "Something went wrong", {
+          duration: 2500,
+        });
+      }
     }
   }, [commentData, commentSuccess, commentError]);
 
   // Custom functions
-  const likeDislikeHandler = useCallback(
+  const likeDislikeHandler: MouseEventHandler = useCallback(
     (e) => {
       const action = e.currentTarget.getAttribute("data-action");
 

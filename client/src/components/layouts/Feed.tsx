@@ -14,11 +14,9 @@ import { setPosts } from "@/slices/post.slice";
 const Feed: React.FC = () => {
   const [postLimit, setPostLimit] = useState<number>(15);
 
-  const {
-    isSuccess: allPostSuccess,
-    data: allPostData,
-    refetch,
-  } = useGetAllPostsQuery(postLimit);
+  const result = useGetAllPostsQuery(postLimit);
+  const { isSuccess: allPostSuccess, data: allPostData, refetch } = result;
+
   const [postLike] = usePostLikeMutation();
   const [postDislike] = usePostDislikeMutation();
 

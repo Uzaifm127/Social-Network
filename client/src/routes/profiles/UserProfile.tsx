@@ -1,14 +1,18 @@
+import React, {
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 import SideBar from "@components/layouts/Sidebar";
 import FollowAlert from "@components/alerts/FollowAlert";
 import placeholderImage from "@assets/Image Placeholder.png";
 import UserSkewLoader from "@components/loaders/UserSkewLoader";
 import { useAppSelector, useAppDispatch } from "@hooks/hooks";
 import { Link } from "react-router-dom";
-import React, { useCallback, useEffect, useMemo } from "react";
 import { UserProfilePropTypes } from "@/types/propTypes/index";
 import { useGetFollowStatus } from "@hooks/custom/useGetFollowStatus";
 import { useGetUserProfileQuery } from "@services/user.api";
-import { ClickEventType } from "@/types/index";
 
 const UserProfile: React.FC<UserProfilePropTypes> = ({ userId }) => {
   const navLinksClass = useMemo(() => {
@@ -41,8 +45,8 @@ const UserProfile: React.FC<UserProfilePropTypes> = ({ userId }) => {
     };
   }, [userData?.user?.username, dispatch]);
 
-  const followClick = useCallback(
-    (e: ClickEventType) => {
+  const followClick: MouseEventHandler<HTMLButtonElement> = useCallback(
+    (e) => {
       const clickedValue = (e.target as HTMLButtonElement).getAttribute(
         "data-clicked"
       );

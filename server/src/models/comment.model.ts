@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
+import { CommentTypes } from "../types/models/comment.types.js";
 
-const commentSchema = new Schema(
+const commentSchema = new Schema<CommentTypes>(
   {
     message: { type: String, required: [true, "Don't give an empty comment"] },
     likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
@@ -15,4 +16,4 @@ const commentSchema = new Schema(
   { timestamps: true }
 );
 
-export const CommentModel = model("Comment", commentSchema);
+export const CommentModel = model<CommentTypes>("Comment", commentSchema);

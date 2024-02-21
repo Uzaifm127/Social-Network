@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+  ChangeEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import SideBar from "@components/layouts/Sidebar";
 import AvatarEditAlert from "@components/alerts/AvatarEditAlert";
 import placeholderImage from "@assets/Image Placeholder.png";
@@ -13,6 +19,7 @@ import {
   setPostTypeAlert,
 } from "@/slices/toggle.slice";
 import clsx from "clsx";
+import { SimpleResponse } from "@/types";
 
 const EditProfile: React.FC = () => {
   // EditProfile's variables
@@ -69,22 +76,35 @@ const EditProfile: React.FC = () => {
       toast.success(data?.message || "Something went wrong", {
         duration: 2500,
       });
-    }
-    if (isError) {
-      toast.error(error.data?.message || "Something went wrong", {
-        duration: 2500,
-      });
+    } else if (error) {
+      if ("status" in error) {
+        toast.error(
+          (error.data as SimpleResponse).message || "Something went wrong",
+          {
+            duration: 2500,
+          }
+        );
+      } else {
+        // you can access all properties of `SerializedError` here
+        toast.error(error.message || "Something went wrong", {
+          duration: 2500,
+        });
+      }
     }
   }, [isSuccess, data, isError, error]);
 
   // Functions
-  const inputChange = (e: React.ChangeEvent) => {
+  const inputChange: ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  > = useCallback((e) => {
     const { name, value } = e.target;
     if (name === "avatar") {
-      const file: File = e.target.files[0];
+      const file = (e.target as HTMLInputElement).files;
 
-      setAvatarSrc(URL.createObjectURL(file));
-      setHasAvatarSrc((preValue) => !preValue);
+      if (file) {
+        setAvatarSrc(URL.createObjectURL(file[0]));
+        setHasAvatarSrc((preValue) => !preValue);
+      }
 
       // 2nd method to read the Image
       /*
@@ -99,9 +119,9 @@ const EditProfile: React.FC = () => {
     } else {
       setUserEdit((preValue) => ({ ...preValue, [name]: value }));
     }
-  };
+  }, []);
 
-  const submitHandler = () => {
+  const submitHandler = useCallback(() => {
     const { website, bio, gender } = userEdit;
 
     const formData = new FormData();
@@ -119,7 +139,7 @@ const EditProfile: React.FC = () => {
     }
 
     editProfile(formData);
-  };
+  }, [avatarSrc, editProfile, userEdit, userCroppedImage.file]);
 
   return (
     <main className="flex" onClick={() => dispatch(setPostTypeAlert(false))}>

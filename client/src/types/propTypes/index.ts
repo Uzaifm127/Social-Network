@@ -77,3 +77,44 @@ export interface PopupPT {
 export interface CropImagePT {
   Image: string;
 }
+
+export interface StoriesPT {
+  storyRef: React.MutableRefObject<HTMLImageElement | null>;
+  storyHeight: string;
+  userAvatar: string;
+  onStoryClick: React.MouseEventHandler<HTMLImageElement>;
+}
+
+export interface UploadPhotoPT {
+  onImageChange: React.ChangeEventHandler<HTMLInputElement>;
+  onTotalSubmit: React.MouseEventHandler<HTMLButtonElement>;
+  avatarPreview: string;
+}
+
+export interface CommentPT {
+  avatar: string;
+  commentMessage: string;
+  createdAt: string;
+  commentId: string;
+  commentLikes: Array<User>;
+  currentElement: number;
+  onReply: (username: string) => void;
+  replies: Array<Comment>;
+  username: string;
+  commentUser: User;
+}
+
+export interface CommentRepliesPT {
+  avatar: string;
+  commentMessage: string;
+  createdAt: string;
+  commentId: string;
+  commentLikes: Array<User>;
+  onReply: React.MouseEventHandler<HTMLButtonElement>;
+  username: string;
+  commentUser: User;
+}
+
+export interface SavedPT {
+  refreshLoading: boolean;
+}

@@ -11,8 +11,8 @@ export interface Post {
   media: PostMedia;
   _id: string;
   caption: string;
-  likes: Array<User>;
-  comments: Array<Comment>;
+  likes: Array<string> | Array<User>;
+  comments: Array<string> | Array<Comment>;
   owner: User;
   createdAt: string;
   updatedAt: string;
@@ -20,4 +20,9 @@ export interface Post {
 }
 
 // This is the types of the post's state in redux.
-export interface PostTypes {}
+export interface PostTypes {
+  postMedia: Array<{ file: File | null; filePreview: string }>;
+  feedPosts: Array<Post>;
+  currentPost: Post | undefined;
+  highlighter: boolean;
+}

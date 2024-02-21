@@ -1,9 +1,10 @@
+import { PostTypes } from "@/types/states/post.types";
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+const initialState: PostTypes = {
   postMedia: [],
   feedPosts: [],
-  currentPost: {},
+  currentPost: undefined,
   highlighter: false,
 };
 

@@ -16,12 +16,6 @@ export interface LoginArg {
   password: string;
 }
 
-export interface RegisterArg extends LoginArg {
-  name: string;
-  username: string;
-  avatar: File;
-}
-
 export interface LogoutResult {
   success: boolean;
   message: string;

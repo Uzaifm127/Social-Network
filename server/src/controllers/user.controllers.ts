@@ -18,7 +18,7 @@ export const registerUser = async (
     const userName = await UserModel.findOne({ username });
 
     if (userEmail) {
-      return next(new ErrorHandler("User already exist", 400));
+      throw new ErrorHandler("User already exist", 400);
     }
 
     if (userName) {
@@ -71,7 +71,7 @@ export const registerUser = async (
 
     authenticateUser(newUser, res, 201, "Account successfully created");
   } catch (error) {
-    next(new ErrorHandler(error.message, error.http_code));
+    next(error);
   }
 };
 
@@ -87,7 +87,7 @@ export const loginUser = async (
   const passwordMatch = await user?.matchPassword(password);
 
   if (!user || !passwordMatch)
-    return next(new ErrorHandler("Invalid email or password", 404));
+    throw new ErrorHandler("Invalid email or password", 404);
 
   authenticateUser(user, res, 200, "Logged in successfully");
 };
@@ -128,7 +128,7 @@ export const getUserProfile = async (
     .populate("following");
 
   if (!user) {
-    return next(new ErrorHandler("User not exist", 404));
+    throw new ErrorHandler("User not exist", 404);
   }
 
   res.status(200).json({
@@ -143,6 +143,10 @@ export const editUserProfile = async (
   next: NextFunction
 ) => {
   try {
+    if (!req.user) {
+      throw new ErrorHandler("req.user object is undefined", 404);
+    }
+
     const { bio, website, gender, avatarMessage } = req.body;
     const { user, file: avatar } = req;
     const {
@@ -199,7 +203,7 @@ export const editUserProfile = async (
       user,
     });
   } catch (error) {
-    next(new ErrorHandler(error.message, error.http_code));
+    next(error);
   }
 };
 
@@ -209,13 +213,17 @@ export const followUser = async (
   next: NextFunction
 ) => {
   try {
+    if (!req.user) {
+      throw new ErrorHandler("req.user object is undefined", 404);
+    }
+
     const { id } = req.params;
     const userWhoFollow = req.user;
 
     const userToFollow = await UserModel.findById(id);
 
     if (!userToFollow) {
-      return next(new ErrorHandler("Invalid User", 404));
+      throw new ErrorHandler("Invalid User", 404);
     }
 
     userWhoFollow.following.push(userToFollow._id);
@@ -228,7 +236,7 @@ export const followUser = async (
       success: true,
     });
   } catch (error) {
-    next(new ErrorHandler(error.message, error.http_code));
+    next(error);
   }
 };
 
@@ -238,13 +246,17 @@ export const unFollowUser = async (
   next: NextFunction
 ) => {
   try {
+    if (!req.user) {
+      throw new ErrorHandler("req.user object is undefined", 404);
+    }
+
     const { id } = req.params;
     const userWhoUnfollow = req.user._id;
 
     const userToUnfollow = await UserModel.findById(id);
 
     if (!userToUnfollow) {
-      return next(new ErrorHandler("Invalid User", 404));
+      throw new ErrorHandler("Invalid User", 404);
     }
 
     const userWhoUnfollowId = userWhoUnfollow.following.indexOf(
@@ -262,7 +274,7 @@ export const unFollowUser = async (
       success: true,
     });
   } catch (error) {
-    next(new ErrorHandler(error.message, error.http_code));
+    next(error);
   }
 };
 
@@ -290,6 +302,6 @@ export const searchUser = async (
       users,
     });
   } catch (error) {
-    next(new ErrorHandler(error.message, error.http_code));
+    next(error);
   }
 };

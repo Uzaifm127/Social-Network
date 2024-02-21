@@ -1,9 +1,9 @@
 import React, { useMemo, useCallback, useEffect, MouseEvent } from "react";
+import clsx from "clsx";
 import SideBar from "@components/layouts/Sidebar";
 import placeholderImage from "@assets/Image Placeholder.png";
 import FollowAlert from "@components/alerts/FollowAlert";
 import UserSkewLoader from "@components/loaders/UserSkewLoader";
-import clsx from "clsx";
 import { Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@hooks/hooks";
 import { MyProfilePropTypes } from "@/types/propTypes";

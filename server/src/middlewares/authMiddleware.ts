@@ -19,7 +19,11 @@ export const authenticated = async (
       return next(new ErrorHandler("Please login first", 404));
     }
 
-    const { _id } = jwt.verify(token, process.env.JWT_SECRET_KEY || "") as {
+    if (!process.env.JWT_SECRET_KEY) {
+      throw new Error("JWT Secret Key is missing.");
+    }
+
+    const { _id } = jwt.verify(token, process.env.JWT_SECRET_KEY) as {
       _id: string;
     };
     const user = await UserModel.findById(_id).populate("posts");
@@ -27,9 +31,13 @@ export const authenticated = async (
     // .populate("following");
     // .populate("bookmarkedPosts");
 
-    req.user = user;
+    if (user !== null) {
+      req.user = user;
+    } else {
+      throw new Error("user is invalid in authMiddleware.ts");
+    }
     next();
-  } catch (error: unknown) {
-    next(new ErrorHandler(error.message, error.http_code));
+  } catch (error) {
+    next(error);
   }
 };

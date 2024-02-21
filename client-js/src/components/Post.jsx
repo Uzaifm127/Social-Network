@@ -93,6 +93,8 @@ const Post = ({
       });
       setComment("");
     } else if (bookmarkError) {
+      // console.log(JSON.parse(bookmarkError.error));
+      console.log(bookmarkError);
       toast.error(bookmarkError.data?.message || "Something went wrong", {
         duration: 2500,
       });

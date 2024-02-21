@@ -4,6 +4,7 @@ import { useUserLogoutMutation } from "@services/user.api";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useAppDispatch } from "@hooks/hooks";
+import { SimpleResponse } from "@/types";
 
 const Logout: React.FC = () => {
   const [userLogout, { data, isSuccess, isError, error }] =
@@ -15,18 +16,31 @@ const Logout: React.FC = () => {
     if (isSuccess) {
       dispatch({ type: "changeAuth", payload: false });
       dispatch({ type: "setMe", payload: {} });
-      toast.success(data?.message || "Something went wrong");
-    } else if (isError) {
+      toast.success(data?.message || "Something went wrong", {
+        duration: 2500,
+      });
+    } else if (error) {
+      if ("status" in error) {
+        // you can access all properties of `FetchBaseQueryError` here
+        toast.success(
+          (error.data as SimpleResponse).message || "Something went wrong",
+          {
+            duration: 2500,
+          }
+        );
+      } else {
+        // you can access all properties of `SerializedError` here
+        toast.error(error.message || "Something went wrong", {
+          duration: 2500,
+        });
+      }
       dispatch({ type: "changeAuth", payload: true });
-      toast.success(error.data?.message || "Something went wrong");
     }
   }, [isSuccess, isError, dispatch, data, error]);
 
-  const logoutHandler = () => userLogout();
-
   return (
     <Link
-      onClick={logoutHandler}
+      onClick={() => userLogout()}
       to={`/`}
       className="flex items-center w-full p-3 cursor-pointer hover:bg-slate-300 rounded-lg transition duration-250"
     >

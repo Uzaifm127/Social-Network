@@ -1,13 +1,15 @@
-import { Response } from "express";
+import { NextFunction, Response } from "express";
 import { CustomReq } from "../types/index.js";
 import { ErrorHandler } from "../utils/error.js";
 
+// We have to specified all four arguments otherwise the error middleware will not be executed.
 export const errorMiddleware = (
-  error: ErrorHandler,
+  error: any,
   req: CustomReq,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
-  return res.status(error.status || 500).json({
+  res.status(error.status || 500).json({
     success: false,
     message: error.message || "Internal server error",
   });

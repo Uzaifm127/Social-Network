@@ -1,9 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import {
-  CreateResult,
-  CreateArg,
-  AllStoriesResult,
-} from "@/types/queries/stories";
+import { CreateResult, AllStoriesResult } from "@/types/queries/stories";
 
 export const storyApi = createApi({
   reducerPath: "storyApi",
@@ -11,7 +7,7 @@ export const storyApi = createApi({
     baseUrl: import.meta.env.VITE_APP_STORIES_BASE_URL,
   }),
   endpoints: (builder) => ({
-    createStory: builder.mutation<CreateResult, CreateArg>({
+    createStory: builder.mutation<CreateResult, FormData>({
       query: (data) => ({
         url: `new`,
         method: "POST",

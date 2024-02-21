@@ -5,12 +5,6 @@ export interface CreateResult {
   message: string;
 }
 
-export interface CreateArg {
-  story: File;
-  duration: number;
-  storyType: string;
-}
-
 export interface AllStoriesResult {
   success: boolean;
   stories: Array<Story>;
