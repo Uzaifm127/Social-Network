@@ -16,7 +16,7 @@ const FollowAlert: React.FC<FollowAlertPropTypes> = ({
 }) => {
   const { followAlert } = useAppSelector((state) => state.toggle);
 
-  const usersArray = useRef<Array<User> | undefined>();
+  const usersArray = useRef<Array<User> | null>(null);
 
   const dispatch = useAppDispatch();
 
@@ -30,13 +30,13 @@ const FollowAlert: React.FC<FollowAlertPropTypes> = ({
     <div
       className="fixed z-10 h-screen w-screen bg-[#00000090] flex items-center justify-center"
       onClick={() => {
-        dispatch(setFollowAlert({ alert: false, valueToAlert: undefined }));
+        dispatch(setFollowAlert({ alert: false, valueToAlert: "" }));
       }}
     >
       <RxCross2
         className="absolute top-0 right-0 -translate-x-1/2 translate-y-1/2 text-3xl text-white cursor-pointer font-bold"
         onClick={() => {
-          dispatch(setFollowAlert({ alert: false, valueToAlert: undefined }));
+          dispatch(setFollowAlert({ alert: false, valueToAlert: "" }));
         }}
       />
       <article
@@ -44,12 +44,12 @@ const FollowAlert: React.FC<FollowAlertPropTypes> = ({
         onClick={(e) => {
           e.stopPropagation();
 
-          dispatch(
-            setFollowAlert({
-              alert: true,
-              valueToAlert: followAlert.valueToAlert,
-            })
-          );
+          const payload = {
+            alert: true,
+            valueToAlert: followAlert.valueToAlert,
+          };
+
+          dispatch(setFollowAlert(payload));
         }}
       >
         <h1 className="text-center py-3 text-lg">{primaryHeading}</h1>
@@ -59,28 +59,32 @@ const FollowAlert: React.FC<FollowAlertPropTypes> = ({
             {({ height, width }) => {
               return (
                 <List
-                  className="no-scrollbars"
+                  className="scrollbar-hide"
                   height={height}
-                  itemCount={usersArray.current?.length | 0}
+                  itemCount={usersArray.current?.length || 0}
                   itemSize={70}
                   width={width}
                 >
                   {({ index, style }) => {
-                    const { _id, avatar, username, name } =
-                      usersArray.current[index];
+                    if (usersArray.current) {
+                      const { _id, avatar, username, name } =
+                        usersArray.current[index];
 
-                    return (
-                      <UserComponent
-                        key={_id}
-                        style={style}
-                        user={usersArray.current[index]}
-                        name={name}
-                        hoverBgColor={"hover:bg-[#444]"}
-                        username={username}
-                        avatar={avatar.url}
-                        userId={_id}
-                      />
-                    );
+                      console.log(usersArray.current);
+
+                      return (
+                        <UserComponent
+                          key={_id}
+                          style={style}
+                          user={usersArray.current[index]}
+                          name={name}
+                          hoverBgColor={"hover:bg-[#444]"}
+                          username={username}
+                          avatar={avatar.url}
+                          userId={_id}
+                        />
+                      );
+                    }
                   }}
                 </List>
               );

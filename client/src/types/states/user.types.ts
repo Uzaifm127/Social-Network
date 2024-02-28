@@ -29,6 +29,6 @@ export interface User {
 export interface UserState {
   isAuthenticated: boolean;
   userCroppedImage: { file: File; filePreview: string } | undefined;
-  me: User;
-  user: User;
+  me: User | null;
+  user: User | null;
 }

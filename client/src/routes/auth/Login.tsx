@@ -46,12 +46,26 @@ const Login: React.FC = () => {
     } else if (error) {
       if ("status" in error) {
         // you can access all properties of `FetchBaseQueryError` here
-        toast.error(
-          (error.data as SimpleResponse).message || "Something went wrong",
-          {
+        if (error.status === "FETCH_ERROR") {
+          toast.error("Failed to connect", {
             duration: 2500,
-          }
-        );
+          });
+        } else if (error.status === "TIMEOUT_ERROR") {
+          toast.error("Request Timeout", {
+            duration: 2500,
+          });
+        } else if ("data" in error) {
+          toast.error(
+            (error.data as SimpleResponse).message || "Something went wrong",
+            {
+              duration: 2500,
+            }
+          );
+        } else {
+          toast.error("Something went wrong", {
+            duration: 2500,
+          });
+        }
       } else {
         // you can access all properties of `SerializedError` here
         toast.error(error.message || "Something went wrong", {
@@ -59,7 +73,7 @@ const Login: React.FC = () => {
         });
       }
       dispatch(setAuth(false));
-      dispatch(setMe({}));
+      dispatch(setMe(null));
     }
   }, [isSuccess, dispatch, data, error]);
 

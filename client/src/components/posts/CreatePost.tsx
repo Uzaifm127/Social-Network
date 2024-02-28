@@ -4,6 +4,7 @@ import React, {
   useRef,
   useState,
   ChangeEvent,
+  useCallback,
 } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { useAppDispatch, useAppSelector } from "@/lib/utils/hooks/hooks";
@@ -32,17 +33,20 @@ const CreatePost: React.FC = () => {
     };
   }, [dispatch, postAlert]);
 
-  const inputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const input = e.target as HTMLInputElement;
+  const inputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const input = e.target as HTMLInputElement;
 
-    if (input.files) {
-      const file = input.files[0];
+      if (input.files) {
+        const file = input.files[0];
 
-      setPostPreview(window.URL.createObjectURL(file));
+        setPostPreview(window.URL.createObjectURL(file));
 
-      dispatch(setPostCropAlert(true));
-    }
-  };
+        dispatch(setPostCropAlert(true));
+      }
+    },
+    [dispatch]
+  );
 
   if (next) {
     postContent.current = <PostCaption />;

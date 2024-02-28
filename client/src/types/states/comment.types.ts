@@ -12,4 +12,7 @@ export interface Comment {
   __v: number;
 }
 
-export interface CommentType {}
+export interface CommentType {
+  commentType: string;
+  repliedCommentId: string;
+}

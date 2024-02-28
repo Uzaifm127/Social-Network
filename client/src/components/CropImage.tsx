@@ -4,7 +4,7 @@ import { useState } from "react";
 import { getCroppedImage } from "@/lib/utils/imageCrop";
 import { FaCheck } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "@/lib/utils/hooks/hooks";
 import { setCropAlert } from "@/slices/toggle.slice.js";
 import { setUserCroppedImage } from "@/slices/user.slice.js";
 import { CropArea } from "@/types/functions/index";
@@ -18,7 +18,7 @@ const CropImage: React.FC<CropImagePT> = ({ Image }) => {
     filePreview: string;
   }>({ file: null, filePreview: Image });
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onCropComplete = async (
     croppedArea: CropArea,

@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { ToggleTypes } from "@/types/states/toggle.types";
 
 const initialState: ToggleTypes = {
@@ -10,7 +10,7 @@ const initialState: ToggleTypes = {
   postTypeAlert: false,
   postCropAlert: false,
   followAlert: {
-    valueToAlert: undefined,
+    valueToAlert: "",
     alert: false,
   },
 };
@@ -19,29 +19,32 @@ const toggleSlice = createSlice({
   name: "toggle",
   initialState,
   reducers: {
-    setAvatarAlert: (state, action) => {
+    setAvatarAlert: (state, action: PayloadAction<boolean>) => {
       state.avatarAlert = action.payload;
     },
-    setMoreAlert: (state, action) => {
+    setCropAlert: (state, action: PayloadAction<boolean>) => {
+      state.cropAlert = action.payload;
+    },
+    setPostAlert: (state, action: PayloadAction<boolean>) => {
+      state.postAlert = action.payload;
+    },
+    setPostTypeAlert: (state, action: PayloadAction<boolean>) => {
+      state.postTypeAlert = action.payload;
+    },
+    setPostCropAlert: (state, action: PayloadAction<boolean>) => {
+      state.postCropAlert = action.payload;
+    },
+    setMoreAlert: (state, action: PayloadAction<boolean | undefined>) => {
       if (action.payload !== undefined) {
         state.moreAlert = action.payload;
       } else {
         state.moreAlert = !state.moreAlert;
       }
     },
-    setCropAlert: (state, action) => {
-      state.cropAlert = action.payload;
-    },
-    setPostAlert: (state, action) => {
-      state.postAlert = action.payload;
-    },
-    setPostTypeAlert: (state, action) => {
-      state.postTypeAlert = action.payload;
-    },
-    setPostCropAlert: (state, action) => {
-      state.postCropAlert = action.payload;
-    },
-    setFollowAlert: (state, action) => {
+    setFollowAlert: (
+      state,
+      action: PayloadAction<{ valueToAlert: string; alert: boolean }>
+    ) => {
       const { alert, valueToAlert } = action.payload;
 
       state.followAlert.alert = alert;

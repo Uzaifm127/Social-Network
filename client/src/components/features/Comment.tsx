@@ -44,14 +44,15 @@ const Comment: React.FC<CommentPT> = ({
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    // Checking if the user already liked the comment or not.
     const isCommentLiked = commentLikes?.some((element) => {
-      return element._id === me._id;
+      return element._id === me?._id;
     });
 
     if (isCommentLiked) {
       setCommentLike(true);
     }
-  }, [commentLikes, me._id]);
+  }, [commentLikes, me?._id]);
 
   const onLikeDislike: MouseEventHandler<SVGElement> = useCallback(
     (e) => {

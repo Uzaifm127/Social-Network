@@ -44,19 +44,20 @@ const Post: React.FC<PostPropTypes> = ({
   const hasLiked = useIsPostLiked();
 
   // Calling the APIs hooks
-  const [
-    addComment,
-    {
-      data: commentData,
-      isSuccess: commentSuccess,
-      isLoading: commentLoading,
-      error: commentError,
-    },
-  ] = useAddCommentMutation();
-  const [
-    bookmark,
-    { data: bookmarkData, isSuccess: bookmarkSuccess, error: bookmarkError },
-  ] = useBookmarkMutation();
+  const [addComment, addCommentResult] = useAddCommentMutation();
+  const {
+    data: commentData,
+    isSuccess: commentSuccess,
+    isLoading: commentLoading,
+    error: commentError,
+  } = addCommentResult;
+
+  const [bookmark, bookmarkResult] = useBookmarkMutation();
+  const {
+    data: bookmarkData,
+    isSuccess: bookmarkSuccess,
+    error: bookmarkError,
+  } = bookmarkResult;
 
   // useSelectors
   const { me } = useAppSelector((state) => state.user);
@@ -66,20 +67,20 @@ const Post: React.FC<PostPropTypes> = ({
 
   // useEffects for the side effects
   useEffect(() => {
-    const isBookmarked = me.bookmarkedPosts.some((element: Post) => {
+    const isBookmarked = me?.bookmarkedPosts.some((element: Post) => {
       return element._id === postId;
     });
 
     if (isBookmarked) {
       setBookMarked(true);
     }
-  }, [me.bookmarkedPosts, postId]);
+  }, [me?.bookmarkedPosts, postId]);
 
   useEffect(() => {
     // there will be a bug when you implement who liked your post.
 
     // Checking if user already liked the given post or not.
-    if (hasLiked(likesArray, me)) {
+    if (me && hasLiked(likesArray, me)) {
       setLiked(true);
     }
   }, [likesArray, me, hasLiked]);

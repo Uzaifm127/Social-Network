@@ -20,10 +20,10 @@ export interface PostPropTypes {
   likePost: (postId: string) => void;
   postId: string;
   dislikePost: (postId: string) => void;
-  likesArray: Array<User>;
+  likesArray: Array<User> | Array<string>;
   user: User;
   currentPost: Post;
-  comments: Array<Comment>;
+  comments: Array<Comment> | Array<string>;
 }
 
 export interface UserPropTypes {
@@ -46,9 +46,9 @@ export interface UserProfilePropTypes {
 }
 
 export interface FollowAlertPropTypes {
-  primaryHeading: string | undefined;
-  followers: Array<User> | undefined;
-  following: Array<User> | undefined;
+  primaryHeading: string;
+  followers: Array<User>;
+  following: Array<User>;
 }
 
 export interface AvEditAlertPT {

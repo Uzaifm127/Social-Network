@@ -21,4 +21,13 @@ export interface Story {
 }
 
 // This is the types of the story's state in redux.
-export interface StoryTypes {}
+export interface SingleStoryType {
+  _id: string;
+  userAvatar: string;
+  username: string;
+  userStories: Story[];
+}
+
+export interface StoryTypes {
+  currentStory: SingleStoryType | null;
+}

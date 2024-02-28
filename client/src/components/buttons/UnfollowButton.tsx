@@ -1,5 +1,5 @@
-import { FUButtonPropTypes } from "@/types/propTypes/index";
 import clsx from "clsx";
+import { FUButtonPropTypes } from "@/types/propTypes/index";
 
 const UnfollowButton: React.FC<FUButtonPropTypes> = ({
   onFUClick,

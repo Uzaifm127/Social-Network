@@ -1,6 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { CommentType } from "@/types/states/comment.types";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+const initialState: CommentType = {
   commentType: "comment",
   repliedCommentId: "",
 };
@@ -9,10 +10,10 @@ const commentSlice = createSlice({
   name: "post",
   initialState,
   reducers: {
-    setCommentType: (state, action) => {
+    setCommentType: (state, action: PayloadAction<string>) => {
       state.commentType = action.payload;
     },
-    setRepliedCommentId: (state, action) => {
+    setRepliedCommentId: (state, action: PayloadAction<string>) => {
       state.repliedCommentId = action.payload;
     },
   },

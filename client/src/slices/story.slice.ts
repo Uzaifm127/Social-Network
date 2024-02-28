@@ -1,6 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { SingleStoryType, StoryTypes } from "@/types/states/story.types";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+const initialState: StoryTypes = {
   currentStory: null,
 };
 
@@ -8,7 +9,7 @@ const storySlice = createSlice({
   name: "story",
   initialState,
   reducers: {
-    setCurrentStory: (state, action) => {
+    setCurrentStory: (state, action: PayloadAction<SingleStoryType>) => {
       state.currentStory = action.payload;
     },
   },

@@ -1,5 +1,5 @@
-import { PostTypes } from "@/types/states/post.types";
-import { createSlice } from "@reduxjs/toolkit";
+import { Post, PostTypes } from "@/types/states/post.types";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 const initialState: PostTypes = {
   postMedia: [],
@@ -12,19 +12,22 @@ const postSlice = createSlice({
   name: "post",
   initialState,
   reducers: {
-    setPostMedia: (state, action) => {
+    setPostMedia: (
+      state,
+      action: PayloadAction<{ file: File | null; filePreview: string }>
+    ) => {
       state.postMedia.push(action.payload);
     },
     resetMediaPost: (state) => {
       state.postMedia = [];
     },
-    setPosts: (state, action) => {
+    setPosts: (state, action: PayloadAction<Post[]>) => {
       state.feedPosts = [...action.payload];
     },
-    setCurrentPost: (state, action) => {
+    setCurrentPost: (state, action: PayloadAction<Post>) => {
       state.currentPost = action.payload;
     },
-    setHighlighter: (state, action) => {
+    setHighlighter: (state, action: PayloadAction<boolean>) => {
       state.highlighter = action.payload;
     },
   },

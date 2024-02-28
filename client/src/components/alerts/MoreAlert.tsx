@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import Logout from "@components/Logout";
+import toast from "react-hot-toast";
 import { GoGear } from "react-icons/go";
 import { Link } from "react-router-dom";
 import { TbHomeRibbon } from "react-icons/tb";
@@ -17,6 +18,11 @@ const MoreAlert: React.FC = () => {
   const navIconsClass = useMemo(() => `text-3xl mr-5`, []);
 
   const dispatch = useAppDispatch();
+
+  if (!me) {
+    toast.error("You are not authenticated", { duration: 2500 });
+    return <></>;
+  }
 
   return (
     <ul

@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 import placeholder from "@assets/Image Placeholder.png";
 import { useGetFollowStatus } from "@hooks/custom/useGetFollowStatus";
 import { useGetUserProfile } from "@hooks/custom/useGetUserProfile";
@@ -13,18 +14,21 @@ const User: React.FC<UserPropTypes> = ({
   userId,
   hoverBgColor,
 }) => {
-  const { followButton, unfollowLoading, followLoading } =
-    useGetFollowStatus(userId);
+  const status = useGetFollowStatus(userId);
+  const { followButton, unfollowLoading, followLoading } = status;
 
   const getUser = useGetUserProfile();
 
   // we have to implement the following and unfollowing state using websockets server here
   return (
     <article
-      className={`flex items-center my-3 p-3 cursor-pointer ${hoverBgColor} rounded-lg transition duration-250 ${
-        (followLoading || unfollowLoading) &&
-        "relative -z-10 cursor-not-allowed"
-      }`}
+      className={clsx(
+        "flex items-center my-3 p-3 cursor-pointer rounded-lg transition duration-250",
+        hoverBgColor,
+        {
+          "relative -z-10 cursor-not-allowed": followLoading || unfollowLoading,
+        }
+      )}
       style={style}
     >
       <section className="flex" onClick={() => getUser(user)}>

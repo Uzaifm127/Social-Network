@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 import placeholder from "@assets/Image Placeholder.png";
 import { StoriesPT } from "@/types/propTypes";
 
@@ -12,7 +13,10 @@ const Stories: React.FC<StoriesPT> = ({
     <img
       ref={storyRef}
       onClick={onStoryClick}
-      className={`${storyHeight} cursor-pointer mx-2 rounded-full p-[2px] border-2 border-green-500`}
+      className={clsx(
+        "cursor-pointer mx-2 rounded-full p-[2px] border-2 border-green-500",
+        storyHeight
+      )}
       src={userAvatar || placeholder}
       alt="userStoryAvatar"
     />

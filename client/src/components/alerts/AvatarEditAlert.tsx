@@ -1,8 +1,8 @@
+import React from "react";
 import { useAppDispatch } from "@hooks/hooks";
 import { setAvatarAlert } from "@/slices/toggle.slice";
 import { RxCross2 } from "react-icons/rx";
 import { AvEditAlertPT } from "@/types/propTypes/index";
-import React from "react";
 
 const AvatarEditAlert: React.FC<AvEditAlertPT> = ({ setAvatarSrc }) => {
   const dispatch = useAppDispatch();

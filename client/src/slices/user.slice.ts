@@ -1,37 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { UserState } from "@/types/states/user.types";
-
-// To Do:- We have to implement the types to all the files in slices directory.
-
-const user = {
-  avatar: {
-    url: "",
-    publicId: "",
-  },
-  _id: "",
-  bio: "",
-  bookmarkedPosts: [],
-  email: "",
-  followers: [],
-  following: [],
-  gender: "",
-  myStories: [],
-  name: "",
-  posts: [],
-  role: "USER",
-  username: "",
-  website: "",
-  createdAt: "",
-  updatedAt: "",
-  __v: 0,
-};
+import { User, UserState } from "@/types/states/user.types";
 
 const initialState: UserState = {
   isAuthenticated: false,
   userCroppedImage: undefined,
-  me: user,
-  user: user,
+  me: null,
+  user: null,
 };
 
 const userSlice = createSlice({
@@ -41,13 +16,16 @@ const userSlice = createSlice({
     setAuth: (state, action: PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;
     },
-    setMe: (state, action) => {
+    setMe: (state, action: PayloadAction<User | null>) => {
       state.me = action.payload;
     },
-    setUser: (state, action) => {
+    setUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
-    setUserCroppedImage: (state, action) => {
+    setUserCroppedImage: (
+      state,
+      action: PayloadAction<{ file: File; filePreview: string }>
+    ) => {
       state.userCroppedImage = action.payload;
     },
   },

@@ -1,4 +1,10 @@
 import React, { useMemo } from "react";
+import clsx from "clsx";
+import defaultAvatar from "@assets/Image Placeholder.png";
+import Popup from "@components/Popup";
+import MoreAlert from "@components/alerts/MoreAlert";
+import PostTypePrompt from "@components/posts/PostTypePrompt";
+import toast from "react-hot-toast";
 import { SideBarPropTypes } from "@/types/propTypes/index";
 import { TiHome } from "react-icons/ti";
 import { Link } from "react-router-dom";
@@ -8,10 +14,6 @@ import { PiPlusCircleBold } from "react-icons/pi";
 import { useAppDispatch, useAppSelector } from "@/lib/utils/hooks/hooks";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { MdOutlineExplore } from "react-icons/md";
-import defaultAvatar from "../assets/Image Placeholder.png";
-import Popup from "@components/Popup";
-import MoreAlert from "@components/alerts/MoreAlert";
-import PostTypePrompt from "@components/posts/PostTypePrompt";
 import { setMoreAlert, setPostTypeAlert } from "@/slices/toggle.slice";
 
 const SideBar: React.FC<SideBarPropTypes> = ({ loading }) => {
@@ -26,12 +28,18 @@ const SideBar: React.FC<SideBarPropTypes> = ({ loading }) => {
 
   const dispatch = useAppDispatch();
 
+  if (!me) {
+    toast.error("You are not authenticated", { duration: 2500 });
+    return <></>;
+  }
+
   return (
     <>
       <aside
-        className={`flex w-[20%] bg-[#1e1e1e] text-white sticky top-0 h-screen ${
-          loading && "cursor-not-allowed -z-50"
-        }`}
+        className={clsx(
+          "flex w-[20%] bg-[#1e1e1e] text-white sticky top-0 h-screen",
+          { "cursor-not-allowed -z-50": loading }
+        )}
       >
         <section className="my-10 w-full px-3">
           <header className="mb-12">

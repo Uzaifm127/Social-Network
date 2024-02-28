@@ -86,7 +86,7 @@ const Register = () => {
         });
       }
       dispatch(setAuth(false));
-      dispatch(setMe({}));
+      dispatch(setMe(null));
       setCurrentUser(initialCurrentUser);
       setNext(false);
     }
@@ -130,6 +130,10 @@ const Register = () => {
       data.append("password", password);
 
       if (action === "withImage") {
+        if (!userCroppedImage) {
+          return;
+        }
+
         data.append("avatar", userCroppedImage.file);
       } else {
         data.append("avatar", "");
@@ -137,11 +141,13 @@ const Register = () => {
 
       userRegister(data);
     },
-    [currentUser, userRegister, userCroppedImage.file]
+    [currentUser, userRegister, userCroppedImage]
   );
 
   if (cropAlert) {
-    avatarRegister.current = <CropImage Image={currentUser.avatarPreview} />;
+    avatarRegister.current = (
+      <CropImage Image={currentUser.avatarPreview.toString()} />
+    );
   } else {
     avatarRegister.current = (
       <UploadPhoto

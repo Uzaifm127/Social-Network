@@ -1,6 +1,6 @@
-import { FUButtonPropTypes } from "@/types/propTypes/index";
-import clsx from "clsx";
 import React from "react";
+import clsx from "clsx";
+import { FUButtonPropTypes } from "@/types/propTypes/index";
 
 const FollowButton: React.FC<FUButtonPropTypes> = ({ onFUClick, loading }) => {
   return (

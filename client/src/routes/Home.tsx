@@ -1,10 +1,4 @@
-import {
-  MouseEventHandler,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
+import { MouseEventHandler, useCallback, useEffect, useRef } from "react";
 import SideBar from "@components/layouts/Sidebar";
 import Stories from "@components/features/Stories";
 import Feed from "@components/layouts/Feed";
@@ -16,12 +10,6 @@ import { setCurrentStory } from "@slices/story.slice";
 import { setPostAlert } from "@/slices/toggle.slice";
 
 const Home: React.FC = () => {
-  // Connecting to the WebSocket server on component mount at only one times.
-  const socket = useMemo(
-    () => new WebSocket(import.meta.env.VITE_APP_WSS_URL),
-    []
-  );
-
   const storiesRef = useRef<HTMLElement | null>(null);
   const storyRef = useRef<HTMLImageElement | null>(null);
 
@@ -33,11 +21,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-
-    return () => {
-      socket.close();
-    };
-  }, [socket]);
+  }, []);
 
   const moveStories: MouseEventHandler<SVGElement> = useCallback((e) => {
     const clickedValue = (e.target as HTMLButtonElement).getAttribute(
@@ -81,41 +65,41 @@ const Home: React.FC = () => {
       <SideBar loading={false} />
       <section className="w-[53%] border px-14">
         <div className="relative">
-          {data?.stories[0]?.userStories.length > 0 && (
-            <>
-              <ChevronsLeft
-                onClick={moveStories}
-                data-scroll-clicked="left"
-                className="absolute rounded-full bg-gray-300 right-full top-1/2 -translate-y-1/2 p-px cursor-pointer"
-              />
-              <ChevronsRight
-                onClick={moveStories}
-                data-scroll-clicked="right"
-                className="absolute rounded-full bg-gray-300 left-full top-1/2 -translate-y-1/2 p-px cursor-pointer"
-              />
-              <section
-                ref={storiesRef}
-                className="w-[100%] flex items-center h-20 mt-6 box-border overflow-x-scroll scroll-smooth no-scrollbars"
-              >
-                {data?.stories.map((element) => {
-                  const { username, _id } = element;
+          {/* { data?.stories[0]?.userStories.length > 0 && ( */}
+          <>
+            <ChevronsLeft
+              onClick={moveStories}
+              data-scroll-clicked="left"
+              className="absolute rounded-full bg-gray-300 right-full top-1/2 -translate-y-1/2 p-px cursor-pointer"
+            />
+            <ChevronsRight
+              onClick={moveStories}
+              data-scroll-clicked="right"
+              className="absolute rounded-full bg-gray-300 left-full top-1/2 -translate-y-1/2 p-px cursor-pointer"
+            />
+            <section
+              ref={storiesRef}
+              className="w-[100%] flex items-center h-20 mt-6 box-border overflow-x-scroll scroll-smooth scrollbar-hide"
+            >
+              {data?.stories.map((element) => {
+                const { username, _id } = element;
 
-                  return (
-                    <Stories
-                      key={element._id}
-                      onStoryClick={() => {
-                        dispatch(setCurrentStory(element));
-                        navigate(`/stories/${username}/${_id}`);
-                      }}
-                      storyHeight={"h-14"}
-                      storyRef={storyRef}
-                      userAvatar={element.userAvatar}
-                    />
-                  );
-                })}
-              </section>
-            </>
-          )}
+                return (
+                  <Stories
+                    key={element._id}
+                    onStoryClick={() => {
+                      dispatch(setCurrentStory(element));
+                      navigate(`/stories/${username}/${_id}`);
+                    }}
+                    storyHeight={"h-14"}
+                    storyRef={storyRef}
+                    userAvatar={element.userAvatar}
+                  />
+                );
+              })}
+            </section>
+          </>
+          {/* )} */}
         </div>
         <Feed />
       </section>

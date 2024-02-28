@@ -26,10 +26,11 @@ export const authenticated = async (
     const { _id } = jwt.verify(token, process.env.JWT_SECRET_KEY) as {
       _id: string;
     };
-    const user = await UserModel.findById(_id).populate("posts");
-    // .populate("followers")
-    // .populate("following");
-    // .populate("bookmarkedPosts");
+    const user = await UserModel.findById(_id)
+      .populate("posts")
+      .populate("followers")
+      .populate("following")
+      .populate("bookmarkedPosts");
 
     if (user !== null) {
       req.user = user;

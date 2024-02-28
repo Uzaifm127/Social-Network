@@ -55,9 +55,9 @@ const EditProfile: React.FC = () => {
     setUserEdit((preObject) => {
       return {
         ...preObject,
-        website: me.website,
-        bio: me.bio,
-        gender: me.gender,
+        website: me?.website || "",
+        bio: me?.bio || "",
+        gender: me?.gender || "",
       };
     });
   }, [me]);
@@ -135,11 +135,20 @@ const EditProfile: React.FC = () => {
     } else if (avatarSrc === "remove") {
       formData.append("avatarMessage", "remove");
     } else {
+      if (!userCroppedImage?.file) {
+        return;
+      }
+
       formData.append("avatar", userCroppedImage.file);
     }
 
     editProfile(formData);
-  }, [avatarSrc, editProfile, userEdit, userCroppedImage.file]);
+  }, [avatarSrc, editProfile, userEdit, userCroppedImage?.file]);
+
+  if (!me) {
+    toast.error("You are not authenticated", { duration: 2500 });
+    return <></>;
+  }
 
   return (
     <main className="flex" onClick={() => dispatch(setPostTypeAlert(false))}>

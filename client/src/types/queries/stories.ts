@@ -7,5 +7,10 @@ export interface CreateResult {
 
 export interface AllStoriesResult {
   success: boolean;
-  stories: Array<Story>;
+  stories: Array<{
+    _id: string;
+    userAvatar: string;
+    username: string;
+    userStories: Array<Story>;
+  }>;
 }

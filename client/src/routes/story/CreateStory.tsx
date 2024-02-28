@@ -285,6 +285,11 @@ const CreateStory: React.FC = () => {
       [timer]
     );
 
+  if (!me) {
+    toast.error("You are not authenticated", { duration: 2500 });
+    return <></>;
+  }
+
   return (
     <main className="flex flex-col justify-around items-center min-h-screen min-w-full bg-[#161616]">
       {isLoading && <WhiteScreen />}

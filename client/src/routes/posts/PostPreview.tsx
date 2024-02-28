@@ -79,7 +79,7 @@ const PostPreview: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const isBookmarked = me.bookmarkedPosts.some((element) => {
+    const isBookmarked = me?.bookmarkedPosts.some((element) => {
       if (currentPost) {
         return element._id === currentPost._id;
       }
@@ -88,11 +88,11 @@ const PostPreview: React.FC = () => {
     if (isBookmarked) {
       setBookMarked(true);
     }
-  }, [me.bookmarkedPosts, currentPost]);
+  }, [me?.bookmarkedPosts, currentPost]);
 
   useEffect(() => {
     // Checking if user already liked the given post or not.
-    if (currentPost && hasLiked(currentPost.likes, me)) {
+    if (currentPost && me && hasLiked(currentPost.likes, me)) {
       setLiked(true);
     }
   }, [hasLiked, currentPost, me]);
@@ -315,7 +315,7 @@ const PostPreview: React.FC = () => {
               {({ height, width }) => {
                 return (
                   <List
-                    className="no-scrollbars"
+                    className="scrollbar-hide"
                     height={height}
                     width={width}
                     itemCount={5}

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useAppSelector, useAppDispatch } from "@/lib/utils/hooks/hooks";
+import { useAppSelector, useAppDispatch } from "@hooks/hooks";
 import { useSharePostMutation } from "@services/post.api";
 import Loader from "@components/loaders/Loader";
 import { toast } from "react-hot-toast";
@@ -11,11 +11,11 @@ import { SimpleResponse } from "@/types";
 const PostCaption: React.FC = () => {
   const [postCaption, setPostCaption] = useState<string>("");
 
-  const [sharePost, { data, isSuccess, isLoading, error }] =
-    useSharePostMutation();
-
   const { me } = useAppSelector((state) => state.user);
   const { postMedia } = useAppSelector((state) => state.post);
+
+  const [sharePost, result] = useSharePostMutation();
+  const { data, isSuccess, isLoading, error } = result;
 
   const dispatch = useAppDispatch();
 
@@ -51,6 +51,10 @@ const PostCaption: React.FC = () => {
   }, [isSuccess, data, error, dispatch]);
 
   const submitPost = useCallback(() => {
+    if (!postMedia[0].file) {
+      return;
+    }
+
     const formData = new FormData();
 
     formData.append("postMedia", postMedia[0].file);
@@ -58,6 +62,11 @@ const PostCaption: React.FC = () => {
 
     sharePost(formData);
   }, [postCaption, postMedia, sharePost]);
+
+  if (!me) {
+    toast.error("You are not authenticated", { duration: 2500 });
+    return <></>;
+  }
 
   return (
     <div

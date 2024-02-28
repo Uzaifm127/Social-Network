@@ -1,10 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "@hooks/hooks";
 import { Toaster } from "react-hot-toast";
-import { useGetMyProfileQuery } from "@services/user.api";
-import { setAuth } from "@slices/user.slice";
 import Register from "@routes/auth/Register";
 import Login from "@routes/auth/Login";
 import NotFound from "@routes/NotFound";
@@ -19,8 +14,15 @@ import Search from "@routes/Search";
 import PostPreview from "@routes/posts/PostPreview";
 import CreateStory from "@routes/story/CreateStory";
 import Story from "@routes/story/Story";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@hooks/hooks";
+import { useGetMyProfileQuery } from "@services/user.api";
+import { setAuth, setMe } from "@slices/user.slice";
 
 const App: React.FC = () => {
+  // const socket = useMemo(() => new WebSocket("ws://localhost:4000"), []);
+
   // Getting all states from redux store
   const { isAuthenticated, user, me } = useAppSelector((state) => state.user);
   const { currentStory } = useAppSelector((state) => state.story);
@@ -35,11 +37,11 @@ const App: React.FC = () => {
   useEffect(() => {
     if (isSuccess) {
       dispatch(setAuth(true));
-      dispatch({ type: "setMe", payload: data.user });
+      dispatch(setMe(data.user));
     }
     if (isError) {
-      dispatch({ type: "changeAuth", payload: false });
-      dispatch({ type: "setMe", payload: {} });
+      dispatch(setAuth(false));
+      dispatch(setMe(null));
     }
   }, [dispatch, isSuccess, isError, data]);
 
@@ -59,14 +61,14 @@ const App: React.FC = () => {
         />
       ) : (
         <>
-          {isAuthenticated && postAlert && <CreatePost />}
+          {isAuthenticated && me && postAlert && <CreatePost />}
           <Routes>
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route
               path="/"
               element={
-                isAuthenticated ? (
+                isAuthenticated && me ? (
                   <Home />
                 ) : (
                   <Navigate to="/login" state={{ prevPath: "/" }} />
@@ -76,7 +78,7 @@ const App: React.FC = () => {
             <Route
               path="/explore/search"
               element={
-                isAuthenticated ? (
+                isAuthenticated && me ? (
                   <Search />
                 ) : (
                   <Navigate
@@ -87,27 +89,27 @@ const App: React.FC = () => {
               }
             />
             <Route
-              path={`/${me.username}`}
+              path={`/${me?.username}`}
               element={
-                isAuthenticated ? (
+                isAuthenticated && me ? (
                   <MyProfile refreshLoading={false} />
                 ) : (
                   <Navigate
                     to="/login"
-                    state={{ prevPath: `/${me.username}` }}
+                    state={{ prevPath: `/${me?.username}` }}
                   />
                 )
               }
             />
             <Route
-              path={`/${me.username}/saved`}
+              path={`/${me?.username}/saved`}
               element={
-                isAuthenticated ? (
-                  <Saved />
+                isAuthenticated && me ? (
+                  <Saved refreshLoading={isLoading} />
                 ) : (
                   <Navigate
                     to="/login"
-                    state={{ prevPath: `/${me.username}/saved` }}
+                    state={{ prevPath: `/${me?.username}/saved` }}
                   />
                 )
               }
@@ -115,8 +117,8 @@ const App: React.FC = () => {
             <Route
               path={`/${localStorage.getItem("username")}`}
               element={
-                isAuthenticated ? (
-                  <UserProfile userId={user._id} />
+                isAuthenticated && me ? (
+                  <UserProfile userId={user?._id || ""} />
                 ) : (
                   <Navigate
                     to="/login"
@@ -128,7 +130,7 @@ const App: React.FC = () => {
             <Route
               path={"/accounts/edit"}
               element={
-                isAuthenticated ? (
+                isAuthenticated && me ? (
                   <EditProfile />
                 ) : (
                   <Navigate
@@ -141,7 +143,7 @@ const App: React.FC = () => {
             <Route
               path={"/stories/create"}
               element={
-                isAuthenticated ? (
+                isAuthenticated && me ? (
                   <CreateStory />
                 ) : (
                   <Navigate
@@ -154,7 +156,7 @@ const App: React.FC = () => {
             <Route
               path={`/stories/${currentStory?.username}/${currentStory?._id}`}
               element={
-                isAuthenticated ? (
+                isAuthenticated && me ? (
                   <Story />
                 ) : (
                   <Navigate
@@ -169,7 +171,7 @@ const App: React.FC = () => {
             <Route
               path={"/p/:postId"}
               element={
-                isAuthenticated ? (
+                isAuthenticated && me ? (
                   <PostPreview />
                 ) : (
                   <Navigate to="/login" state={{ prevPath: "/p/:postId" }} />

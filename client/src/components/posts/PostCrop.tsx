@@ -1,5 +1,5 @@
 import Crop from "react-easy-crop";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { getCroppedImage } from "@/lib/utils/imageCrop";
 import { FaCheck } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
@@ -17,6 +17,7 @@ const PostCrop: React.FC<PostCropPT> = ({ Image }) => {
   const [aspect, setAspect] = useState<number>(0);
   const [originalAspect, setOriginalAspect] = useState<number>(0);
   const [crop, setCrop] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+
   const [croppedImage, setCroppedImage] = useState<{
     file: File | null;
     filePreview: string;
@@ -24,41 +25,44 @@ const PostCrop: React.FC<PostCropPT> = ({ Image }) => {
 
   const dispatch = useAppDispatch();
 
-  const onCropComplete = async (
-    croppedArea: CropArea,
-    croppedAreaPixels: CropArea
-  ) => {
-    const croppedImage = await getCroppedImage(Image, croppedAreaPixels);
-    setCroppedImage(croppedImage);
-  };
+  const onCropComplete = useCallback(
+    async (croppedArea: CropArea, croppedAreaPixels: CropArea) => {
+      const croppedImage = await getCroppedImage(Image, croppedAreaPixels);
+      setCroppedImage(croppedImage);
+    },
+    [Image]
+  );
 
-  const cropSubmitHandler = () => {
+  const cropSubmitHandler = useCallback(() => {
     dispatch(setPostMedia(croppedImage));
     setPostCropAlert(false);
-  };
+  }, [croppedImage, dispatch]);
 
-  const aspectHandler = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
-    const mediaRatio = e.currentTarget.getAttribute("data-aspect");
+  const aspectHandler = useCallback(
+    (e: React.MouseEvent<HTMLSpanElement | HTMLDivElement>) => {
+      const mediaRatio = e.currentTarget.getAttribute("data-aspect");
 
-    switch (mediaRatio) {
-      case "1:1":
-        setAspect(1);
-        break;
-      case "4:5":
-        setAspect(4 / 5);
-        break;
-      case "16:9":
-        setAspect(16 / 9);
-        break;
-      case "original":
-        setAspect(originalAspect);
-        break;
+      switch (mediaRatio) {
+        case "1:1":
+          setAspect(1);
+          break;
+        case "4:5":
+          setAspect(4 / 5);
+          break;
+        case "16:9":
+          setAspect(16 / 9);
+          break;
+        case "original":
+          setAspect(originalAspect);
+          break;
 
-      default:
-        setAspect(1);
-        break;
-    }
-  };
+        default:
+          setAspect(1);
+          break;
+      }
+    },
+    [originalAspect]
+  );
 
   return (
     <div className="bg-[#121212] top-0 left-0 h-screen w-screen absolute">

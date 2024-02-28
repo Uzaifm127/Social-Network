@@ -3,6 +3,7 @@ import clsx from "clsx";
 import SideBar from "@components/layouts/Sidebar";
 import placeholderImage from "@assets/Image Placeholder.png";
 import FollowAlert from "@components/alerts/FollowAlert";
+import toast from "react-hot-toast";
 import UserSkewLoader from "@components/loaders/UserSkewLoader";
 import { Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@hooks/hooks";
@@ -26,10 +27,10 @@ const MyProfile: React.FC<MyProfilePropTypes> = ({ refreshLoading }) => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    if (window.location.pathname === `/${me.username}`) {
+    if (window.location.pathname === `/${me?.username}`) {
       dispatch({ type: "setHighlighter", payload: true });
     }
-  }, [me.username, dispatch]);
+  }, [me?.username, dispatch]);
 
   const followClick = useCallback(
     (e: MouseEvent) => {
@@ -37,11 +38,20 @@ const MyProfile: React.FC<MyProfilePropTypes> = ({ refreshLoading }) => {
         "data-clicked"
       );
 
-      const payload = { alert: true, valueToAlert: clickedValue };
+      if (!clickedValue) {
+        return;
+      }
+
+      const payload = { valueToAlert: clickedValue, alert: true };
       dispatch(setFollowAlert(payload));
     },
     [dispatch]
   );
+
+  if (!me) {
+    toast.error("You are not authenticated", { duration: 2500 });
+    return <></>;
+  }
 
   return (
     <main className="flex" onClick={() => dispatch(setPostTypeAlert(false))}>

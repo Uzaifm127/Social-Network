@@ -2,11 +2,13 @@ import React, { useEffect, useMemo } from "react";
 import placeholderImage from "@assets/Image Placeholder.png";
 import FollowAlert from "@components/alerts/FollowAlert";
 import UserSkewLoader from "@components/loaders/UserSkewLoader";
+import toast from "react-hot-toast";
 import SideBar from "@components/layouts/Sidebar";
 import { useAppDispatch, useAppSelector } from "@/lib/utils/hooks/hooks";
 import { Link } from "react-router-dom";
 import { SavedPT } from "@/types/propTypes";
-import { setFollowAlert } from "@/slices/toggle.slice";
+import { setFollowAlert, setPostTypeAlert } from "@/slices/toggle.slice";
+import { setHighlighter } from "@/slices/post.slice";
 
 const Saved: React.FC<SavedPT> = ({ refreshLoading }) => {
   const navLinksClass = useMemo(() => {
@@ -22,16 +24,21 @@ const Saved: React.FC<SavedPT> = ({ refreshLoading }) => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    if (window.location.pathname === `/${me.username}/saved`) {
-      dispatch({ type: "setHighlighter", payload: true });
+    if (window.location.pathname === `/${me?.username}/saved`) {
+      dispatch(setHighlighter(true));
     }
-  }, [me.username, dispatch]);
+  }, [me?.username, dispatch]);
+
+  if (!me) {
+    toast.error("You are not authenticated", { duration: 2500 });
+    return <></>;
+  }
 
   return (
     <main
       className="flex"
       onClick={() => {
-        dispatch({ type: "postTypeAlertToggle", payload: false });
+        dispatch(setPostTypeAlert(false));
       }}
     >
       <SideBar loading={false} />

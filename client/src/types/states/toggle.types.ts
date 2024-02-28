@@ -7,7 +7,7 @@ export interface ToggleTypes {
   postTypeAlert: boolean;
   postCropAlert: boolean;
   followAlert: {
-    valueToAlert: undefined | string;
+    valueToAlert: string;
     alert: boolean;
   };
 }

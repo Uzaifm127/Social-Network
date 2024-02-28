@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import StorySkewLoader from "@components/loaders/StorySkewLoader";
 import { ChevronsLeft, ChevronsRight } from "react-feather";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "@/lib/utils/hooks/hooks";
 import { X, Play } from "react-feather";
 import { motion } from "framer-motion";
-import StorySkewLoader from "../components/loaders/StorySkewLoader";
 
 // bug - when refresh the page then all states of stories vanished and due to this there is no page for story as states are not available.
 
-const Story = () => {
-  const [storyNumber, setStoryNumber] = useState(0);
+const Story: React.FC = () => {
+  const [storyNumber, setStoryNumber] = useState<number>(0);
 
   const { currentStory } = useAppSelector((state) => state.story);
   const { skewLoader } = useAppSelector((state) => state.app);
@@ -17,7 +17,7 @@ const Story = () => {
 
   const navigate = useNavigate();
 
-  const storyVideoRef = useRef(null);
+  const storyVideoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     const storyDuration = userStories[storyNumber].duration;

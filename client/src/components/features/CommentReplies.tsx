@@ -32,14 +32,16 @@ const CommentReplies: React.FC<CommentRepliesPT> = ({
   const [likeComment] = useLikeCommentMutation();
 
   useEffect(() => {
-    const isCommentLiked = commentLikes?.some((element) => {
-      return element._id === me._id;
-    });
+    if (me?._id) {
+      const isCommentLiked = commentLikes?.some((element) => {
+        return element._id === me._id;
+      });
 
-    if (isCommentLiked) {
-      setCommentLike(true);
+      if (isCommentLiked) {
+        setCommentLike(true);
+      }
     }
-  }, [commentLikes, me._id]);
+  }, [commentLikes, me?._id]);
 
   const onLikeDislike: MouseEventHandler<SVGElement> = useCallback(
     (e) => {
@@ -73,7 +75,7 @@ const CommentReplies: React.FC<CommentRepliesPT> = ({
           >
             {username}
           </span>
-          {username === currentPost.owner.username && (
+          {username === currentPost?.owner.username && (
             <span className="bg-slate-300 pointer-events-none text-[0.7rem] ml-1 relative -top-[0.2rem] text-slate-700 px-1 py-1 rounded-[0.2rem]">
               Author
             </span>

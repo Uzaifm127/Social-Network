@@ -1,5 +1,5 @@
-import { PostPromptPT } from "@/types/propTypes";
 import Media from "@assets/Media.png";
+import { PostPromptPT } from "@/types/propTypes";
 
 const PostPrompt: React.FC<PostPromptPT> = ({ onChange }) => {
   return (
