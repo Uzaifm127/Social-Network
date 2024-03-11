@@ -7,7 +7,7 @@ import SideBar from "@components/layouts/Sidebar";
 import { useAppDispatch, useAppSelector } from "@/lib/utils/hooks/hooks";
 import { Link } from "react-router-dom";
 import { SavedPT } from "@/types/propTypes";
-import { setFollowAlert, setPostTypeAlert } from "@/slices/toggle.slice";
+import { setFollowAlert } from "@/slices/toggle.slice";
 import { setHighlighter } from "@/slices/post.slice";
 
 const Saved: React.FC<SavedPT> = ({ refreshLoading }) => {
@@ -35,12 +35,7 @@ const Saved: React.FC<SavedPT> = ({ refreshLoading }) => {
   }
 
   return (
-    <main
-      className="flex"
-      onClick={() => {
-        dispatch(setPostTypeAlert(false));
-      }}
-    >
+    <main className="flex">
       <SideBar loading={false} />
       {followAlert.alert && (
         <FollowAlert

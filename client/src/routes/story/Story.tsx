@@ -5,6 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "@/lib/utils/hooks/hooks";
 import { X, Play } from "react-feather";
 import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 // bug - when refresh the page then all states of stories vanished and due to this there is no page for story as states are not available.
 
@@ -12,8 +20,10 @@ const Story: React.FC = () => {
   const [storyNumber, setStoryNumber] = useState<number>(0);
 
   const { currentStory } = useAppSelector((state) => state.story);
-  const { skewLoader } = useAppSelector((state) => state.app);
+  // const { skewLoader } = useAppSelector((state) => state.app);
   const { userStories } = currentStory;
+
+  const skewLoader = false;
 
   const navigate = useNavigate();
 
@@ -63,7 +73,36 @@ const Story: React.FC = () => {
         className="absolute m-2 top-0 left-0 cursor-pointer"
         color="#fff"
       />
+      <>
+        <Carousel className="w-full max-w-xs">
+          <CarouselContent>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <CarouselItem key={index}>
+                <div className="p-1">
+                  <Card>
+                    <CardContent className="flex aspect-square items-center justify-center p-6">
+                      <span className="text-4xl font-semibold">
+                        {index + 1}
+                      </span>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+      </>
+    </main>
+  );
+};
 
+export default Story;
+
+const A = () => {
+  return (
+    <>
       <ChevronsLeft
         onClick={switchStory}
         switch-button="left"
@@ -100,10 +139,10 @@ const Story: React.FC = () => {
                   <div className={`w-full h-full bg-slate-400`}></div>
                 )}
                 {/* <div
-                  className={`w-full h-full ${
-                     ? "bg-slate-400" : "bg-white"
-                  } `}
-                ></div> */}
+            className={`w-full h-full ${
+               ? "bg-slate-400" : "bg-white"
+            } `}
+          ></div> */}
               </div>
             );
           })}
@@ -128,14 +167,14 @@ const Story: React.FC = () => {
           {userStories[storyNumber].storyType === "video" && (
             <>
               {/* {isPaused && (
-                <Play
-                  onClick={stopStartVideo}
-                  color="#fff"
-                  size={60}
-                  fill="#fff"
-                  className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer`}
-                />
-              )} */}
+          <Play
+            onClick={stopStartVideo}
+            color="#fff"
+            size={60}
+            fill="#fff"
+            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer`}
+          />
+        )} */}
               <video
                 ref={storyVideoRef}
                 src={userStories[storyNumber].story.url}
@@ -163,8 +202,6 @@ const Story: React.FC = () => {
             : "cursor-pointer"
         }`}
       />
-    </main>
+    </>
   );
 };
-
-export default Story;

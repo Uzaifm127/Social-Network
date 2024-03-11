@@ -13,11 +13,7 @@ import CropImage from "@components/CropImage";
 import { useAppSelector, useAppDispatch } from "@hooks/hooks";
 import { useEditProfileMutation } from "@services/user.api";
 import Loader from "@components/loaders/Loader";
-import {
-  setAvatarAlert,
-  setCropAlert,
-  setPostTypeAlert,
-} from "@/slices/toggle.slice";
+import { setAvatarAlert, setCropAlert } from "@/slices/toggle.slice";
 import clsx from "clsx";
 import { SimpleResponse } from "@/types";
 
@@ -151,7 +147,7 @@ const EditProfile: React.FC = () => {
   }
 
   return (
-    <main className="flex" onClick={() => dispatch(setPostTypeAlert(false))}>
+    <main className="flex">
       {cropAlert && <CropImage Image={avatarSrc} />}
       {avatarAlert && <AvatarEditAlert setAvatarSrc={setAvatarSrc} />}
       <SideBar loading={isLoading} />

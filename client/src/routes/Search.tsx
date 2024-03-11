@@ -3,15 +3,11 @@ import SideBar from "@components/layouts/Sidebar";
 import User from "@components/layouts/User";
 import SearchSkewLoading from "@components/loaders/SearchSkewLoading";
 import { useLazySearchUserQuery } from "@services/user.api";
-import { useAppDispatch } from "@/lib/utils/hooks/hooks";
-import { setPostAlert } from "@/slices/toggle.slice";
 
 const Search: React.FC = () => {
   const [search, setSearch] = useState<string>("");
 
   const [trigger, result] = useLazySearchUserQuery();
-
-  const dispatch = useAppDispatch();
 
   const onSearchSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     (e) => {
@@ -23,7 +19,7 @@ const Search: React.FC = () => {
   );
 
   return (
-    <main className="flex" onClick={() => dispatch(setPostAlert(false))}>
+    <main className="flex">
       <SideBar loading={false} />
       <section className="w-[80%] p-10">
         <form onSubmit={onSearchSubmit} className="w-full">

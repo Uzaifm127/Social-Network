@@ -9,6 +9,7 @@
     "paths": {
       "@/*": ["./*"],
       "@components/*": ["components/*"],
+      "@lib/*": ["lib/*"],
       "@hooks/*": ["lib/utils/hooks/*"],
       "@routes/*": ["routes/*"],
       "@services/*": ["services/*"],

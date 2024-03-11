@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@hooks/hooks";
 import { MyProfilePropTypes } from "@/types/propTypes";
 import { Post } from "@/types/states/post.types";
-import { setFollowAlert, setPostTypeAlert } from "@/slices/toggle.slice";
+import { setFollowAlert } from "@/slices/toggle.slice";
 
 const MyProfile: React.FC<MyProfilePropTypes> = ({ refreshLoading }) => {
   const navLinksClass = useMemo(() => {
@@ -54,7 +54,7 @@ const MyProfile: React.FC<MyProfilePropTypes> = ({ refreshLoading }) => {
   }
 
   return (
-    <main className="flex" onClick={() => dispatch(setPostTypeAlert(false))}>
+    <main className="flex">
       <SideBar loading={refreshLoading} />
       {followAlert.alert && !refreshLoading && (
         <FollowAlert

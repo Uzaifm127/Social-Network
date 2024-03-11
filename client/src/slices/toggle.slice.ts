@@ -7,7 +7,7 @@ const initialState: ToggleTypes = {
   moreAlert: false,
   cropAlert: false,
   postAlert: false,
-  postTypeAlert: false,
+  // postTypeAlert: false,
   postCropAlert: false,
   followAlert: {
     valueToAlert: "",
@@ -26,11 +26,10 @@ const toggleSlice = createSlice({
       state.cropAlert = action.payload;
     },
     setPostAlert: (state, action: PayloadAction<boolean>) => {
+      console.log(action.payload);
       state.postAlert = action.payload;
     },
-    setPostTypeAlert: (state, action: PayloadAction<boolean>) => {
-      state.postTypeAlert = action.payload;
-    },
+    // s
     setPostCropAlert: (state, action: PayloadAction<boolean>) => {
       state.postCropAlert = action.payload;
     },
@@ -58,7 +57,7 @@ export const {
   setMoreAlert,
   setCropAlert,
   setPostAlert,
-  setPostTypeAlert,
+  // setPostTypeAlert,
   setPostCropAlert,
   setFollowAlert,
 } = toggleSlice.actions;

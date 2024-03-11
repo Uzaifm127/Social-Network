@@ -4,7 +4,7 @@ export interface ToggleTypes {
   moreAlert: boolean;
   cropAlert: boolean;
   postAlert: boolean;
-  postTypeAlert: boolean;
+  // postTypeAlert: boolean;
   postCropAlert: boolean;
   followAlert: {
     valueToAlert: string;

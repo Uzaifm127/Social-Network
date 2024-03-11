@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { UserProfilePropTypes } from "@/types/propTypes/index";
 import { useGetFollowStatus } from "@hooks/custom/useGetFollowStatus";
 import { useGetUserProfileQuery } from "@services/user.api";
-import { setFollowAlert, setPostTypeAlert } from "@/slices/toggle.slice";
+import { setFollowAlert } from "@/slices/toggle.slice";
 import { setHighlighter } from "@/slices/post.slice";
 
 const UserProfile: React.FC<UserProfilePropTypes> = ({ userId }) => {
@@ -59,7 +59,7 @@ const UserProfile: React.FC<UserProfilePropTypes> = ({ userId }) => {
   );
 
   return (
-    <main className="flex" onClick={() => dispatch(setPostTypeAlert(false))}>
+    <main className="flex">
       <SideBar loading={isLoading} />
       {followAlert.alert && !isLoading && data && (
         <FollowAlert

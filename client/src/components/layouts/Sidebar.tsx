@@ -14,11 +14,11 @@ import { PiPlusCircleBold } from "react-icons/pi";
 import { useAppDispatch, useAppSelector } from "@/lib/utils/hooks/hooks";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { MdOutlineExplore } from "react-icons/md";
-import { setMoreAlert, setPostTypeAlert } from "@/slices/toggle.slice";
+import { setMoreAlert } from "@/slices/toggle.slice";
 
 const SideBar: React.FC<SideBarPropTypes> = ({ loading }) => {
   const { me } = useAppSelector((state) => state.user);
-  const { moreAlert, postTypeAlert } = useAppSelector((state) => state.toggle);
+  const { moreAlert } = useAppSelector((state) => state.toggle);
 
   const navLinksClass: string = useMemo(() => {
     return `flex items-center w-full p-3 cursor-pointer hover:bg-[#353535] rounded-lg relative transition duration-250 my-3`;
@@ -78,8 +78,24 @@ const SideBar: React.FC<SideBarPropTypes> = ({ loading }) => {
                 Messages
               </li>
               <li className="relative">
-                {postTypeAlert && <PostTypePrompt />}
-                <button
+                {/* {postTypeAlert && <PostTypePrompt />} */}
+                <PostTypePrompt
+                  trigger={
+                    <button
+                      className={navLinksClass}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (moreAlert) {
+                          dispatch(setMoreAlert(undefined));
+                        }
+                      }}
+                    >
+                      <PiPlusCircleBold className={navIconsClass} />
+                      Post
+                    </button>
+                  }
+                />
+                {/* <button
                   className={navLinksClass}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -91,7 +107,7 @@ const SideBar: React.FC<SideBarPropTypes> = ({ loading }) => {
                 >
                   <PiPlusCircleBold className={navIconsClass} />
                   Post
-                </button>
+                </button> */}
               </li>
               <li>
                 <Link to={`/${me.username}`} className={navLinksClass}>

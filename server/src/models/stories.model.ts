@@ -26,9 +26,8 @@ const storySchema = new Schema<StoryTypes>(
     likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
     expiresAt: {
       type: Date,
-      // expires: 3600 * 24,
-      expires: 60,
-      required: true,
+      default: Date.now(),
+      index: { expires: "24h" },
     },
   },
   { timestamps: true }

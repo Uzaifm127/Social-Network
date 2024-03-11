@@ -66,7 +66,7 @@ const CreateStory: React.FC = () => {
       if ("status" in error) {
         // you can access all properties of `FetchBaseQueryError` here
         toast.error(
-          (error.data as SimpleResponse).message || "Something went wrong",
+          (error.data as SimpleResponse)?.message || "Something went wrong",
           {
             duration: 2500,
           }
@@ -175,22 +175,34 @@ const CreateStory: React.FC = () => {
   }, []);
 
   const onSubmitStory = useCallback(() => {
-    if (!img || !video || !recordedVideo) {
-      return;
-    }
+    console.log("line 1");
+
+    console.log(img);
+    console.log(video);
+    console.log(recordedVideo);
 
     const formData = new FormData();
 
     if (fileType === "image") {
       // .append method only contains string or Blob as a value.
-      formData.append("story", img);
+      if (img) {
+        formData.append("story", img);
+      }
       formData.append("duration", "60");
     } else if (fileType === "video") {
-      formData.append("story", video || recordedVideo);
+      if (video) {
+        formData.append("story", video);
+      } else if (recordedVideo) {
+        formData.append("story", recordedVideo);
+      }
       formData.append("duration", `${videoDuration}`);
     }
 
     formData.append("storyType", fileType);
+
+    if (!img && !video && !recordedVideo) {
+      return;
+    }
 
     createStory(formData);
   }, [createStory, fileType, video, recordedVideo, img, videoDuration]);
