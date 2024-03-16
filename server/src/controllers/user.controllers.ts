@@ -4,6 +4,7 @@ import { authenticateUser } from "../utils/auth.js";
 import { v2 as cloudinary } from "cloudinary";
 import { NextFunction, Response } from "express";
 import { CustomReq } from "../types/index.js";
+import { rm } from "fs";
 
 export const registerUser = async (
   req: CustomReq,
@@ -13,19 +14,19 @@ export const registerUser = async (
   try {
     const { name, username, email, password } = req.body;
 
+    const avatar = req.file;
+
     const userEmail = await UserModel.findOne({ email });
 
     const userName = await UserModel.findOne({ username });
 
-    if (userEmail) {
+    if (userEmail || userName) {
+      rm(avatar?.path!, () => {
+        //
+      });
+
       throw new ErrorHandler("User already exist", 400);
     }
-
-    if (userName) {
-      return next(new ErrorHandler("Invalid username", 404));
-    }
-
-    const avatar = req.file;
 
     if (!avatar) {
       const newUser = await UserModel.create({
@@ -48,17 +49,18 @@ export const registerUser = async (
       );
     }
 
-    const b64 = Buffer.from(avatar.buffer).toString("base64");
-    const avatarData = `data:${avatar.mimetype};base64,${b64}`;
+    // const b64 = Buffer.from(avatar.buffer).toString("base64");
+    // const avatarData = `data:${avatar.mimetype};base64,${b64}`;
 
-    // uploading to cloudinary
-    const { secure_url, public_id } = await cloudinary.uploader.upload(
-      avatarData,
-      { folder: "avatar" }
-    );
+    // // uploading to cloudinary
+    // const { secure_url, public_id } = await cloudinary.uploader.upload(
+    //   avatarData,
+    //   { folder: "avatar" }
+    // );
 
     const newUser = await UserModel.create({
-      avatar: { url: secure_url, publicId: public_id },
+      // avatar: { url: secure_url, publicId: public_id },
+      avatar: { url: "", publicId: "" },
       name,
       username,
       email,
@@ -80,16 +82,21 @@ export const loginUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  const user = await UserModel.findOne({ email }).select("+password");
+    const user = await UserModel.findOne({ email }).select("+password");
 
-  const passwordMatch = await user?.matchPassword(password);
+    const passwordMatch = await user?.matchPassword(password);
 
-  if (!user || !passwordMatch)
-    throw new ErrorHandler("Invalid email or password", 404);
+    if (!user || !passwordMatch) {
+      throw new ErrorHandler("Invalid email or password", 404);
+    }
 
-  authenticateUser(user, res, 200, "Logged in successfully");
+    authenticateUser(user, res, 200, "Logged in successfully");
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const logoutUser = (req: CustomReq, res: Response) => {

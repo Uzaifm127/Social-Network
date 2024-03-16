@@ -78,7 +78,6 @@ const SideBar: React.FC<SideBarPropTypes> = ({ loading }) => {
                 Messages
               </li>
               <li className="relative">
-                {/* {postTypeAlert && <PostTypePrompt />} */}
                 <PostTypePrompt
                   trigger={
                     <button
@@ -95,19 +94,6 @@ const SideBar: React.FC<SideBarPropTypes> = ({ loading }) => {
                     </button>
                   }
                 />
-                {/* <button
-                  className={navLinksClass}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (moreAlert) {
-                      dispatch(setMoreAlert(undefined));
-                    }
-                    dispatch(setPostTypeAlert(true));
-                  }}
-                >
-                  <PiPlusCircleBold className={navIconsClass} />
-                  Post
-                </button> */}
               </li>
               <li>
                 <Link to={`/${me.username}`} className={navLinksClass}>
@@ -119,16 +105,19 @@ const SideBar: React.FC<SideBarPropTypes> = ({ loading }) => {
                   Profile
                 </Link>
               </li>
-              <li className="mt-12">
-                {moreAlert && <MoreAlert />}
-                <button
-                  className={navLinksClass}
-                  onClick={() => dispatch(setMoreAlert(undefined))}
-                >
-                  <RxHamburgerMenu className={navIconsClass} />
-                  More
-                </button>
-              </li>
+              <MoreAlert
+                dropDownTrigger={
+                  <li className="mt-12">
+                    <button
+                      className={navLinksClass}
+                      onClick={() => dispatch(setMoreAlert(undefined))}
+                    >
+                      <RxHamburgerMenu className={navIconsClass} />
+                      More
+                    </button>
+                  </li>
+                }
+              />
             </ul>
           </nav>
         </section>

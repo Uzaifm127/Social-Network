@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import toast from "react-hot-toast";
 import { TbLogout2 } from "react-icons/tb";
 import { useUserLogoutMutation } from "@services/user.api";
-import { Link } from "react-router-dom";
 import { useAppDispatch } from "@hooks/hooks";
 import { SimpleResponse } from "@/types";
 import { setAuth, setMe } from "@/slices/user.slice";
@@ -54,14 +53,10 @@ const Logout: React.FC = () => {
   }, [isSuccess, isError, dispatch, data, error]);
 
   return (
-    <Link
-      onClick={() => userLogout()}
-      to={`/`}
-      className="flex items-center w-full p-3 cursor-pointer hover:bg-slate-300 rounded-lg transition duration-250"
-    >
-      <TbLogout2 className="text-3xl mr-5" />
+    <div onClick={() => userLogout()} className="flex items-center w-full">
+      <TbLogout2 className="text-3xl mr-3" />
       Logout
-    </Link>
+    </div>
   );
 };
 

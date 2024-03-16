@@ -11,5 +11,5 @@ export interface StoryTypes extends Document {
   duration: number;
   owner: Types.ObjectId | UserTypes;
   likes: Types.Array<Types.ObjectId> | Types.Array<UserTypes>;
-  expiresAt: Date;
+  // expiresAt: Date;
 }

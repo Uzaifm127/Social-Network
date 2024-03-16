@@ -24,11 +24,11 @@ const storySchema = new Schema<StoryTypes>(
     },
     owner: { type: Schema.Types.ObjectId, ref: "User" },
     likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    expiresAt: {
-      type: Date,
-      default: Date.now(),
-      index: { expires: "24h" },
-    },
+    // expiresAt: {
+    //   type: Date,
+    //   default: Date.now(),
+    //   index: { expires: "24h" },
+    // },
   },
   { timestamps: true }
 );
